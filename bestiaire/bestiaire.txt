@@ -1,0 +1,271 @@
+
+// =====================================
+// FANTASY WORLD CONQUEST - BESTIAIRE
+// =====================================
+
+// =====================================
+// ZONE 1 : FORET DES ANCIENS
+// =====================================
+
+/*
+Gobelin
+PV : 30
+ATQ : 5
+XP : 10
+OR : 5
+Capacité : Coup Sournois (+2 dégâts)
+*/
+
+/*
+Loup Sauvage
+PV : 45
+ATQ : 8
+XP : 15
+OR : 8
+Capacité : Morsure Critique
+*/
+
+/*
+Squelette
+PV : 60
+ATQ : 10
+XP : 20
+OR : 12
+Capacité : Résurrection (10%)
+*/
+
+/*
+Araignée Géante
+PV : 50
+ATQ : 12
+XP : 18
+OR : 10
+Capacité : Poison
+*/
+
+// BOSS ZONE 1
+
+/*
+Roi Gobelin
+
+PV : 350
+ATQ : 30
+XP : 250
+OR : 200
+
+Attaques :
+- Commandement Gobelin
+- Frénésie
+- Écrasement Royal
+*/
+
+// =====================================
+// ZONE 2 : MONTAGNES DU DESTIN
+// =====================================
+
+/*
+Orc Guerrier
+PV : 90
+ATQ : 15
+XP : 35
+OR : 20
+Capacité : Rage
+*/
+
+/*
+Troll des Cavernes
+PV : 180
+ATQ : 25
+XP : 80
+OR : 50
+Capacité : Régénération
+*/
+
+/*
+Harpie
+PV : 110
+ATQ : 18
+XP : 40
+OR : 25
+Capacité : Attaque aérienne
+*/
+
+/*
+Golem de Pierre
+PV : 250
+ATQ : 20
+XP : 90
+OR : 60
+Capacité : Peau de pierre
+*/
+
+// BOSS ZONE 2
+
+/*
+Dragon de Givre
+
+PV : 800
+ATQ : 55
+XP : 600
+OR : 500
+
+Attaques :
+- Souffle Glacial
+- Tempête de Glace
+- Armure de Givre
+*/
+
+// =====================================
+// ZONE 3 : DESERT MAUDIT
+// =====================================
+
+/*
+Scorpion Géant
+PV : 120
+ATQ : 22
+XP : 55
+OR : 30
+Capacité : Venin Mortel
+*/
+
+/*
+Momie
+PV : 150
+ATQ : 25
+XP : 65
+OR : 40
+Capacité : Malédiction
+*/
+
+/*
+Anubis Déchu
+PV : 300
+ATQ : 35
+XP : 120
+OR : 90
+Capacité : Jugement du Désert
+*/
+
+// BOSS ZONE 3
+
+/*
+Seigneur des Sables
+
+PV : 1200
+ATQ : 70
+XP : 900
+OR : 700
+
+Attaques :
+- Tempête de Sable
+- Invocation de Scorpions
+- Colère du Désert
+*/
+
+// =====================================
+// ZONE 4 : ROYAUME DES OMBRES
+// =====================================
+
+/*
+Chevalier Noir
+PV : 250
+ATQ : 40
+XP : 150
+OR : 80
+Capacité : Drain de vie
+*/
+
+/*
+Mage Noir
+PV : 140
+ATQ : 30
+XP : 100
+OR : 70
+Capacité : Boule de feu
+*/
+
+/*
+Démon Mineur
+PV : 300
+ATQ : 45
+XP : 180
+OR : 100
+Capacité : Flammes Infernales
+*/
+
+/*
+Faucheur
+PV : 400
+ATQ : 55
+XP : 220
+OR : 150
+Capacité : Exécution
+*/
+
+// BOSS ZONE 4
+
+/*
+Empereur des Ombres
+
+PV : 2000
+ATQ : 90
+XP : 2000
+OR : 5000
+
+Phase 1 :
+- Lame des Ténèbres
+- Drain de Vie
+
+Phase 2 :
+- Invocation des Ombres
+- Téléportation
+
+Phase 3 :
+- Apocalypse
+- Forme Ultime
+*/
+
+// =====================================
+// BOSS SECRET
+// =====================================
+
+/*
+Titan Céleste
+
+PV : 5000
+ATQ : 150
+XP : 10000
+OR : 15000
+
+Attaques :
+
+- Rayon Divin
+- Choc Cosmique
+- Jugement Dernier
+- Colère des Dieux
+*/
+
+// =====================================
+// CREATURES LEGENDAIRES
+// =====================================
+
+/*
+Phénix
+PV : 2500
+ATQ : 100
+Capacité : Renaissance
+*/
+
+/*
+Léviathan
+PV : 3500
+ATQ : 130
+Capacité : Tsunami
+*/
+
+/*
+Dragon Noir Ancestral
+PV : 4000
+ATQ : 140
+Capacité : Souffle du Néant
+*/
