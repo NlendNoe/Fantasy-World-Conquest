@@ -5,8 +5,8 @@ using namespace std;
 
 void lancerCombat(string nomJoueur, int &vieJoueur, int vieMaxJoueur, int attaqueJoueur, int &orJoueur, int zone, string nomMonstre, int vieMonstre, int attaqueMonstre, int orRecompense, int xpRecompense, int &potionsNormales, int &grandesPotions)
 {
-    cout << "\n--- UN COMBAT COMMENCE CONTRE: " << nomMonstre << " (Zone " << zone << ") ! ---\n";
-    cout << " Vos PV : " << vieJoueur << "/" << vieMaxJoueur << " | PV du Monstre : " << vieMonstre << "\n";
+    cout << "\n --- UN COMBAT COMMENCE CONTRE: " << nomMonstre << " (Zone " << zone << ") ! ---\n";
+    cout << " Vos PV : " << vieJoueur << "/" << vieMaxJoueur << " | 👾 PV du Monstre : " << vieMonstre << "\n";
 
     while (vieJoueur > 0 && vieMonstre > 0)
     {
@@ -24,7 +24,7 @@ void lancerCombat(string nomJoueur, int &vieJoueur, int vieMaxJoueur, int attaqu
             if (actionCombat == 1)
             {
                 vieMonstre -= attaqueJoueur;
-                cout << "\n " << nomJoueur << " attaque et inflige " << attaqueJoueur << " degats au " << nomMonstre << ".\n";
+                cout << "\n" << nomJoueur << " attaque et inflige " << attaqueJoueur << " degats au " << nomMonstre << ".\n";
                 actionValide = true;
             }
             else if (actionCombat == 2)
@@ -46,7 +46,6 @@ void lancerCombat(string nomJoueur, int &vieJoueur, int vieMaxJoueur, int attaqu
                         if (vieJoueur > vieMaxJoueur)
                             vieJoueur = vieMaxJoueur;
                         cout << "Vous buvez une Potion. Vos PV remontent a " << vieJoueur << "/" << vieMaxJoueur << " !\n";
-                        actionValide = true;
                     }
                     else
                         cout << "[!] Vous n'avez pas de Potion de soins !\n";
@@ -58,7 +57,6 @@ void lancerCombat(string nomJoueur, int &vieJoueur, int vieMaxJoueur, int attaqu
                         grandesPotions--;
                         vieJoueur = vieMaxJoueur;
                         cout << "Vous buvez une Grande Potion ! Vos PV sont restaures a 100% (" << vieJoueur << ") !\n";
-                        actionValide = true;
                     }
                     else
                         cout << "[!] Vous n'avez pas de Grande Potion !\n";
@@ -74,20 +72,18 @@ void lancerCombat(string nomJoueur, int &vieJoueur, int vieMaxJoueur, int attaqu
             break;
 
         vieJoueur -= attaqueMonstre;
-        cout << " Le " << nomMonstre << " replique et inflige " << attaqueMonstre << " degats a " << nomJoueur << ".\n";
+        cout << "Le " << nomMonstre << " replique et inflige " << attaqueMonstre << " degats a " << nomJoueur << ".\n";
         if (vieJoueur < 0)
             vieJoueur = 0;
-        cout << " PV restants : " << vieJoueur << "/" << vieMaxJoueur << "\n";
+        cout << "PV restants : " << vieJoueur << "/" << vieMaxJoueur << "\n";
     }
 
     if (vieJoueur > 0)
     {
         cout << "\nVICTOIRE ! Vous avez terrasse le " << nomMonstre << " !\n";
         orJoueur += orRecompense;
-        cout << " [+] Vous ramassez " << orRecompense << " pieces d'or.\n";
+        cout << "[+] Vous ramassez " << orRecompense << " pieces d'or.\n";
     }
     else
-    {
-        cout << "\n Vous avez ete foudroye par le " << nomMonstre << "... GAME OVER.\n";
-    }
+        cout << "\nVous avez ete foudroye par le " << nomMonstre << "... GAME OVER.\n";
 }
