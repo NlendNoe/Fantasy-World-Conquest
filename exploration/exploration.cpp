@@ -19,7 +19,7 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
         cout << "    MENU PRINCIPAL - ZONE ACTUELLE : " << zoneActuelle << "\n";
         cout << "=============================================\n";
         cout << "[1] Commencer a explorer la contree\n";
-        cout << "[2] Afficher l'etat du héros\n";
+        cout << "[2] Afficher l'etat du heros\n";
         cout << "[3] LANCER LE RAID CONTRE LE BOSS DE LA ZONE\n";
         cout << "[4] Se reposer a l'Auberge (Soins complets) [10 Or]\n";
         cout << "[5] Aller a la boutique de la cite\n";
@@ -102,8 +102,8 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
                     if (vieJoueur < 0)
                         vieJoueur = 0;
 
-                    cout << "\n[PIÈGE] Clic... Un piege dissimule se declenche ! Vous perdez " << degatsPiege << " PV.\n";
-                    cout << "❤️ Vos PV actuels : " << vieJoueur << "/" << vieMaxJoueur << "\n";
+                    cout << "\n[PIEGE] Clic... Un piege dissimule se declenche ! Vous perdez " << degatsPiege << " PV.\n";
+                    cout << "Vos PV actuels : " << vieJoueur << "/" << vieMaxJoueur << "\n";
 
                     if (vieJoueur <= 0)
                     {
@@ -112,12 +112,12 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
                     }
                 }
                 else
-                    cout << "🍃 Apres avoir explore la zone pendant des heures, le paysage reste calme.\n";
+                    cout << "Apres avoir explore la zone pendant des heures, le paysage reste calme.\n";
 
                 if (vieJoueur > 0)
                 {
                     cout << "\n-----------------------------------------\n";
-                    cout << "[🧭 Poursuivre l'Aventure ?]\n";
+                    cout << "[Poursuivre l'Aventure ?]\n";
                     cout << "[1] Enfoncer plus loin dans l'inconnu (Continuer)\n";
                     cout << "[2] Rebrousser chemin (Retourner en ville en securite)\n";
                     cout << "Votre choix : ";
@@ -127,7 +127,7 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
                     if (choixRoute == 2)
                     {
                         continuerExplo = false;
-                        cout << "⛺ Vous quittez l'exploration et rentrez vous mettre a l'abri en ville.\n";
+                        cout << "Vous quittez l'exploration et rentrez vous mettre a l'abri en ville.\n";
                     }
                 }
             }
@@ -138,7 +138,7 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
             cout << " Nom de l'Avatar : " << nomJoueur << " | Niveau : " << niveauJoueur << "\n";
             cout << " PV : " << vieJoueur << "/" << vieMaxJoueur << " | Attaque : " << attaqueJoueur << "\n";
             cout << " Experience : " << xpJoueur << "/" << xpSeuil << " XP\n";
-            cout << " Trésor Royal : " << orJoueur << " pieces d'or\n";
+            cout << " Votre bourse : " << orJoueur << " pieces d'or\n";
             cout << " Sac a dos : [" << potionsNormales << "] Potions | [" << grandesPotions << "] Grandes Potions\n";
             cout << " Territoires conquis : " << territoiresConquis << "/4\n";
         }
@@ -176,7 +176,7 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
                 if (zoneActuelle < 4)
                 {
                     zoneActuelle++;
-                    cout << "\n[[ ÉVÉNEMENT : Vous penetrez dans la ZONE " << zoneActuelle << " ]]!\n";
+                    cout << "\n[[ EVENEMENT : Vous penetrez dans la ZONE " << zoneActuelle << " ]]!\n";
                 }
                 else
                     cout << "\n[[ INCROYABLE ! Vous avez conquis le Royaume des Ombres ]]!\n";
@@ -217,7 +217,7 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
             {
                 orJoueur -= 120;
                 attaqueJoueur += 50;
-                cout << "Lame Mythique équipee !\n";
+                cout << "Lame Mythique equipee !\n";
             }
             else if (choixB == 3 && orJoueur >= 20)
             {
