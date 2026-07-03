@@ -2,11 +2,16 @@
 #include <string>
 
 using namespace std;
+//1- au niveau des pieges je dois ajouter une fonctionaliter qui dit que le jouer peux se soigner grace a son invantaire on dois juste afficher les soins
+//2- niveau loot et objet coffre je peux ajouter des chose comme une epee ou un bouclier a revoir!!
+//3- pendant l'aventure l'avatar voir ses stats pour voir son avancement et voir son inventaire pas juste pendant le combat
+//4- dans la boutique apres avoir acheter un objet je dois y rester pas a chaque fois retaper 5 pour y entré 
+//5- reduire l'XP et l'or de certain monstre le MC devient vite trop fort les boss doivre etre absurdement fort ce qui va le pousser a farm
 
 void lancerCombat(string nomJoueur, int &vieJoueur, int vieMaxJoueur, int attaqueJoueur, int &orJoueur, int zone, string nomMonstre, int vieMonstre, int attaqueMonstre, int orRecompense, int xpRecompense, int &potionsNormales, int &grandesPotions)
 {
-    cout << "\n --- UN COMBAT COMMENCE CONTRE: " << nomMonstre << " (Zone " << zone << ") ! ---\n";
-    cout << " Vos PV : " << vieJoueur << "/" << vieMaxJoueur << " | 👾 PV du Monstre : " << vieMonstre << "\n";
+    cout << "\n --- [!UN MONSTRE SURGIT DEVANT VOUS, VOUS LANCER LE COMBAT CONTRE : " << nomMonstre << " (Zone " << zone << ") !] ---\n";
+    cout << " Vos PV : " << vieJoueur << "/" << vieMaxJoueur << " | PV du Monstre : " << vieMonstre << "\n";
 
     while (vieJoueur > 0 && vieMonstre > 0)
     {

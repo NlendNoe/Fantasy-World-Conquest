@@ -71,7 +71,7 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
                         }
                     }
                 }
-                else if (deEvenement >= 45 && deEvenement < 70)
+                else if (deEvenement >= 45 && deEvenement < 60)
                 {
                     int typeTresor = rand() % 3;
                     cout << "\n [DECOUVERTE] Oh ! Votre regard est attire par un coffre abandonne...\n";
@@ -95,7 +95,7 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
                         break;
                     }
                 }
-                else if (deEvenement >= 70 && deEvenement < 85)
+                else if (deEvenement >= 60 && deEvenement < 85)
                 {
                     int degatsPiege = (rand() % 11) + (zoneActuelle * 5);
                     vieJoueur -= degatsPiege;
@@ -188,7 +188,7 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
             {
                 orJoueur -= 10;
                 vieJoueur = vieMaxJoueur;
-                cout << "Une bonne nuit à l'Auberge. Vos PV sont recharges au maximum (" << vieJoueur << ").\n";
+                cout << "Une bonne nuit  l'Auberge. Vos PV sont recharges au maximum (" << vieJoueur << ").\n";
             }
             else
                 cout << "[!] Pas assez d'Or (Il vous faut 10 pièces).\n";
