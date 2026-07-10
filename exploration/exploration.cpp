@@ -11,9 +11,7 @@ void genererMonstre(int zone, int numeroAleatoire, string &nomMonstre, int &vieM
 
 void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, string nomJoueur, int &vieJoueur, int &vieMaxJoueur, int &attaqueJoueur, int &niveauJoueur, int &orJoueur, int &xpJoueur, int &xpSeuil, int &potionsNormales, int &grandesPotions, int &defenseBouclier)
 {
-    bool choixInvalide = false;
-
-    do
+    while (vieJoueur > 0)
     {
         cout << "\n=============================================\n";
         cout << "    MENU PRINCIPAL - ZONE ACTUELLE : " << zoneActuelle << "\n";
@@ -23,11 +21,10 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
         cout << "[3] LANCER LE RAID CONTRE LE BOSS DE LA ZONE\n";
         cout << "[4] Se reposer a l'Auberge (Soins complets) [20 Or]\n";
         cout << "[5] Aller a la boutique de la cite\n";
+        cout << "[6] Retourner a l'ecran titre\n";
         cout << "=============================================\n";
         cout << "Votre choix : ";
         cin >> option;
-
-        choixInvalide = false;
 
         if (option == 1)
         {
@@ -35,11 +32,14 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
 
             while (continuerExplo && vieJoueur > 0)
             {
+                cout << "\n-------------------------------------------------------\n";
+                cout << "PV: " << vieJoueur << "/" << vieMaxJoueur << " | Or: " << orJoueur << " | Niveau: " << niveauJoueur << " | ATQ: " << attaqueJoueur << " | DEF: " << defenseBouclier << "\n";
+                cout << "\n-------------------------------------------------------\n";
                 cout << "\n Vous marchez prudemment dans la zone " << zoneActuelle;
                 for (int i = 0; i < 3; i++)
                 {
                     cout << " .";
-                    this_thread::sleep_for(chrono::seconds(1));
+                    this_thread::sleep_for(chrono::seconds(3));
                 }
                 cout << "\n";
 
@@ -136,7 +136,7 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
                         }
                     }
                 }
-                else if (deEvenement >= 80 && deEvenement < 95)
+                else if (deEvenement >= 80 && deEvenement < 90)
                 {
                     int echoEpee = rand() % 3;
                     cout << "\n [DECOUVERTE!] Vous avez senti l'echo d'une epee qui est proche\n";
@@ -161,22 +161,70 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
                     }
                 }
                 else
+                {
                     cout << "Apres avoir explore la zone pendant des heures, le paysage reste calme.\n";
+                }
 
                 if (vieJoueur > 0)
                 {
-                    cout << "\n-----------------------------------------\n";
-                    cout << "[Poursuivre l'Aventure ?]\n";
-                    cout << "[1] Enfoncer plus loin dans l'inconnu (Continuer)\n";
-                    cout << "[2] Rebrousser chemin (Retourner en ville en securite)\n";
-                    cout << "Votre choix : ";
-                    int choixRoute;
-                    cin >> choixRoute;
-
-                    if (choixRoute == 2)
+                    bool gestionRoute = true;
+                    while (gestionRoute)
                     {
-                        continuerExplo = false;
-                        cout << "Vous quittez l'exploration et rentrez vous mettre a l'abri en ville.\n";
+                        cout << "\n-----------------------------------------\n";
+                        cout << "[Poursuivre l'Aventure ?]\n";
+                        cout << "[1] Enfoncer plus loin dans l'inconnu (Continuer)\n";
+                        cout << "[2] Acceder a l'inventaire des soins\n";
+                        cout << "[3] Rebrousser chemin (Retourner en ville en securite)\n";
+                        cout << "Votre choix : ";
+                        int choixRoute;
+                        cin >> choixRoute;
+
+                        if (choixRoute == 1)
+                        {
+                            gestionRoute = false;
+                        }
+                        else if (choixRoute == 2)
+                        {
+                            cout << "\n--- INVENTAIRE DE SOINS ---\n";
+                            cout << "[1] Potion de soins (+30 PV) (Quantite: " << potionsNormales << ")\n";
+                            cout << "[2] Grande Potion (100% PV)  (Quantite: " << grandesPotions << ")\n";
+                            cout << "[3] Retour\n";
+                            cout << "Choisissez une action : ";
+
+                            int choixObjet;
+                            cin >> choixObjet;
+
+                            if (choixObjet == 1)
+                            {
+                                if (potionsNormales > 0)
+                                {
+                                    potionsNormales--;
+                                    vieJoueur += 30;
+                                    if (vieJoueur > vieMaxJoueur)
+                                        vieJoueur = vieMaxJoueur;
+                                    cout << "Vous buvez une Potion. Vos PV : " << vieJoueur << "/" << vieMaxJoueur << " !\n";
+                                }
+                                else
+                                    cout << "[!] Vous n'avez pas de Potion de soins !\n";
+                            }
+                            else if (choixObjet == 2)
+                            {
+                                if (grandesPotions > 0)
+                                {
+                                    grandesPotions--;
+                                    vieJoueur = vieMaxJoueur;
+                                    cout << "Grande Potion bue ! PV restaures a 100% (" << vieJoueur << ") !\n";
+                                }
+                                else
+                                    cout << "[!] Vous n'avez pas de Grande Potion !\n";
+                            }
+                        }
+                        else if (choixRoute == 3)
+                        {
+                            continuerExplo = false;
+                            gestionRoute = false;
+                            cout << "Vous quittez l'exploration et rentrez vous mettre a l'abri en ville.\n";
+                        }
                     }
                 }
             }
@@ -339,11 +387,14 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
                 }
             }
         }
+        else if (option == 6)
+        {
+            cout << "Retour a la boucle principale du jeu.\n";
+            break;
+        }
         else
         {
             cout << "Choix invalide. Veuillez recommencer.\n";
-            choixInvalide = true;
         }
-
-    } while (choixInvalide == true);
+    }
 }
