@@ -20,10 +20,11 @@ int main()
     int niveauJoueur = 0;
 
     int vieMaxJoueur = 100;
-    int orJoueur = 50;
+    int orJoueur = 10;
     int xpJoueur = 0;
     int xpSeuil = 100;
 
+    int defenseBouclier = 0;
     int potionsNormales = 1;
     int grandesPotions = 0;
 
@@ -38,9 +39,9 @@ int main()
     cout << "    BIENVENUE DANS LE MONDE DE FANTASY WORLD CONQUEST \n";
     cout << "====================================================\n";
 
-    while (vieJoueur > 0 && territoiresConquis < 4)
+    while (vieJoueur > 0 && territoiresConquis < 6)
     {
-        explorerMonde(territoiresConquis, zoneActuelle, option, nomJoueur, vieJoueur, vieMaxJoueur, attaqueJoueur, niveauJoueur, orJoueur, xpJoueur, xpSeuil, potionsNormales, grandesPotions);
+        explorerMonde(territoiresConquis, zoneActuelle, option, nomJoueur, vieJoueur, vieMaxJoueur, attaqueJoueur, niveauJoueur, orJoueur, xpJoueur, xpSeuil, potionsNormales, grandesPotions, defenseBouclier);
     }
 
     if (vieJoueur <= 0)
