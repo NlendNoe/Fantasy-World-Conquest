@@ -6,10 +6,10 @@
 
 using namespace std;
 
-void lancerCombat(string nomJoueur, int &vieJoueur, int vieMaxJoueur, int attaqueJoueur, int &orJoueur, int zone, string nomMonstre, int vieMonstre, int attaqueMonstre, int orRecompense, int xpRecompense, int &potionsNormales, int &grandesPotions, int defenseBouclier);
+void lancerCombat(string nomJoueur, int &vieJoueur, int vieMaxJoueur, int attaqueJoueur, int &orJoueur, int zone, string nomMonstre, int vieMonstre, int attaqueMonstre, int orRecompense, int xpRecompense, int &potionsNormales, int &grandesPotions, int &nombreBouclier);
 void genererMonstre(int zone, int numeroAleatoire, string &nomMonstre, int &vieMonstre, int &attaqueMonstre, int &orRecompense, int &xpRecompense);
 
-void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, string nomJoueur, int &vieJoueur, int &vieMaxJoueur, int &attaqueJoueur, int &niveauJoueur, int &orJoueur, int &xpJoueur, int &xpSeuil, int &potionsNormales, int &grandesPotions, int &defenseBouclier)
+void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, string nomJoueur, int &vieJoueur, int &vieMaxJoueur, int &attaqueJoueur, int &niveauJoueur, int &orJoueur, int &xpJoueur, int &xpSeuil, int &potionsNormales, int &grandesPotions, int &nombreBouclier)
 {
     while (vieJoueur > 0)
     {
@@ -33,7 +33,7 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
             while (continuerExplo && vieJoueur > 0)
             {
                 cout << "\n-------------------------------------------------------\n";
-                cout << "PV: " << vieJoueur << "/" << vieMaxJoueur << " | Or: " << orJoueur << " | Niveau: " << niveauJoueur << " | ATQ: " << attaqueJoueur << " | DEF: " << defenseBouclier << "\n";
+                cout << "PV: " << vieJoueur << "/" << vieMaxJoueur << " | Or: " << orJoueur << " | Niveau: " << niveauJoueur << " | ATQ: " << attaqueJoueur << " | Boucliers: " << nombreBouclier << "\n";
                 cout << "\n-------------------------------------------------------\n";
                 cout << "\n Vous marchez prudemment dans la zone " << zoneActuelle;
                 for (int i = 0; i < 3; i++)
@@ -52,7 +52,7 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
                     int quelMonstre = rand() % 4;
 
                     genererMonstre(zoneActuelle, quelMonstre, nomM, vieM, atkM, orM, xpM);
-                    lancerCombat(nomJoueur, vieJoueur, vieMaxJoueur, attaqueJoueur, orJoueur, zoneActuelle, nomM, vieM, atkM, orM, xpM, potionsNormales, grandesPotions, defenseBouclier);
+                    lancerCombat(nomJoueur, vieJoueur, vieMaxJoueur, attaqueJoueur, orJoueur, zoneActuelle, nomM, vieM, atkM, orM, xpM, potionsNormales, grandesPotions, nombreBouclier);
 
                     if (vieJoueur > 0)
                     {
@@ -94,8 +94,8 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
                         cout << " Incroyable ! Vous mettez la main sur une Grande Potion rare !\n";
                         break;
                     case 3:
-                        defenseBouclier += 5;
-                        cout << " Genial ! Vous trouvez un renfort de bouclier ! DEF [+5], defense totale : " << defenseBouclier << "\n";
+                        nombreBouclier++;
+                        cout << " Genial ! Vous trouvez un bouclier en bon etat ! Boucliers en stock : " << nombreBouclier << "\n";
                         break;
                     }
                 }
@@ -117,7 +117,11 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
 
                     if (vieJoueur > 0)
                     {
-                        cout << "Voulez-vous utiliser une Potion de votre sac ? [1] Potion (" << potionsNormales << " restants) | [2] Grande Potion (" << grandesPotions << " restants) | [3] Continuer sans se soigner : ";
+                        cout << "Voulez-vous utiliser une Potion de votre sac ?\n";
+                        cout << " [1] Potion (" << potionsNormales << " restants)\n";
+                        cout << " [2] Grande Potion (" << grandesPotions << " restants)\n";
+                        cout << " [3] Continuer sans se soigner : \n";
+
                         int choixSoin;
                         cin >> choixSoin;
                         if (choixSoin == 1 && potionsNormales > 0)
@@ -234,10 +238,9 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
             cout << "\n--- FEUILLE DE PERSONNAGE ---\n";
             cout << " Nom de l'Avatar : " << nomJoueur << " | Niveau : " << niveauJoueur << "\n";
             cout << " PV : " << vieJoueur << "/" << vieMaxJoueur << " | Attaque : " << attaqueJoueur << "\n";
-            cout << " Defense Bouclier : " << defenseBouclier << "\n";
             cout << " Experience : " << xpJoueur << "/" << xpSeuil << " XP\n";
             cout << " Votre bourse : " << orJoueur << " pieces d'or\n";
-            cout << " Sac a dos : [" << potionsNormales << "] Potions | [" << grandesPotions << "] Grandes Potions\n";
+            cout << " Sac a dos : [" << potionsNormales << "] Potions | [" << grandesPotions << "] Grandes Potions | [" << nombreBouclier << "] Boucliers\n";
             cout << " Territoires conquis : " << territoiresConquis << "/4\n";
         }
         else if (option == 3)
@@ -249,7 +252,7 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
             genererMonstre(zoneActuelle, 4, nomBoss, vieBoss, atkBoss, orBoss, xpBoss);
 
             cout << " Le boss " << nomBoss << " se dresse devant vous !\n";
-            lancerCombat(nomJoueur, vieJoueur, vieMaxJoueur, attaqueJoueur, orJoueur, zoneActuelle, nomBoss, vieBoss, atkBoss, orBoss, xpBoss, potionsNormales, grandesPotions, defenseBouclier);
+            lancerCombat(nomJoueur, vieJoueur, vieMaxJoueur, attaqueJoueur, orJoueur, zoneActuelle, nomBoss, vieBoss, atkBoss, orBoss, xpBoss, potionsNormales, grandesPotions, nombreBouclier);
 
             if (vieJoueur > 0)
             {
@@ -301,17 +304,15 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
                 cout << "         BOUTIQUE DE LA CITE\n";
                 cout << "=================================\n";
                 cout << " Or disponible : " << orJoueur << " PO\n";
-                cout << "[1] Epee en Fer (+10 ATQ)       - 30 Or\n";
-                cout << "[2] Epee d'acier (+20 ATQ)      - 60 Or\n";
-                cout << "[3] Epee magique (+40 ATQ)      - 120 Or\n";
-                cout << "[4] Bouclier en bois (+10 DEF)  - 60 Or\n";
-                cout << "[5] Bouclier Acier (+30 DEF)    - 120 Or\n";
-                cout << "[6] Bouclier en Acier Vanadien (+50 DEF) - 320 Or\n";
-                cout << "[7] Epee du Hero (+370 ATQ)     - 1750 Or\n";
-                cout << "[8] Acheter Potion (+30 PV)      - 20 Or (Stock actuel: " << potionsNormales << ")\n";
-                cout << "[9] Acheter Grande Potion (100%) - 50 Or (Stock actuel: " << grandesPotions << ")\n";
-                cout << "[10] Agrandissement du sac       - 170 Or\n";
-                cout << "[11] Retour\n";
+                cout << "[1] Epee en Fer (+10 ATQ)        - 30 Or\n";
+                cout << "[2] Epee d'acier (+20 ATQ)       - 60 Or\n";
+                cout << "[3] Epee magique (+40 ATQ)       - 120 Or\n";
+                cout << "[4] Acheter Bouclier             - 60 Or (Stock actuel: " << nombreBouclier << ")\n";
+                cout << "[5] Epee du Hero (+370 ATQ)      - 1750 Or\n";
+                cout << "[6] Acheter Potion (+30 PV)      - 20 Or (Stock actuel: " << potionsNormales << ")\n";
+                cout << "[7] Acheter Grande Potion (100%) - 50 Or (Stock actuel: " << grandesPotions << ")\n";
+                cout << "[8] Agrandissement du sac        - 170 Or\n";
+                cout << "[9] Retour\n";
                 cout << "=================================\n";
                 cout << "Votre choix : ";
                 int choixB;
@@ -338,45 +339,33 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
                 else if (choixB == 4 && orJoueur >= 60)
                 {
                     orJoueur -= 60;
-                    defenseBouclier += 10;
-                    cout << "Bouclier en bois equipe !\n";
+                    nombreBouclier++;
+                    cout << "Bouclier ajoute a l'inventaire !\n";
                 }
-                else if (choixB == 5 && orJoueur >= 120)
-                {
-                    orJoueur -= 120;
-                    defenseBouclier += 30;
-                    cout << "Bouclier en Acier equipe !\n";
-                }
-                else if (choixB == 6 && orJoueur >= 320)
-                {
-                    orJoueur -= 320;
-                    defenseBouclier += 50;
-                    cout << "Bouclier en Acier Vanadien equipe !\n";
-                }
-                else if (choixB == 7 && orJoueur >= 1750)
+                else if (choixB == 5 && orJoueur >= 1750)
                 {
                     orJoueur -= 1750;
                     attaqueJoueur += 370;
                     cout << "[!EPEE DU HERO EQUIPEE VOTRE PUISSANCE AUGMENTE GRANDEMENT] !\n";
                 }
-                else if (choixB == 8 && orJoueur >= 20)
+                else if (choixB == 6 && orJoueur >= 20)
                 {
                     orJoueur -= 20;
                     potionsNormales++;
                     cout << "Potion ajoutee a l'inventaire.\n";
                 }
-                else if (choixB == 9 && orJoueur >= 50)
+                else if (choixB == 7 && orJoueur >= 50)
                 {
                     orJoueur -= 50;
                     grandesPotions++;
                     cout << "Grande Potion ajoutee a l'inventaire.\n";
                 }
-                else if (choixB == 10 && orJoueur >= 170)
+                else if (choixB == 8 && orJoueur >= 170)
                 {
                     orJoueur -= 170;
                     cout << "Sac agrandi ! (Fonctionnalite visuelle uniquement pour le moment).\n";
                 }
-                else if (choixB == 11)
+                else if (choixB == 9)
                 {
                     dansBoutique = false;
                     cout << "Retour.\n";

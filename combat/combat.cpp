@@ -3,7 +3,7 @@
 
 using namespace std;
 
-void lancerCombat(string nomJoueur, int &vieJoueur, int vieMaxJoueur, int attaqueJoueur, int &orJoueur, int zone, string nomMonstre, int vieMonstre, int attaqueMonstre, int orRecompense, int xpRecompense, int &potionsNormales, int &grandesPotions, int defenseBouclier)
+void lancerCombat(string nomJoueur, int &vieJoueur, int vieMaxJoueur, int attaqueJoueur, int &orJoueur, int zone, string nomMonstre, int vieMonstre, int attaqueMonstre, int orRecompense, int xpRecompense, int &potionsNormales, int &grandesPotions, int &nombreBouclier)
 {
     cout << "\n --- [! UN MONSTRE SURGIT DEVANT VOUS : " << nomMonstre << " (Zone " << zone << ") !] ---\n";
     cout << " Vos PV : " << vieJoueur << "/" << vieMaxJoueur << " | PV du Monstre : " << vieMonstre << "\n";

@@ -24,9 +24,9 @@ int main()
     int xpJoueur = 0;
     int xpSeuil = 100;
 
-    int defenseBouclier = 0;
+    int nombreBouclier = 0;
     int potionsNormales = 1;
-    int grandesPotions = 0;
+    int grandesPotions = 1;
 
     int territoiresConquis = 0;
     int zoneActuelle = 1;
@@ -41,7 +41,7 @@ int main()
 
     while (vieJoueur > 0 && territoiresConquis < 6)
     {
-        explorerMonde(territoiresConquis, zoneActuelle, option, nomJoueur, vieJoueur, vieMaxJoueur, attaqueJoueur, niveauJoueur, orJoueur, xpJoueur, xpSeuil, potionsNormales, grandesPotions, defenseBouclier);
+        explorerMonde(territoiresConquis, zoneActuelle, option, nomJoueur, vieJoueur, vieMaxJoueur, attaqueJoueur, niveauJoueur, orJoueur, xpJoueur, xpSeuil, potionsNormales, grandesPotions, nombreBouclier);
     }
 
     if (vieJoueur <= 0)
