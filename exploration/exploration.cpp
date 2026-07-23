@@ -80,7 +80,7 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
                     {
                     case 0:
                     {
-                        int orTrouve = (rand() % 21) + 10;
+                        int orTrouve = (rand() % 10) + 10;
                         orJoueur += orTrouve;
                         cout << " Vous ouvrez le coffre et trouvez une bourse de " << orTrouve << " pieces d'or !\n";
                         break;
@@ -241,7 +241,7 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
             cout << " Experience : " << xpJoueur << "/" << xpSeuil << " XP\n";
             cout << " Votre bourse : " << orJoueur << " pieces d'or\n";
             cout << " Sac a dos : [" << potionsNormales << "] Potions | [" << grandesPotions << "] Grandes Potions | [" << nombreBouclier << "] Boucliers\n";
-            cout << " Territoires conquis : " << territoiresConquis << "/4\n";
+            cout << " Territoires conquis : " << territoiresConquis << "/6\n";
         }
         else if (option == 3)
         {
@@ -311,8 +311,7 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
                 cout << "[5] Epee du Hero (+370 ATQ)      - 1750 Or\n";
                 cout << "[6] Acheter Potion (+30 PV)      - 20 Or (Stock actuel: " << potionsNormales << ")\n";
                 cout << "[7] Acheter Grande Potion (100%) - 50 Or (Stock actuel: " << grandesPotions << ")\n";
-                cout << "[8] Agrandissement du sac        - 170 Or\n";
-                cout << "[9] Retour\n";
+                cout << "[8] Retour\n";
                 cout << "=================================\n";
                 cout << "Votre choix : ";
                 int choixB;
@@ -360,12 +359,7 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
                     grandesPotions++;
                     cout << "Grande Potion ajoutee a l'inventaire.\n";
                 }
-                else if (choixB == 8 && orJoueur >= 170)
-                {
-                    orJoueur -= 170;
-                    cout << "Sac agrandi ! (Fonctionnalite visuelle uniquement pour le moment).\n";
-                }
-                else if (choixB == 9)
+                else if (choixB == 8)
                 {
                     dansBoutique = false;
                     cout << "Retour.\n";

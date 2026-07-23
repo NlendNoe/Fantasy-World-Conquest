@@ -24,7 +24,7 @@ int main()
     int xpJoueur = 0;
     int xpSeuil = 100;
 
-    int nombreBouclier = 0;
+    int nombreBouclier = 1;
     int potionsNormales = 1;
     int grandesPotions = 1;
 
@@ -32,13 +32,30 @@ int main()
     int zoneActuelle = 1;
     int option = 0;
 
-    creerPersonnage(nomJoueur, vieJoueur, attaqueJoueur, niveauJoueur);
-    vieMaxJoueur = vieJoueur;
+    int gameOption;
 
     cout << "\n====================================================\n";
-    cout << "    BIENVENUE DANS LE MONDE DE FANTASY WORLD CONQUEST \n";
+    cout << "               FANTASY WORLD CONQUEST \n";
     cout << "====================================================\n";
+    cout << "[1] Commencer la partie\n";
+    cout << "[2] Quitter\n";
+    cout << "Choix: ";
+    cin >> gameOption;
 
+    if (gameOption == 1)
+    {
+        creerPersonnage(nomJoueur, vieJoueur, attaqueJoueur, niveauJoueur);
+        vieMaxJoueur = vieJoueur;
+    }
+    else if (gameOption == 2)
+    {
+        cout << "Le jeu se ferme!\n";
+        return 0;
+    }
+    else
+        cout << "Choix non valide\n";
+
+        
     while (vieJoueur > 0 && territoiresConquis < 6)
     {
         explorerMonde(territoiresConquis, zoneActuelle, option, nomJoueur, vieJoueur, vieMaxJoueur, attaqueJoueur, niveauJoueur, orJoueur, xpJoueur, xpSeuil, potionsNormales, grandesPotions, nombreBouclier);

@@ -4,7 +4,7 @@ using namespace std;
 
 void creerPersonnage(string &nom, int &vie, int &attaque, int &niveau)
 {
-    cout << "Quel est le nom de votre avatar ?: ";
+    cout << "Quel est le nom de votre avatar (Pas d'espace ni de caractere special) ?: ";
     cin >> nom;
     vie = 100;
     attaque = 10;

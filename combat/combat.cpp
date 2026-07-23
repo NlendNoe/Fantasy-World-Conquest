@@ -34,7 +34,7 @@ void lancerCombat(string nomJoueur, int &vieJoueur, int vieMaxJoueur, int attaqu
                 cout << "\n--- INVENTAIRE DE COMBAT ---\n";
                 cout << "[1] Potion de soins (+30 PV) (Quantite: " << potionsNormales << ")\n";
                 cout << "[2] Grande Potion (100% PV)  (Quantite: " << grandesPotions << ")\n";
-                cout << "[3] Se proteger avec le bouclier (Defense x2 ce tour)\n";
+                cout << "[3] Utiliser un bouclier (Degats /2) (Quantite: " << nombreBouclier << ")\n";
                 cout << "[4] Retour\n";
                 cout << "Choisissez une action : ";
 
@@ -67,9 +67,16 @@ void lancerCombat(string nomJoueur, int &vieJoueur, int vieMaxJoueur, int attaqu
                 }
                 else if (choixObjet == 3)
                 {
-                    postureDefensive = true;
-                    cout << "Vous levez votre bouclier. Vous reduirez grandement le prochain coup.\n";
-                    actionValide = true;
+                    if (nombreBouclier > 0)
+                    {
+                        nombreBouclier--;
+                        postureDefensive = true;
+                        cout << "Vous levez votre bouclier ! Il absorbera la moitie des degats de la prochaine attaque.\n";
+                    }
+                    else
+                    {
+                        cout << "[!] Vous n'avez plus de bouclier dans votre sac !\n";
+                    }
                 }
                 else if (choixObjet == 4)
                 {
@@ -92,9 +99,14 @@ void lancerCombat(string nomJoueur, int &vieJoueur, int vieMaxJoueur, int attaqu
         int degatSubis = 0;
 
         if (postureDefensive)
-            degatSubis = attaqueMonstre - (defenseBouclier * 2);
+        {
+            degatSubis = attaqueMonstre / 2;
+            cout << "\n[BOUCLIER] Votre bouclier absorbe l'impact ! Degats reduits de moitie.\n";
+        }
         else
-            degatSubis = attaqueMonstre - defenseBouclier;
+        {
+            degatSubis = attaqueMonstre;
+        }
 
         if (degatSubis < 1)
             degatSubis = 1;
