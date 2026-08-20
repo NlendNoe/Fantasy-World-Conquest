@@ -21,7 +21,6 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
         cout << "[3] LANCER LE RAID CONTRE LE BOSS DE LA ZONE\n";
         cout << "[4] Se reposer a l'Auberge (Soins complets) [20 Or]\n";
         cout << "[5] Aller a la boutique de la cite\n";
-        cout << "[6] Retourner a l'ecran titre\n";
         cout << "=============================================\n";
         cout << "Votre choix : ";
         cin >> option;
@@ -333,7 +332,7 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
                 cout << " [16] Agrandir Sac (+2 Emplacements)         - 70 Or (Max: " << capaciteSac << ")\n";
                 cout << " [17] Sac du Voyageur (+5 Emplacements)      - 150 Or\n";
                 cout << "-------------------------------------------------------\n";
-                cout << " [s] Quitter la boutique\n";
+                cout << " [0] Quitter la boutique\n";
                 cout << "=======================================================\n";
                 cout << "Votre choix : ";
                 int choixB;
@@ -471,7 +470,7 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
                     orJoueur -= 150;
                     cout << "Vous achetez le Sac du Voyageur (+5 emplacements) ! Nouvelle capacite : " << capaciteSac << "\n";
                 }
-                else if (choixB == 's' || choixB == 'S')
+                else if (choixB == 0)
                 {
                     dansBoutique = false;
                     cout << "Vous quittez la boutique.\n";

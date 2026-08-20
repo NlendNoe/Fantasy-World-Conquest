@@ -20,7 +20,7 @@ int main()
     int niveauJoueur = 0;
 
     int vieMaxJoueur = 100;
-    int orJoueur = 100;
+    int orJoueur = 30;
     int xpJoueur = 0;
     int xpSeuil = 100;
 
