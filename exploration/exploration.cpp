@@ -9,7 +9,7 @@ using namespace std;
 void lancerCombat(string nomJoueur, int &vieJoueur, int vieMaxJoueur, int attaqueJoueur, int &orJoueur, int zone, string nomMonstre, int vieMonstre, int attaqueMonstre, int orRecompense, int xpRecompense, int &potionsNormales, int &grandesPotions, int &nombreBouclier);
 void genererMonstre(int zone, int numeroAleatoire, string &nomMonstre, int &vieMonstre, int &attaqueMonstre, int &orRecompense, int &xpRecompense);
 
-void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, string nomJoueur, int &vieJoueur, int &vieMaxJoueur, int &attaqueJoueur, int &niveauJoueur, int &orJoueur, int &xpJoueur, int &xpSeuil, int &potionsNormales, int &grandesPotions, int &nombreBouclier)
+void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, string nomJoueur, int &vieJoueur, int &vieMaxJoueur, int &attaqueJoueur, int &niveauJoueur, int &orJoueur, int &xpJoueur, int &xpSeuil, int &potionsNormales, int &grandesPotions, int &nombreBouclier, int *&sac, int &capaciteSac)
 {
     while (vieJoueur > 0)
     {
@@ -32,8 +32,15 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
 
             while (continuerExplo && vieJoueur > 0)
             {
+                int objetsUtilises = 0;
+                for (int i = 0; i < capaciteSac; i++) {
+                    if (sac[i] != 0) {
+                        objetsUtilises++;
+                    }
+                }
+
                 cout << "\n-------------------------------------------------------\n";
-                cout << "PV: " << vieJoueur << "/" << vieMaxJoueur << " | Or: " << orJoueur << " | Niveau: " << niveauJoueur << " | ATQ: " << attaqueJoueur << " | Boucliers: " << nombreBouclier << "\n";
+                cout << "PV: " << vieJoueur << "/" << vieMaxJoueur << " | Or: " << orJoueur << " | Niveau: " << niveauJoueur << " | ATQ: " << attaqueJoueur << " | Boucliers: " << nombreBouclier << " | Sac: " << objetsUtilises << "/" << capaciteSac << "\n";
                 cout << "\n-------------------------------------------------------\n";
                 cout << "\n Vous marchez prudemment dans la zone " << zoneActuelle;
                 for (int i = 0; i < 3; i++)
@@ -227,7 +234,7 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
                         {
                             continuerExplo = false;
                             gestionRoute = false;
-                            cout << "Vous quittez l'exploration et rentrez vous mettre a l'abri en ville.\n";
+                            cout << "Vous quittez l'exploration et rentrez vous mettre a l me abri en ville.\n";
                         }
                     }
                 }
@@ -300,73 +307,178 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, stri
 
             while (dansBoutique)
             {
-                cout << "\n=================================\n";
-                cout << "         BOUTIQUE DE LA CITE\n";
-                cout << "=================================\n";
-                cout << " Or disponible : " << orJoueur << " PO\n";
-                cout << "[1] Epee en Fer (+10 ATQ)        - 30 Or\n";
-                cout << "[2] Epee d'acier (+20 ATQ)       - 60 Or\n";
-                cout << "[3] Epee magique (+40 ATQ)       - 120 Or\n";
-                cout << "[4] Acheter Bouclier             - 60 Or (Stock actuel: " << nombreBouclier << ")\n";
-                cout << "[5] Epee du Hero (+370 ATQ)      - 1750 Or\n";
-                cout << "[6] Acheter Potion (+30 PV)      - 20 Or (Stock actuel: " << potionsNormales << ")\n";
-                cout << "[7] Acheter Grande Potion (100%) - 50 Or (Stock actuel: " << grandesPotions << ")\n";
-                cout << "[8] Retour\n";
-                cout << "=================================\n";
+                cout << "\n=======================================================\n";
+                cout << "               GRANDE BOUTIQUE DE LA CITE             \n";
+                cout << "=======================================================\n";
+                cout << " Votre Bourse : " << orJoueur << " PO\n";
+                cout << "-------------------- ARMES ----------------------------\n";
+                cout << " [1]  Dague de Voleur (+5 ATQ)               - 15 Or\n";
+                cout << " [2]  Hache de Pierre (+15 ATQ)              - 40 Or\n";
+                cout << " [3]  Epee en Fer (+25 ATQ)                  - 75 Or\n";
+                cout << " [4]  Epee d'Acier (+40 ATQ)                 - 130 Or\n";
+                cout << " [5]  Epee Magique (+75 ATQ)                 - 250 Or\n";
+                cout << " [6]  Epee du Heros (+370 ATQ)               - 1750 Or\n";
+                cout << "------------------- ARMURES ---------------------------\n";
+                cout << " [7]  Bouclier en Bois (+1 Bouclier)         - 35 Or\n";
+                cout << " [8]  Bouclier en Acier (+2 Boucliers)       - 65 Or\n";
+                cout << " [9]  Cotte de Mailles (+15 PV Max)          - 80 Or\n";
+                cout << " [10] Armure de Plaque (+40 PV Max)          - 180 Or\n";
+                cout << "------------------ CONSOMMABLES -----------------------\n";
+                cout << " [11] Potion de soins (+30 PV)               - 20 Or (Stock: " << potionsNormales << ")\n";
+                cout << " [12] Grande Potion (Soins 100%)             - 50 Or (Stock: " << grandesPotions << ")\n";
+                cout << " [13] Elixir d'Experience (+50 XP)           - 90 Or\n";
+                cout << "----------------- MAGIE & AMELIORATIONS ---------------\n";
+                cout << " [14] Parchemin de Force (+5 ATQ permanent)  - 100 Or\n";
+                cout << " [15] Pierre de Teleportation (Soins + Fuite)- 45 Or\n";
+                cout << " [16] Agrandir Sac (+2 Emplacements)         - 70 Or (Max: " << capaciteSac << ")\n";
+                cout << " [17] Sac du Voyageur (+5 Emplacements)      - 150 Or\n";
+                cout << "-------------------------------------------------------\n";
+                cout << " [s] Quitter la boutique\n";
+                cout << "=======================================================\n";
                 cout << "Votre choix : ";
                 int choixB;
                 cin >> choixB;
 
-                if (choixB == 1 && orJoueur >= 30)
+                if (choixB == 1 && orJoueur >= 15)
                 {
-                    orJoueur -= 30;
-                    attaqueJoueur += 10;
-                    cout << "Epee achetee !\n";
+                    orJoueur -= 15;
+                    attaqueJoueur += 5;
+                    cout << "Vous achetez une Dague de Voleur ! (+5 ATQ)\n";
                 }
-                else if (choixB == 2 && orJoueur >= 60)
+                else if (choixB == 2 && orJoueur >= 40)
                 {
-                    orJoueur -= 60;
-                    attaqueJoueur += 20;
-                    cout << "Epee d'acier equipee !\n";
+                    orJoueur -= 40;
+                    attaqueJoueur += 15;
+                    cout << "Vous achetez une Hache de Pierre ! (+15 ATQ)\n";
                 }
-                else if (choixB == 3 && orJoueur >= 120)
+                else if (choixB == 3 && orJoueur >= 75)
                 {
-                    orJoueur -= 120;
+                    orJoueur -= 75;
+                    attaqueJoueur += 25;
+                    cout << "Vous equipez une Epee en Fer ! (+25 ATQ)\n";
+                }
+                else if (choixB == 4 && orJoueur >= 130)
+                {
+                    orJoueur -= 130;
                     attaqueJoueur += 40;
-                    cout << "Epee Magique equipee !\n";
+                    cout << "Vous equipez une super Epee d'Acier ! (+40 ATQ)\n";
                 }
-                else if (choixB == 4 && orJoueur >= 60)
+                else if (choixB == 5 && orJoueur >= 250)
                 {
-                    orJoueur -= 60;
-                    nombreBouclier++;
-                    cout << "Bouclier ajoute a l'inventaire !\n";
+                    orJoueur -= 250;
+                    attaqueJoueur += 75;
+                    cout << "L'Epee Magique brille entre vos mains ! (+75 ATQ)\n";
                 }
-                else if (choixB == 5 && orJoueur >= 1750)
+                else if (choixB == 6 && orJoueur >= 1750)
                 {
                     orJoueur -= 1750;
                     attaqueJoueur += 370;
-                    cout << "[!EPEE DU HERO EQUIPEE VOTRE PUISSANCE AUGMENTE GRANDEMENT] !\n";
+                    cout << "[! EPEE DU HEROS EQUIPEE ! VOTRE PUISSANCE AUGMENTE DE MANIERE LEGENDAIRE !]\n";
                 }
-                else if (choixB == 6 && orJoueur >= 20)
+                else if (choixB == 7 && orJoueur >= 35)
+                {
+                    orJoueur -= 35;
+                    nombreBouclier++;
+                    cout << "Vous achetez un Bouclier en Bois (+1 Bouclier en stock).\n";
+                }
+                else if (choixB == 8 && orJoueur >= 65)
+                {
+                    orJoueur -= 65;
+                    nombreBouclier += 2;
+                    cout << "Vous achetez un solide Bouclier en Acier (+2 Boucliers en stock).\n";
+                }
+                else if (choixB == 9 && orJoueur >= 80)
+                {
+                    orJoueur -= 80;
+                    vieMaxJoueur += 15;
+                    vieJoueur += 15;
+                    cout << "Vous enfilez une Cotte de Mailles ! (+15 PV Max)\n";
+                }
+                else if (choixB == 10 && orJoueur >= 180)
+                {
+                    orJoueur -= 180;
+                    vieMaxJoueur += 40;
+                    vieJoueur += 40;
+                    cout << "Vous vous equipez d'une lourde Armure de Plaque ! (+40 PV Max)\n";
+                }
+                else if (choixB == 11 && orJoueur >= 20)
                 {
                     orJoueur -= 20;
                     potionsNormales++;
-                    cout << "Potion ajoutee a l'inventaire.\n";
+                    cout << "Potion de soins ajoutee a votre inventaire.\n";
                 }
-                else if (choixB == 7 && orJoueur >= 50)
+                else if (choixB == 12 && orJoueur >= 50)
                 {
                     orJoueur -= 50;
                     grandesPotions++;
-                    cout << "Grande Potion ajoutee a l'inventaire.\n";
+                    cout << "Grande Potion ajoutee a votre inventaire.\n";
                 }
-                else if (choixB == 8)
+                else if (choixB == 13 && orJoueur >= 90)
+                {
+                    orJoueur -= 90;
+                    xpJoueur += 50;
+                    cout << "Vous buvez l'Elixir d'Experience ! (+50 XP)\n";
+                    if (xpJoueur >= xpSeuil)
+                    {
+                        niveauJoueur++;
+                        xpJoueur -= xpSeuil;
+                        xpSeuil += 50;
+                        vieMaxJoueur += 25;
+                        attaqueJoueur += 7;
+                        vieJoueur = vieMaxJoueur;
+                        cout << "\nLEVEL UP ! Vous passez au Niveau " << niveauJoueur << " !\n";
+                    }
+                }
+                else if (choixB == 14 && orJoueur >= 100)
+                {
+                    orJoueur -= 100;
+                    attaqueJoueur += 5;
+                    cout << "Vous lisez le Parchemin de Force ! Votre attaque augmente de +5 de facon permanente.\n";
+                }
+                else if (choixB == 15 && orJoueur >= 45)
+                {
+                    orJoueur -= 45;
+                    vieJoueur = vieMaxJoueur;
+                    cout << "La Pierre de Teleportation brille ! Vos PV sont restaurez a 100%.\n";
+                }
+                else if (choixB == 16 && orJoueur >= 70)
+                {
+                    int *nouveauSac = new int[capaciteSac + 2];
+                    for (int i = 0; i < capaciteSac; i++)
+                        nouveauSac[i] = sac[i];
+
+                    nouveauSac[capaciteSac] = 0;
+                    nouveauSac[capaciteSac + 1] = 0;
+
+                    delete[] sac;
+                    sac = nouveauSac;
+                    capaciteSac += 2;
+                    orJoueur -= 70;
+                    cout << "Vous achetez +2 emplacements de sac ! Nouvelle capacite : " << capaciteSac << "\n";
+                }
+                else if (choixB == 17 && orJoueur >= 150)
+                {
+                    int *nouveauSac = new int[capaciteSac + 5];
+                    for (int i = 0; i < capaciteSac; i++)
+                        nouveauSac[i] = sac[i];
+
+                    for (int i = 0; i < 5; i++)
+                        nouveauSac[capaciteSac + i] = 0;
+
+                    delete[] sac;
+                    sac = nouveauSac;
+                    capaciteSac += 5;
+                    orJoueur -= 150;
+                    cout << "Vous achetez le Sac du Voyageur (+5 emplacements) ! Nouvelle capacite : " << capaciteSac << "\n";
+                }
+                else if (choixB == 's' || choixB == 'S')
                 {
                     dansBoutique = false;
-                    cout << "Retour.\n";
+                    cout << "Vous quittez la boutique.\n";
                 }
                 else
                 {
-                    cout << "Action impossible (Or insuffisant ou mauvais choix).\n";
+                    cout << "Action impossible (Or insuffisant ou choix invalide).\n";
                 }
             }
         }

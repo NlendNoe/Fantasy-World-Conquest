@@ -20,13 +20,15 @@ int main()
     int niveauJoueur = 0;
 
     int vieMaxJoueur = 100;
-    int orJoueur = 10;
+    int orJoueur = 100;
     int xpJoueur = 0;
     int xpSeuil = 100;
 
     int nombreBouclier = 1;
     int potionsNormales = 1;
     int grandesPotions = 1;
+    int capaciteSac = 3;
+    int* sac = new int[capaciteSac];
 
     int territoiresConquis = 0;
     int zoneActuelle = 1;
@@ -58,7 +60,7 @@ int main()
         
     while (vieJoueur > 0 && territoiresConquis < 6)
     {
-        explorerMonde(territoiresConquis, zoneActuelle, option, nomJoueur, vieJoueur, vieMaxJoueur, attaqueJoueur, niveauJoueur, orJoueur, xpJoueur, xpSeuil, potionsNormales, grandesPotions, nombreBouclier);
+        explorerMonde(territoiresConquis, zoneActuelle, option, nomJoueur, vieJoueur, vieMaxJoueur, attaqueJoueur, niveauJoueur, orJoueur, xpJoueur, xpSeuil, potionsNormales, grandesPotions, nombreBouclier, sac, capaciteSac);
     }
 
     if (vieJoueur <= 0)
@@ -70,5 +72,6 @@ int main()
         cout << "\n [VICTOIRE ABSOLUE] INCROYABLE ! L'EMPEREUR DES OMBRES EST VAINCU. VOUS ETES LE HERO QUI SAUVAT UTOPIA DU LA DESTRUCTION VOTRE LEGENDE NAIT !\n";
     }
 
+    delete[] sac;
     return 0;
 }
