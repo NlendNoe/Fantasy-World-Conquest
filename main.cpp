@@ -99,7 +99,7 @@ int main()
         else
             btnQuitter.setFillColor(sf::Color(180, 40, 40)); // Rouge foncé
 
-        window.clear(sf::Color(20, 20, 30));
+        window.clear(sf::Color(15, 15, 20));
         window.draw(titre);
         window.draw(btnJouer);
         window.draw(txtJouer);
