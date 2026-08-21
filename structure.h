@@ -31,4 +31,4 @@ struct Monstre {
     int xpRecompense = 0;
 };
 
-#endif // STRUCTURE_H
+#endif 

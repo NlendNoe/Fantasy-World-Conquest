@@ -50,7 +50,7 @@ void genererMonstre(int zone, int numeroAleatoire, Monstre &monstre)
         case 1:  monstre = {"Mage Noir", 140, 65, 70, 100}; break;
         case 2:  monstre = {"Demon Mineur", 300, 70, 80, 180}; break;
         case 3:  monstre = {"Faucheur", 400, 80, 150, 220}; break;
-        case 4:  monstre = {"Empereur des Ombres (BOSS FINAL)", 2000, 100, 450, 600}; break;
+        case 4:  monstre = {"Empereur des Ombres", 2000, 100, 450, 600}; break;
         default: monstre = {"Chevalier Noir", 250, 40, 80, 150}; break;
         }
         break;
