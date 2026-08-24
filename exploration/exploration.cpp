@@ -46,7 +46,7 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, Joue
                 for (int i = 0; i < 3; i++)
                 {
                     cout << " .";
-                    this_thread::sleep_for(chrono::seconds(1)); // Reduit a 1s pour fluidité
+                    this_thread::sleep_for(chrono::seconds(3)); 
                 }
                 cout << "\n";
 

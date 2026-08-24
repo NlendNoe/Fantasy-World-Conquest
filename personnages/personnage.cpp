@@ -20,8 +20,8 @@ void creerPersonnageSFML(sf::RenderWindow& window, sf::Font& font, Joueur& joueu
         spriteFond.setScale(800.0f / tailleImage.x, 600.0f / tailleImage.y);
     }
 
-    sf::Text titre("CREATION DU PERSONNAGE", font, 28);
-    titre.setFillColor(sf::Color::Yellow);
+    sf::Text titre("CREATION DE L'AVATAR", font, 28);
+    titre.setFillColor(sf::Color::White);
     titre.setPosition(200.0f, 30.0f);
 
     sf::Text consigneNom("1. Entrez le nom de votre avatar :", font, 18);
@@ -51,7 +51,7 @@ void creerPersonnageSFML(sf::RenderWindow& window, sf::Font& font, Joueur& joueu
 
     sf::RectangleShape btnVoleur(sf::Vector2f(180.0f, 80.0f));
     btnVoleur.setPosition(520.0f, 230.0f);
-    sf::Text txtVoleur("Voleur\n\nPV: 95\nAtq: 16", font, 16);
+    sf::Text txtVoleur("Barbare\n\nPV: 60\nAtq: 27", font, 16);
     txtVoleur.setPosition(540.0f, 240.0f);
 
     sf::RectangleShape btnValider(sf::Vector2f(220.0f, 50.0f));

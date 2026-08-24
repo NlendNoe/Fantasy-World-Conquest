@@ -29,7 +29,7 @@ int main()
 
     // Charger la police
     sf::Font font;
-    if (!font.loadFromFile("arial.ttf"))
+    if (!font.loadFromFile("assets/fonts/pixelart.ttf"))
     {
         cout << "Erreur: Impossible de charger arial.ttf" << endl;
         if (!font.loadFromFile("C:\\Windows\\Fonts\\arial.ttf"))
