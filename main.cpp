@@ -24,38 +24,59 @@ int main()
     int zoneActuelle = 1;
     int option = 0;
 
-    // Création de la fenêtre SFML
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Fantasy World Conquest");
+    // Plein écran
+    sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "FANTASY WORLD CONQUEST", sf::Style::Fullscreen);
 
     // Charger la police
     sf::Font font;
     if (!font.loadFromFile("assets/fonts/pixelart.ttf"))
     {
-        cout << "Erreur: Impossible de charger arial.ttf" << endl;
+        cout << "Erreur: Impossible de charger pixelart.ttf" << endl;
         if (!font.loadFromFile("C:\\Windows\\Fonts\\arial.ttf"))
             cout << "Impossible de charger la police systeme." << endl;
     }
 
-    sf::Text titre("FANTASY WORLD CONQUEST", font, 32);
+    sf::Texture textureFond;
+    bool fondCharge = textureFond.loadFromFile("assets/backgrounds/Bg.jpg");
+    sf::Sprite spriteFond;
+    if (fondCharge)
+    {
+        spriteFond.setTexture(textureFond);
+        sf::Vector2u tailleImage = textureFond.getSize();
+        spriteFond.setScale((float)window.getSize().x / tailleImage.x, (float)window.getSize().y / tailleImage.y);
+    }
+
+    // Calcul des centres dynamiques de l'écran
+    float centerX = window.getSize().x / 2.0f;
+    float centerY = window.getSize().y / 2.0f;
+
+    // Titre centré
+    sf::Text titre("FANTASY WORLD CONQUEST", font, 36);
     titre.setFillColor(sf::Color::White);
-    titre.setPosition(180.0f, 80.0f);
+    titre.setOrigin(titre.getLocalBounds().width / 2.0f, 0.0f);
+    titre.setPosition(centerX, centerY - 200.0f);
 
     sf::RectangleShape btnJouer(sf::Vector2f(250.0f, 50.0f));
-    btnJouer.setPosition(275.0f, 220.0f);
+    btnJouer.setOrigin(125.0f, 25.0f);
+    btnJouer.setPosition(centerX, centerY - 30.0f);
     btnJouer.setFillColor(sf::Color::White);
 
     sf::Text txtJouer("Commencer", font, 20);
-    txtJouer.setPosition(320.0f, 230.0f);
+    txtJouer.setOrigin(txtJouer.getLocalBounds().width / 2.0f, txtJouer.getLocalBounds().height / 2.0f);
+    txtJouer.setPosition(centerX, centerY - 35.0f);
 
     sf::RectangleShape btnQuitter(sf::Vector2f(250.0f, 50.0f));
-    btnQuitter.setPosition(275.0f, 310.0f);
-    btnQuitter.setFillColor(sf::Color(180, 40, 40)); // Rouge
+    btnQuitter.setOrigin(125.0f, 25.0f);
+    btnQuitter.setPosition(centerX, centerY + 50.0f);
+    btnQuitter.setFillColor(sf::Color(180, 40, 40));
 
     sf::Text txtQuitter("Quitter", font, 20);
-    txtQuitter.setPosition(350.0f, 320.0f);
+    txtQuitter.setOrigin(txtQuitter.getLocalBounds().width / 2.0f, txtQuitter.getLocalBounds().height / 2.0f);
+    txtQuitter.setPosition(centerX, centerY + 45.0f);
 
     bool jeuDemarre = false;
 
+    // BOUCLE DU MENU PRINCIPAL
     while (window.isOpen() && !jeuDemarre)
     {
         sf::Event event;
@@ -66,10 +87,9 @@ int main()
                 window.close();
             }
 
-            // --- GESTION DES CLICS DE SOURIS ---
             if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
             {
-                sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+                sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
                 if (btnJouer.getGlobalBounds().contains(mousePos.x, mousePos.y))
                 {
@@ -77,29 +97,28 @@ int main()
                 }
                 else if (btnQuitter.getGlobalBounds().contains(mousePos.x, mousePos.y))
                 {
-                    delete[] joueur.inventaire.sac;
                     window.close();
-                    return 0;
                 }
             }
         }
 
-        // --- GESTION DU SURVOL (HOVER) ---
-        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
         if (btnJouer.getGlobalBounds().contains(mousePos.x, mousePos.y))
-            btnJouer.setFillColor(sf::Color(60, 200, 60)); // Vert clair
-
+            btnJouer.setFillColor(sf::Color(60, 200, 60));
         else
-            btnJouer.setFillColor(sf::Color(40, 140, 40)); // Vert foncé
+            btnJouer.setFillColor(sf::Color(40, 140, 40));
 
         if (btnQuitter.getGlobalBounds().contains(mousePos.x, mousePos.y))
-            btnQuitter.setFillColor(sf::Color(230, 60, 60)); // Rouge clair
-
+            btnQuitter.setFillColor(sf::Color(230, 60, 60));
         else
-            btnQuitter.setFillColor(sf::Color(180, 40, 40)); // Rouge foncé
+            btnQuitter.setFillColor(sf::Color(180, 40, 40));
 
         window.clear(sf::Color(15, 15, 20));
+
+        if (fondCharge)
+            window.draw(spriteFond);
+
         window.draw(titre);
         window.draw(btnJouer);
         window.draw(txtJouer);
@@ -108,6 +127,7 @@ int main()
         window.display();
     }
 
+    // NIVEAU DE CRÉATION ET JEU
     if (jeuDemarre)
     {
         creerPersonnageSFML(window, font, joueur);

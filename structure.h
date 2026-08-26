@@ -3,16 +3,20 @@
 
 #include <string>
 
-struct Inventaire {
+struct Inventaire
+{
     int potionsNormales = 1;
     int grandesPotions = 1;
     int nombreBouclier = 1;
     int capaciteSac = 3;
-    int* sac = nullptr;
+    int *sac = nullptr;
 };
 
-struct Joueur {
+struct Joueur
+{
     std::string nom;
+    std::string competenceSpeciale;
+    Inventaire inventaire;
     int vie = 100;
     int vieMax = 100;
     int attaque = 10;
@@ -20,10 +24,14 @@ struct Joueur {
     int orJoueur = 30;
     int xp = 0;
     int xpSeuil = 100;
-    Inventaire inventaire;
+    int mana; 
+    int manaMax;
+    int defense;    
+    int chanceCrit; 
 };
 
-struct Monstre {
+struct Monstre
+{
     std::string nom;
     int vie = 0;
     int attaque = 0;
@@ -31,4 +39,4 @@ struct Monstre {
     int xpRecompense = 0;
 };
 
-#endif 
+#endif
