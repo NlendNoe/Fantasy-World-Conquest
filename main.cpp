@@ -50,7 +50,6 @@ int main()
     float centerX = window.getSize().x / 2.0f;
     float centerY = window.getSize().y / 2.0f;
 
-    // Titre centré
     sf::Text titre("FANTASY WORLD CONQUEST", font, 36);
     titre.setFillColor(sf::Color::White);
     titre.setOrigin(titre.getLocalBounds().width / 2.0f, 0.0f);
@@ -127,7 +126,6 @@ int main()
         window.display();
     }
 
-    // NIVEAU DE CRÉATION ET JEU
     if (jeuDemarre)
     {
         creerPersonnageSFML(window, font, joueur);

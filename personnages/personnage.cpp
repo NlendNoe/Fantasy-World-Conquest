@@ -40,13 +40,13 @@ void creerPersonnageSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueu
     sf::Sprite* sprites[6] = {&spritePerso, &spritePersoDeux, &spritePersoTrois, &spritePersoQuatre, &spritePersoCinq, &spritePersoSix};
     for(int i = 0; i < 6; i++) {
         sprites[i]->setPosition(posXSprite, posYSprite);
-        sprites[i]->setScale(2.0f, 2.0f);
+        sprites[i]->setScale(4.5f, 4.5f);
     }
 
     sf::IntRect imgPersonnage(0, 128, 64, 64);
 
     // Titre principal
-    sf::Text titre("CREATION DE L'AVATAR", font, 32);
+    sf::Text titre("CREATION DE L'AVATAR", font, 38);
     titre.setFillColor(sf::Color::White);
     titre.setOrigin(titre.getLocalBounds().width / 2.0f, 0.0f);
     titre.setPosition(centerX, 20.0f);
@@ -76,22 +76,22 @@ void creerPersonnageSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueu
     float col3 = centerX + (0.5f * largeurBtn + espacement);
 
     sf::RectangleShape btnGuerrier(sf::Vector2f(largeurBtn, 60.0f)); btnGuerrier.setPosition(col1, 175.0f);
-    sf::Text txtGuerrier("Guerrier\nPV:120 | Atq:12", font, 14); txtGuerrier.setPosition(col1 + 10.0f, 185.0f);
+    sf::Text txtGuerrier("Guerrier\nPV : 120 | Atq : 12", font, 14); txtGuerrier.setPosition(col1 + 10.0f, 185.0f);
 
     sf::RectangleShape btnMage(sf::Vector2f(largeurBtn, 60.0f)); btnMage.setPosition(col2, 175.0f);
-    sf::Text txtMage("Mage\nPV:80 | Atq:22", font, 14); txtMage.setPosition(col2 + 10.0f, 185.0f);
+    sf::Text txtMage("Mage\nPV : 80 | Atq : 22", font, 14); txtMage.setPosition(col2 + 10.0f, 185.0f);
 
     sf::RectangleShape btnArcher(sf::Vector2f(largeurBtn, 60.0f)); btnArcher.setPosition(col3, 175.0f);
-    sf::Text txtArcher("Archer\nPV:95 | Atq:16", font, 14); txtArcher.setPosition(col3 + 10.0f, 185.0f);
+    sf::Text txtArcher("Archer\nPV : 95 | Atq : 16", font, 14); txtArcher.setPosition(col3 + 10.0f, 185.0f);
 
     sf::RectangleShape btnPaladin(sf::Vector2f(largeurBtn, 60.0f)); btnPaladin.setPosition(col1, 245.0f);
-    sf::Text txtPaladin("Paladin\nPV:140 | Atq:10", font, 14); txtPaladin.setPosition(col1 + 10.0f, 255.0f);
+    sf::Text txtPaladin("Paladin\nPV : 140 | Atq : 10", font, 14); txtPaladin.setPosition(col1 + 10.0f, 255.0f);
 
     sf::RectangleShape btnNecro(sf::Vector2f(largeurBtn, 60.0f)); btnNecro.setPosition(col2, 245.0f);
-    sf::Text txtNecro("Necromancien\nPV:75 | Atq:25", font, 14); txtNecro.setPosition(col2 + 10.0f, 255.0f);
+    sf::Text txtNecro("Necromancien\nPV : 75 | Atq : 25", font, 14); txtNecro.setPosition(col2 + 10.0f, 255.0f);
 
     sf::RectangleShape btnAssassin(sf::Vector2f(largeurBtn, 60.0f)); btnAssassin.setPosition(col3, 245.0f);
-    sf::Text txtAssassin("Assassin\nPV:85 | Atq:20", font, 14); txtAssassin.setPosition(col3 + 10.0f, 255.0f);
+    sf::Text txtAssassin("Assassin\nPV : 85 | Atq : 20", font, 14); txtAssassin.setPosition(col3 + 10.0f, 255.0f);
 
     sf::RectangleShape btnValider(sf::Vector2f(220.0f, 45.0f));
     btnValider.setPosition(centerX - 110.0f, window.getSize().y - 80.0f);
