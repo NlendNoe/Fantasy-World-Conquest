@@ -27,11 +27,10 @@ int main()
     // Plein écran
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "FANTASY WORLD CONQUEST", sf::Style::Fullscreen);
 
-    // Charger la police
     sf::Font font;
-    if (!font.loadFromFile("assets/fonts/pixelart.ttf"))
+    if (!font.loadFromFile("assets/fonts/Gameday.otf"))
     {
-        cout << "Erreur: Impossible de charger pixelart.ttf" << endl;
+        cout << "Erreur: Impossible de charger Gameday.otf" << endl;
         if (!font.loadFromFile("C:\\Windows\\Fonts\\arial.ttf"))
             cout << "Impossible de charger la police systeme." << endl;
     }
@@ -50,7 +49,7 @@ int main()
     float centerX = window.getSize().x / 2.0f;
     float centerY = window.getSize().y / 2.0f;
 
-    sf::Text titre("FANTASY WORLD CONQUEST", font, 36);
+    sf::Text titre("FANTASY WORLD CONQUEST", font, 66);
     titre.setFillColor(sf::Color::White);
     titre.setOrigin(titre.getLocalBounds().width / 2.0f, 0.0f);
     titre.setPosition(centerX, centerY - 200.0f);
