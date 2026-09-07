@@ -5,7 +5,7 @@
 
 using namespace std;
 
-void creerPersonnageSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueur)
+bool creerPersonnageSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueur)
 {
     std::string nomSaisi = "";
     int classeChoisie = 0;
@@ -22,6 +22,16 @@ void creerPersonnageSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueu
         sf::Vector2u tailleImage = textureFond.getSize();
         spriteFond.setScale((float)window.getSize().x / tailleImage.x, (float)window.getSize().y / tailleImage.y);
     }
+
+    sf::RectangleShape btnRetour(sf::Vector2f(150.0f, 50.0f));
+    btnRetour.setPosition(30.0f, 20.0f);
+    btnRetour.setFillColor(sf::Color(180, 40, 40));
+
+    sf::Text txtRetour("RETOUR", font, 18);
+    txtRetour.setOrigin(txtRetour.getLocalBounds().width / 2.0f, txtRetour.getLocalBounds().height / 2.0f);
+    txtRetour.setPosition(30.0f + 75.0f, 20.0f + 25.0f);
+    
+
 
     sf::Texture texturePerso, texturePersoDeux, texturePersoTrois, textureQuatre, textureCinq, textureSix;
     texturePerso.loadFromFile("assets/pictures/dark_skinned_knight.png");
@@ -115,7 +125,7 @@ void creerPersonnageSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueu
             if (event.type == sf::Event::Closed)
             {
                 window.close();
-                return;
+                return false;
             }
 
             if (event.type == sf::Event::TextEntered)
@@ -135,7 +145,11 @@ void creerPersonnageSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueu
             {
                 sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
-                if (btnGuerrier.getGlobalBounds().contains(mousePos.x, mousePos.y)) classeChoisie = 1;
+                if (btnRetour.getGlobalBounds().contains(mousePos.x, mousePos.y))
+                {
+                    return false;
+                }
+                else if (btnGuerrier.getGlobalBounds().contains(mousePos.x, mousePos.y)) classeChoisie = 1;
                 else if (btnMage.getGlobalBounds().contains(mousePos.x, mousePos.y)) classeChoisie = 2;
                 else if (btnArcher.getGlobalBounds().contains(mousePos.x, mousePos.y)) classeChoisie = 3;
                 else if (btnPaladin.getGlobalBounds().contains(mousePos.x, mousePos.y)) classeChoisie = 4;
@@ -148,6 +162,12 @@ void creerPersonnageSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueu
             }
         }
 
+        sf::Vector2f mousePosHover = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+        if (btnRetour.getGlobalBounds().contains(mousePosHover.x, mousePosHover.y))
+            btnRetour.setFillColor(sf::Color(230, 60, 60));
+        else
+            btnRetour.setFillColor(sf::Color(180, 40, 40));
+
         btnGuerrier.setFillColor((classeChoisie == 1) ? sf::Color(80, 120, 220) : sf::Color(40, 40, 60, 200));
         btnMage.setFillColor((classeChoisie == 2) ? sf::Color(80, 120, 220) : sf::Color(40, 40, 60, 200));
         btnArcher.setFillColor((classeChoisie == 3) ? sf::Color(80, 120, 220) : sf::Color(40, 40, 60, 200));
@@ -158,6 +178,9 @@ void creerPersonnageSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueu
         window.clear(sf::Color(15, 15, 10));
 
         if (fondCharge) window.draw(spriteFond);
+
+        window.draw(btnRetour);
+        window.draw(txtRetour);
 
         window.draw(titre);
         window.draw(consigneNom); window.draw(champNom); window.draw(texteNom);
@@ -194,4 +217,6 @@ void creerPersonnageSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueu
     else if (classeChoisie == 4) { joueur.vie = 140; joueur.vieMax = 140; joueur.attaque = 10; joueur.defense = 85; joueur.mana = 30; joueur.manaMax = 60;   joueur.competenceSpeciale = "Soin Divin"; }
     else if (classeChoisie == 5) { joueur.vie = 75;  joueur.vieMax = 75;  joueur.attaque = 25; joueur.defense = 10; joueur.mana = 80; joueur.manaMax = 200;  joueur.competenceSpeciale = "Malédiction"; }
     else if (classeChoisie == 6) { joueur.vie = 85;  joueur.vieMax = 85;  joueur.attaque = 20; joueur.defense = 25; joueur.mana = 15; joueur.manaMax = 30;   joueur.competenceSpeciale = "Attaque Sournoise"; }
+
+    return true;
 }

@@ -72,75 +72,91 @@ int main()
     txtQuitter.setOrigin(txtQuitter.getLocalBounds().width / 2.0f, txtQuitter.getLocalBounds().height / 2.0f);
     txtQuitter.setPosition(centerX, centerY + 45.0f);
 
-    bool jeuDemarre = false;
+    bool programmeEnCours = true;
 
-    // BOUCLE DU MENU PRINCIPAL
-    while (window.isOpen() && !jeuDemarre)
+    while (window.isOpen() && programmeEnCours)
     {
-        sf::Event event;
-        while (window.pollEvent(event))
+        bool jeuDemarre = false;
+
+        // BOUCLE DU MENU PRINCIPAL
+        while (window.isOpen() && !jeuDemarre)
         {
-            if (event.type == sf::Event::Closed)
+            sf::Event event;
+            while (window.pollEvent(event))
             {
-                window.close();
-            }
-
-            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
-            {
-                sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-
-                if (btnJouer.getGlobalBounds().contains(mousePos.x, mousePos.y))
-                {
-                    jeuDemarre = true;
-                }
-                else if (btnQuitter.getGlobalBounds().contains(mousePos.x, mousePos.y))
+                if (event.type == sf::Event::Closed)
                 {
                     window.close();
                 }
+
+                if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+                {
+                    sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+
+                    if (btnJouer.getGlobalBounds().contains(mousePos.x, mousePos.y))
+                    {
+                        jeuDemarre = true;
+                    }
+                    else if (btnQuitter.getGlobalBounds().contains(mousePos.x, mousePos.y))
+                    {
+                        window.close();
+                    }
+                }
             }
+
+            sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+
+            if (btnJouer.getGlobalBounds().contains(mousePos.x, mousePos.y))
+                btnJouer.setFillColor(sf::Color(60, 200, 60));
+            else
+                btnJouer.setFillColor(sf::Color(40, 140, 40));
+
+            if (btnQuitter.getGlobalBounds().contains(mousePos.x, mousePos.y))
+                btnQuitter.setFillColor(sf::Color(230, 60, 60));
+            else
+                btnQuitter.setFillColor(sf::Color(180, 40, 40));
+
+            window.clear(sf::Color(15, 15, 20));
+
+            if (fondCharge)
+                window.draw(spriteFond);
+
+            window.draw(titre);
+            window.draw(btnJouer);
+            window.draw(txtJouer);
+            window.draw(btnQuitter);
+            window.draw(txtQuitter);
+            window.display();
         }
 
-        sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-
-        if (btnJouer.getGlobalBounds().contains(mousePos.x, mousePos.y))
-            btnJouer.setFillColor(sf::Color(60, 200, 60));
-        else
-            btnJouer.setFillColor(sf::Color(40, 140, 40));
-
-        if (btnQuitter.getGlobalBounds().contains(mousePos.x, mousePos.y))
-            btnQuitter.setFillColor(sf::Color(230, 60, 60));
-        else
-            btnQuitter.setFillColor(sf::Color(180, 40, 40));
-
-        window.clear(sf::Color(15, 15, 20));
-
-        if (fondCharge)
-            window.draw(spriteFond);
-
-        window.draw(titre);
-        window.draw(btnJouer);
-        window.draw(txtJouer);
-        window.draw(btnQuitter);
-        window.draw(txtQuitter);
-        window.display();
-    }
-
-    if (jeuDemarre)
-    {
-        creerPersonnageSFML(window, font, joueur);
-
-        while (joueur.vie > 0 && territoiresConquis < 6)
+        if (jeuDemarre)
         {
-            explorerMonde(territoiresConquis, zoneActuelle, option, joueur);
-        }
+            bool persoCree = creerPersonnageSFML(window, font, joueur);
 
-        if (joueur.vie <= 0)
-        {
-            cout << "\n [GAME OVER] VOUS ETES MORT SANS ECRIRE VOTRE LEGENDE...\n";
+            if (!persoCree)
+            {
+                // L'utilisateur a cliqué sur RETOUR -> On réaffiche le menu principal !
+                continue;
+            }
+
+            while (joueur.vie > 0 && territoiresConquis < 6)
+            {
+                explorerMonde(territoiresConquis, zoneActuelle, option, joueur);
+            }
+
+            if (joueur.vie <= 0)
+            {
+                cout << "\n [GAME OVER] VOUS ETES MORT SANS ECRIRE VOTRE LEGENDE...\n";
+            }
+            else
+            {
+                cout << "\n [VICTOIRE ABSOLUE] L'EMPEREUR DES OMBRES EST VAINCU !\n";
+            }
+            programmeEnCours = false;
         }
         else
         {
-            cout << "\n [VICTOIRE ABSOLUE] L'EMPEREUR DES OMBRES EST VAINCU !\n";
+            programmeEnCours = false;
         }
     }
 
