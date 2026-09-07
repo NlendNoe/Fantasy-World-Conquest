@@ -36,7 +36,7 @@ int main()
     }
 
     sf::Texture textureFond;
-    bool fondCharge = textureFond.loadFromFile("assets/backgrounds/Bg.jpg");
+    bool fondCharge = textureFond.loadFromFile("assets/backgrounds/fondPince-2.jpg");
     sf::Sprite spriteFond;
     if (fondCharge)
     {
