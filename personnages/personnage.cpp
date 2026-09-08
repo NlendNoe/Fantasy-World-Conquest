@@ -160,21 +160,6 @@ bool creerPersonnageSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueu
 
                 if (btnRetour.getGlobalBounds().contains(mousePos.x, mousePos.y))
                 {
-                    // sf::Clock clock;
-                    // float dureeChargement = 5.5f;
-
-                    // while(clock.getElapsedTime().asSeconds() < dureeChargement && window.isOpen())
-                    // {
-                    //     sf::Event event;
-                    //     while (window.pollEvent(event))
-                    //     {
-                    //         if (event.type == sf::Event::Closed)
-                    //         {
-                    //             window.close();
-                    //             return false;
-                    //         }
-                    //     }
-                    }
                     return false;
                 }
                 else if (btnGuerrier.getGlobalBounds().contains(mousePos.x, mousePos.y)) classeChoisie = 1;

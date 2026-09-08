@@ -28,7 +28,7 @@ int main()
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "FANTASY WORLD CONQUEST", sf::Style::Fullscreen);
 
     sf::Font font;
-    if (!font.loadFromFile("assets/fonts/Gameday.otf"))
+    if (!font.loadFromFile("assets/fonts/GamePocket-Regular.ttf"))
     {
         cout << "Erreur: Impossible de charger Gameday.otf" << endl;
         if (!font.loadFromFile("C:\\Windows\\Fonts\\arial.ttf"))
@@ -36,7 +36,7 @@ int main()
     }
 
     sf::Texture textureFond;
-    bool fondCharge = textureFond.loadFromFile("assets/backgrounds/fondPince-2.jpg");
+    bool fondCharge = textureFond.loadFromFile("assets/fonts/PixelGamer-Regular.otf");
     sf::Sprite spriteFond;
     if (fondCharge)
     {
