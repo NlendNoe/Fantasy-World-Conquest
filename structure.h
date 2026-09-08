@@ -40,25 +40,4 @@ struct Monstre
     int xpRecompense = 0;
 };
 
-enum TypeNoeud
-{
-    COMBAT_NORMAL,
-    COMBAT_ELITE,
-    TRESOR,
-    EVENEMENT,
-    BOSS,
-    REPOS
-};
-
-struct Noeud
-{
-    int id = 0;
-    TypeNoeud type = COMBAT_NORMAL;
-    bool visite = false;
-    bool accessible = false;
-    float posX = 0.0f;
-    float posY = 0.0f;
-    std::vector<Noeud*> voisinsSuivants;
-};
-
 #endif

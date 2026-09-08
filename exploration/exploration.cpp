@@ -3,95 +3,9 @@
 #include <thread>
 #include <chrono>
 #include <cstdlib>
-#include "../structure.h"
 #include <vector>
 #include <SFML/Graphics.hpp>
-
-std::vector<Noeud> genererCarteZone(int zone, float screenW, float screenH) {
-    std::vector<Noeud> carte;
-    int nombreEtapes = 7;
-
-    float espacementX = screenW / (nombreEtapes + 1);
-    float centerY = screenH / 2.0f;
-
-    for (int i = 0; i < nombreEtapes; i++) {
-        Noeud n;
-        n.id = i;
-        n.visite = false;
-        n.accessible = (i == 0);
-        n.posX = espacementX * (i + 1);
-
-        if (i == 0 || i == nombreEtapes - 1) {
-            n.posY = centerY; 
-        } else {
-            n.posY = centerY + ((rand() % 80) - 40);
-        }
-
-        if (i == 0)
-            n.type = COMBAT_NORMAL;
-        else if (i == nombreEtapes - 1)
-            n.type = BOSS;
-        else {
-            int hasard = rand() % 100;
-            if (hasard < 40) n.type = COMBAT_NORMAL;
-            else if (hasard < 60) n.type = TRESOR;
-            else if (hasard < 80) n.type = EVENEMENT;
-            else n.type = REPOS;
-        }
-        carte.push_back(n);
-    }
-    return carte;
-}
-
-void dessinerCarte(sf::RenderWindow &window, const std::vector<Noeud> &carte, sf::Font &font) {
-    if (carte.size() > 1) {
-        sf::VertexArray lignes(sf::LinesStrip, carte.size());
-        for (size_t i = 0; i < carte.size(); i++) {
-            lignes[i].position = sf::Vector2f(carte[i].posX, carte[i].posY);
-            lignes[i].color = sf::Color(140, 140, 180, 200);
-        }
-        window.draw(lignes);
-    }
-
-    for (size_t i = 0; i < carte.size(); i++) {
-        float rayon = 28.0f;
-        sf::CircleShape cercle(rayon);
-        cercle.setOrigin(rayon, rayon);
-        cercle.setPosition(carte[i].posX, carte[i].posY);
-        cercle.setOutlineThickness(3.0f);
-
-        if (carte[i].visite) {
-            cercle.setFillColor(sf::Color(40, 50, 80));
-            cercle.setOutlineColor(sf::Color(80, 100, 160));
-        } else if (carte[i].accessible) {
-            cercle.setFillColor(sf::Color(30, 160, 60));
-            cercle.setOutlineColor(sf::Color(100, 255, 100));
-        } else if (carte[i].type == BOSS) {
-            cercle.setFillColor(sf::Color(180, 30, 30));
-            cercle.setOutlineColor(sf::Color(255, 80, 80));
-        } else {
-            cercle.setFillColor(sf::Color(50, 50, 60));
-            cercle.setOutlineColor(sf::Color(90, 90, 100));
-        }
-
-        window.draw(cercle);
-
-        std::string label = "";
-        if (carte[i].type == COMBAT_NORMAL) label = "C";
-        else if (carte[i].type == TRESOR) label = "T";
-        else if (carte[i].type == EVENEMENT) label = "?";
-        else if (carte[i].type == REPOS) label = "R";
-        else if (carte[i].type == BOSS) label = "B";
-
-        sf::Text txt(label, font, 20);
-        txt.setFillColor(sf::Color::White);
-        sf::FloatRect bounds = txt.getLocalBounds();
-        txt.setOrigin(bounds.left + bounds.width / 2.0f, bounds.top + bounds.height / 2.0f);
-        txt.setPosition(carte[i].posX, carte[i].posY);
-
-        window.draw(txt);
-    }
-}
+#include "../structure.h"
 
 using namespace std;
 
