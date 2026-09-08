@@ -11,7 +11,9 @@ bool creerPersonnageSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueu
     int classeChoisie = 0;
     bool creationTerminee = false;
 
-    float centerX = window.getSize().x / 2.0f;
+    float screenW = static_cast<float>(window.getSize().x);
+    float screenH = static_cast<float>(window.getSize().y);
+    float centerX = screenW / 2.0f;
 
     sf::Texture textureFond;
     bool fondCharge = textureFond.loadFromFile("assets/backgrounds/aaaaaa.jpg");
@@ -20,18 +22,19 @@ bool creerPersonnageSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueu
     {
         spriteFond.setTexture(textureFond);
         sf::Vector2u tailleImage = textureFond.getSize();
-        spriteFond.setScale((float)window.getSize().x / tailleImage.x, (float)window.getSize().y / tailleImage.y);
+        spriteFond.setScale(screenW / tailleImage.x, screenH / tailleImage.y);
     }
 
-    sf::RectangleShape btnRetour(sf::Vector2f(150.0f, 50.0f));
-    btnRetour.setPosition(30.0f, 20.0f);
+    float btnRetourW = screenW * 0.10f;
+    float btnRetourH = screenH * 0.05f;
+    sf::RectangleShape btnRetour(sf::Vector2f(btnRetourW, btnRetourH));
+    btnRetour.setPosition(screenW * 0.02f, screenH * 0.02f);
     btnRetour.setFillColor(sf::Color(180, 40, 40));
 
-    sf::Text txtRetour("RETOUR", font, 18);
-    txtRetour.setOrigin(txtRetour.getLocalBounds().width / 2.0f, txtRetour.getLocalBounds().height / 2.0f);
-    txtRetour.setPosition(30.0f + 75.0f, 20.0f + 25.0f);
-    
-
+    sf::Text txtRetour("RETOUR", font, static_cast<unsigned int>(btnRetourH * 0.36f));
+    sf::FloatRect boundsRetour = txtRetour.getLocalBounds();
+    txtRetour.setOrigin(boundsRetour.left + boundsRetour.width / 2.0f, boundsRetour.top + boundsRetour.height / 2.0f);
+    txtRetour.setPosition(btnRetour.getPosition().x + (btnRetourW / 2.0f), btnRetour.getPosition().y + (btnRetourH / 2.0f));
 
     sf::Texture texturePerso, texturePersoDeux, texturePersoTrois, textureQuatre, textureCinq, textureSix;
     texturePerso.loadFromFile("assets/pictures/dark_skinned_knight.png");
@@ -47,75 +50,85 @@ bool creerPersonnageSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueu
     sf::Sprite* sprites[6] = {&spritePerso, &spritePersoDeux, &spritePersoTrois, &spritePersoQuatre, &spritePersoCinq, &spritePersoSix};
     for(int i = 0; i < 6; i++) {
         sprites[i]->setOrigin(32.0f, 32.0f);
-        sprites[i]->setPosition(centerX, window.getSize().y - 280.0f);
-        sprites[i]->setScale(4.5f, 4.5f);
+        sprites[i]->setPosition(centerX, screenH - (screenH * 0.25f));
+        sprites[i]->setScale(screenH * 0.0042f, screenH * 0.0042f);
     }
 
     sf::IntRect imgPersonnage(0, 128, 64, 64);
 
-    // Titre principal
-    sf::Text titre("CREATION DE L'AVATAR", font, 38);
+    unsigned int szTitre = static_cast<unsigned int>(screenH * 0.045f);
+    sf::Text titre("CREATION DE L'AVATAR", font, szTitre);
     titre.setFillColor(sf::Color::White);
-    titre.setOrigin(titre.getLocalBounds().width / 2.0f, 0.0f);
-    titre.setPosition(centerX, 20.0f);
+    sf::FloatRect boundsTitre = titre.getLocalBounds();
+    titre.setOrigin(boundsTitre.left + boundsTitre.width / 2.0f, boundsTitre.top + boundsTitre.height / 2.0f);
+    titre.setPosition(centerX, screenH * 0.035f);
 
-    // Champ Nom
-    sf::Text consigneNom("1. Entrez le nom de votre avatar :", font, 18);
-    consigneNom.setOrigin(consigneNom.getLocalBounds().width / 2.0f, 0.0f);
-    consigneNom.setPosition(centerX, 65.0f);
+    unsigned int szConsigne = static_cast<unsigned int>(screenH * 0.022f);
+    sf::Text consigneNom("1. Entrez le nom de votre avatar :", font, szConsigne);
+    sf::FloatRect boundsConsigneNom = consigneNom.getLocalBounds();
+    consigneNom.setOrigin(boundsConsigneNom.left + boundsConsigneNom.width / 2.0f, boundsConsigneNom.top + boundsConsigneNom.height / 2.0f);
+    consigneNom.setPosition(centerX, screenH * 0.085f);
 
-    float largeurNom = 520.0f;
-    float hauteurNom = 50.0f;
+    float largeurNom = screenW * 0.35f;
+    float hauteurNom = screenH * 0.055f;
     sf::RectangleShape champNom(sf::Vector2f(largeurNom, hauteurNom));
-    champNom.setPosition(centerX - (largeurNom / 2.0f), 95.0f);
+    champNom.setOrigin(largeurNom / 2.0f, hauteurNom / 2.0f);
+    champNom.setPosition(centerX, screenH * 0.125f);
     champNom.setFillColor(sf::Color(20, 20, 40, 200));
     champNom.setOutlineThickness(3.0f);
     champNom.setOutlineColor(sf::Color::Cyan);
 
-    sf::Text texteNom("", font, 22);
-    texteNom.setPosition(centerX - (largeurNom / 2.0f) + 15.0f, 107.0f);
+    sf::Text texteNom("", font, static_cast<unsigned int>(hauteurNom * 0.44f));
+    texteNom.setPosition(centerX - (largeurNom / 2.0f) + 15.0f, screenH * 0.113f);
 
-    // Choix de classe
-    sf::Text consigneClasse("2. Choisissez votre classe :", font, 18);
-    consigneClasse.setOrigin(consigneClasse.getLocalBounds().width / 2.0f, 0.0f);
-    consigneClasse.setPosition(centerX, 165.0f);
+    sf::Text consigneClasse("2. Choisissez votre classe :", font, szConsigne);
+    sf::FloatRect boundsConsigneClasse = consigneClasse.getLocalBounds();
+    consigneClasse.setOrigin(boundsConsigneClasse.left + boundsConsigneClasse.width / 2.0f, boundsConsigneClasse.top + boundsConsigneClasse.height / 2.0f);
+    consigneClasse.setPosition(centerX, screenH * 0.175f);
 
-    float largeurBtn = 260.0f;
-    float hauteurBtn = 90.0f;
-    float espacementH = 35.0f;
-    float espacementV = 25.0f;
+    float largeurBtn = screenW * 0.18f;
+    float hauteurBtn = screenH * 0.10f;
+    float espacementH = screenW * 0.02f;
+    float espacementV = screenH * 0.02f;
 
     float col1 = centerX - (1.5f * largeurBtn + espacementH);
     float col2 = centerX - (0.5f * largeurBtn);
     float col3 = centerX + (0.5f * largeurBtn + espacementH);
 
-    float row1Y = 200.0f;
+    float row1Y = screenH * 0.21f;
     float row2Y = row1Y + hauteurBtn + espacementV;
 
+    unsigned int szClasseTxt = static_cast<unsigned int>(hauteurBtn * 0.20f);
+
     sf::RectangleShape btnGuerrier(sf::Vector2f(largeurBtn, hauteurBtn)); btnGuerrier.setPosition(col1, row1Y);
-    sf::Text txtGuerrier("Guerrier\nPV : 120 | Atq : 12", font, 18); txtGuerrier.setPosition(col1 + 20.0f, row1Y + 20.0f);
+    sf::Text txtGuerrier("Guerrier\nPV : 120 | Atq : 12", font, szClasseTxt); txtGuerrier.setPosition(col1 + 15.0f, row1Y + 12.0f);
 
     sf::RectangleShape btnMage(sf::Vector2f(largeurBtn, hauteurBtn)); btnMage.setPosition(col2, row1Y);
-    sf::Text txtMage("Mage\nPV : 80 | Atq : 22", font, 18); txtMage.setPosition(col2 + 20.0f, row1Y + 20.0f);
+    sf::Text txtMage("Mage\nPV : 80 | Atq : 22", font, szClasseTxt); txtMage.setPosition(col2 + 15.0f, row1Y + 12.0f);
 
     sf::RectangleShape btnArcher(sf::Vector2f(largeurBtn, hauteurBtn)); btnArcher.setPosition(col3, row1Y);
-    sf::Text txtArcher("Archer\nPV : 95 | Atq : 16", font, 18); txtArcher.setPosition(col3 + 20.0f, row1Y + 20.0f);
+    sf::Text txtArcher("Archer\nPV : 95 | Atq : 16", font, szClasseTxt); txtArcher.setPosition(col3 + 15.0f, row1Y + 12.0f);
 
     sf::RectangleShape btnPaladin(sf::Vector2f(largeurBtn, hauteurBtn)); btnPaladin.setPosition(col1, row2Y);
-    sf::Text txtPaladin("Paladin\nPV : 140 | Atq : 10", font, 18); txtPaladin.setPosition(col1 + 20.0f, row2Y + 20.0f);
+    sf::Text txtPaladin("Paladin\nPV : 140 | Atq : 10", font, szClasseTxt); txtPaladin.setPosition(col1 + 15.0f, row2Y + 12.0f);
 
     sf::RectangleShape btnNecro(sf::Vector2f(largeurBtn, hauteurBtn)); btnNecro.setPosition(col2, row2Y);
-    sf::Text txtNecro("Necromancien\nPV : 75 | Atq : 25", font, 18); txtNecro.setPosition(col2 + 20.0f, row2Y + 20.0f);
+    sf::Text txtNecro("Necromancien\nPV : 75 | Atq : 25", font, szClasseTxt); txtNecro.setPosition(col2 + 15.0f, row2Y + 12.0f);
 
     sf::RectangleShape btnAssassin(sf::Vector2f(largeurBtn, hauteurBtn)); btnAssassin.setPosition(col3, row2Y);
-    sf::Text txtAssassin("Assassin\nPV : 85 | Atq : 20", font, 18); txtAssassin.setPosition(col3 + 20.0f, row2Y + 20.0f);
+    sf::Text txtAssassin("Assassin\nPV : 85 | Atq : 20", font, szClasseTxt); txtAssassin.setPosition(col3 + 15.0f, row2Y + 12.0f);
 
-    sf::RectangleShape btnValider(sf::Vector2f(260.0f, 55.0f));
-    btnValider.setPosition(centerX - 130.0f, window.getSize().y - 85.0f);
+    float btnValW = screenW * 0.18f;
+    float btnValH = screenH * 0.06f;
+    sf::RectangleShape btnValider(sf::Vector2f(btnValW, btnValH));
+    btnValider.setOrigin(btnValW / 2.0f, btnValH / 2.0f);
+    btnValider.setPosition(centerX, screenH * 0.92f);
     btnValider.setFillColor(sf::Color(50, 150, 50));
 
-    sf::Text txtValider("CONFIRMER", font, 22);
-    txtValider.setPosition(centerX - 65.0f, window.getSize().y - 70.0f);
+    sf::Text txtValider("CONFIRMER", font, static_cast<unsigned int>(btnValH * 0.42f));
+    sf::FloatRect boundsValider = txtValider.getLocalBounds();
+    txtValider.setOrigin(boundsValider.left + boundsValider.width / 2.0f, boundsValider.top + boundsValider.height / 2.0f);
+    txtValider.setPosition(btnValider.getPosition());
 
     while (window.isOpen() && !creationTerminee)
     {

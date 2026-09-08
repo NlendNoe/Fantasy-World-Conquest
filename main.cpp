@@ -45,32 +45,51 @@ int main()
         spriteFond.setScale((float)window.getSize().x / tailleImage.x, (float)window.getSize().y / tailleImage.y);
     }
 
-    // Calcul des centres dynamiques de l'écran
-    float centerX = window.getSize().x / 2.0f;
-    float centerY = window.getSize().y / 2.0f;
+    // Calcul des dimensions dynamiques par rapport à la taille de l'écran
+    float screenW = static_cast<float>(window.getSize().x);
+    float screenH = static_cast<float>(window.getSize().y);
+    float centerX = screenW / 2.0f;
+    float centerY = screenH / 2.0f;
 
-    sf::Text titre("FANTASY WORLD CONQUEST", font, 66);
+    //  Dimensions et marges dynamiques
+    float btnWidth = screenW * 0.22f;          // Largeur des boutons (22% de la largeur)
+    float btnHeight = screenH * 0.07f;         // Hauteur des boutons (7% de la hauteur)
+    float margeTitreBoutons = screenH * 0.08f; 
+    float margeEntreBoutons = screenH * 0.03f; 
+
+    //  Tailles de police adaptatives
+    unsigned int taillePoliceTitre = static_cast<unsigned int>(screenH * 0.07f);
+    unsigned int taillePoliceBouton = static_cast<unsigned int>(btnHeight * 0.45f);
+
+    // Positions Y de référence
+    float yPremierBouton = centerY;
+    float ySecondBouton = yPremierBouton + btnHeight + margeEntreBoutons;
+
+    sf::Text titre("FANTASY WORLD CONQUEST", font, taillePoliceTitre);
     titre.setFillColor(sf::Color::White);
-    titre.setOrigin(titre.getLocalBounds().width / 2.0f, 0.0f);
-    titre.setPosition(centerX, centerY - 200.0f);
+    sf::FloatRect boundsTitre = titre.getLocalBounds();
+    titre.setOrigin(boundsTitre.left + boundsTitre.width / 2.0f, boundsTitre.top + boundsTitre.height / 2.0f);
+    titre.setPosition(centerX, yPremierBouton - (btnHeight / 2.0f) - margeTitreBoutons - (boundsTitre.height / 2.0f));
 
-    sf::RectangleShape btnJouer(sf::Vector2f(250.0f, 50.0f));
-    btnJouer.setOrigin(125.0f, 25.0f);
-    btnJouer.setPosition(centerX, centerY - 30.0f);
-    btnJouer.setFillColor(sf::Color::White);
+    sf::RectangleShape btnJouer(sf::Vector2f(btnWidth, btnHeight));
+    btnJouer.setOrigin(btnWidth / 2.0f, btnHeight / 2.0f);
+    btnJouer.setPosition(centerX, yPremierBouton);
+    btnJouer.setFillColor(sf::Color(40, 140, 40));
 
-    sf::Text txtJouer("Commencer", font, 20);
-    txtJouer.setOrigin(txtJouer.getLocalBounds().width / 2.0f, txtJouer.getLocalBounds().height / 2.0f);
-    txtJouer.setPosition(centerX, centerY - 35.0f);
+    sf::Text txtJouer("Commencer", font, taillePoliceBouton);
+    sf::FloatRect boundsJouer = txtJouer.getLocalBounds();
+    txtJouer.setOrigin(boundsJouer.left + boundsJouer.width / 2.0f, boundsJouer.top + boundsJouer.height / 2.0f);
+    txtJouer.setPosition(btnJouer.getPosition());
 
-    sf::RectangleShape btnQuitter(sf::Vector2f(250.0f, 50.0f));
-    btnQuitter.setOrigin(125.0f, 25.0f);
-    btnQuitter.setPosition(centerX, centerY + 50.0f);
+    sf::RectangleShape btnQuitter(sf::Vector2f(btnWidth, btnHeight));
+    btnQuitter.setOrigin(btnWidth / 2.0f, btnHeight / 2.0f);
+    btnQuitter.setPosition(centerX, ySecondBouton);
     btnQuitter.setFillColor(sf::Color(180, 40, 40));
 
-    sf::Text txtQuitter("Quitter", font, 20);
-    txtQuitter.setOrigin(txtQuitter.getLocalBounds().width / 2.0f, txtQuitter.getLocalBounds().height / 2.0f);
-    txtQuitter.setPosition(centerX, centerY + 45.0f);
+    sf::Text txtQuitter("Quitter", font, taillePoliceBouton);
+    sf::FloatRect boundsQuitter = txtQuitter.getLocalBounds();
+    txtQuitter.setOrigin(boundsQuitter.left + boundsQuitter.width / 2.0f, boundsQuitter.top + boundsQuitter.height / 2.0f);
+    txtQuitter.setPosition(btnQuitter.getPosition());
 
     bool programmeEnCours = true;
 
