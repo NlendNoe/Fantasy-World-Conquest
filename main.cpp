@@ -160,7 +160,8 @@ int main()
 
             while (joueur.vie > 0 && territoiresConquis < 6)
             {
-                explorerMonde(territoiresConquis, zoneActuelle, option, joueur);
+                bool continuerExplo = explorerMondeSFML(window, font, joueur, zoneActuelle, territoiresConquis);
+                if (!continuerExplo) break;
             }
 
             if (joueur.vie <= 0)

@@ -11,7 +11,6 @@ using namespace std;
 
 void lancerCombat(Joueur &joueur, int zone, Monstre monstre);
 void genererMonstre(int zone, int numeroAleatoire, Monstre &monstre);
-
 void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, Joueur &joueur)
 {
     while (joueur.vie > 0)
@@ -35,8 +34,10 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, Joue
             while (continuerExplo && joueur.vie > 0)
             {
                 int objetsUtilises = 0;
-                for (int i = 0; i < joueur.inventaire.capaciteSac; i++) {
-                    if (joueur.inventaire.sac[i] != 0) {
+                for (int i = 0; i < joueur.inventaire.capaciteSac; i++)
+                {
+                    if (joueur.inventaire.sac[i] != 0)
+                    {
                         objetsUtilises++;
                     }
                 }
@@ -48,7 +49,7 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, Joue
                 for (int i = 0; i < 3; i++)
                 {
                     cout << " .";
-                    this_thread::sleep_for(chrono::seconds(3)); 
+                    this_thread::sleep_for(chrono::seconds(3));
                 }
                 cout << "\n";
 
@@ -111,12 +112,14 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, Joue
                 {
                     int degatsPiege = (rand() % 11) + (zoneActuelle * 5);
                     joueur.vie -= degatsPiege;
-                    if (joueur.vie < 0) joueur.vie = 0;
+                    if (joueur.vie < 0)
+                        joueur.vie = 0;
 
                     cout << "\n[PIEGE] Clic... Un piege dissimule se declenche ! Vous perdez " << degatsPiege << " PV.\n";
                     cout << "Vos PV actuels : " << joueur.vie << "/" << joueur.vieMax << "\n";
 
-                    if (joueur.vie <= 0) break;
+                    if (joueur.vie <= 0)
+                        break;
 
                     if (joueur.vie > 0)
                     {
@@ -131,7 +134,8 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, Joue
                         {
                             joueur.inventaire.potionsNormales--;
                             joueur.vie += 30;
-                            if (joueur.vie > joueur.vieMax) joueur.vie = joueur.vieMax;
+                            if (joueur.vie > joueur.vieMax)
+                                joueur.vie = joueur.vieMax;
                             cout << "Potion utilisee. PV : " << joueur.vie << "/" << joueur.vieMax << "\n";
                         }
                         else if (choixSoin == 2 && joueur.inventaire.grandesPotions > 0)
@@ -185,7 +189,8 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, Joue
                         int choixRoute;
                         cin >> choixRoute;
 
-                        if (choixRoute == 1) gestionRoute = false;
+                        if (choixRoute == 1)
+                            gestionRoute = false;
                         else if (choixRoute == 2)
                         {
                             cout << "\n--- INVENTAIRE DE SOINS ---\n";
@@ -201,7 +206,8 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, Joue
                             {
                                 joueur.inventaire.potionsNormales--;
                                 joueur.vie += 30;
-                                if (joueur.vie > joueur.vieMax) joueur.vie = joueur.vieMax;
+                                if (joueur.vie > joueur.vieMax)
+                                    joueur.vie = joueur.vieMax;
                                 cout << "Vous buvez une Potion. PV : " << joueur.vie << "/" << joueur.vieMax << " !\n";
                             }
                             else if (choixObjet == 2 && joueur.inventaire.grandesPotions > 0)
@@ -273,7 +279,8 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, Joue
                 joueur.vie = joueur.vieMax;
                 cout << "Une bonne nuit a l'Auberge. Vos PV sont recharges au maximum (" << joueur.vie << ").\n";
             }
-            else cout << "[!] Pas assez d'Or (Il vous faut 20 pieces).\n";
+            else
+                cout << "[!] Pas assez d'Or (Il vous faut 20 pieces).\n";
         }
         else if (option == 5)
         {
@@ -312,46 +319,383 @@ void explorerMonde(int &territoiresConquis, int &zoneActuelle, int &option, Joue
                 int choixB;
                 cin >> choixB;
 
-                if (choixB == 1 && joueur.orJoueur >= 15) { joueur.orJoueur -= 15; joueur.attaque += 5; }
-                else if (choixB == 2 && joueur.orJoueur >= 40) { joueur.orJoueur -= 40; joueur.attaque += 15; }
-                else if (choixB == 3 && joueur.orJoueur >= 75) { joueur.orJoueur -= 75; joueur.attaque += 25; }
-                else if (choixB == 4 && joueur.orJoueur >= 130) { joueur.orJoueur -= 130; joueur.attaque += 40; }
-                else if (choixB == 5 && joueur.orJoueur >= 250) { joueur.orJoueur -= 250; joueur.attaque += 75; }
-                else if (choixB == 6 && joueur.orJoueur >= 1750) { joueur.orJoueur -= 1750; joueur.attaque += 370; }
-                else if (choixB == 7 && joueur.orJoueur >= 35) { joueur.orJoueur -= 35; joueur.inventaire.nombreBouclier++; }
-                else if (choixB == 8 && joueur.orJoueur >= 65) { joueur.orJoueur -= 65; joueur.inventaire.nombreBouclier += 2; }
-                else if (choixB == 9 && joueur.orJoueur >= 80) { joueur.orJoueur -= 80; joueur.vieMax += 15; joueur.vie += 15; }
-                else if (choixB == 10 && joueur.orJoueur >= 180) { joueur.orJoueur -= 180; joueur.vieMax += 40; joueur.vie += 40; }
-                else if (choixB == 11 && joueur.orJoueur >= 20) { joueur.orJoueur -= 20; joueur.inventaire.potionsNormales++; }
-                else if (choixB == 12 && joueur.orJoueur >= 50) { joueur.orJoueur -= 50; joueur.inventaire.grandesPotions++; }
-                else if (choixB == 13 && joueur.orJoueur >= 90) {
-                    joueur.orJoueur -= 90; joueur.xp += 50;
-                    if (joueur.xp >= joueur.xpSeuil) {
-                        joueur.niveau++; joueur.xp -= joueur.xpSeuil; joueur.xpSeuil += 50; joueur.vieMax += 25; joueur.attaque += 7; joueur.vie = joueur.vieMax;
+                if (choixB == 1 && joueur.orJoueur >= 15)
+                {
+                    joueur.orJoueur -= 15;
+                    joueur.attaque += 5;
+                }
+                else if (choixB == 2 && joueur.orJoueur >= 40)
+                {
+                    joueur.orJoueur -= 40;
+                    joueur.attaque += 15;
+                }
+                else if (choixB == 3 && joueur.orJoueur >= 75)
+                {
+                    joueur.orJoueur -= 75;
+                    joueur.attaque += 25;
+                }
+                else if (choixB == 4 && joueur.orJoueur >= 130)
+                {
+                    joueur.orJoueur -= 130;
+                    joueur.attaque += 40;
+                }
+                else if (choixB == 5 && joueur.orJoueur >= 250)
+                {
+                    joueur.orJoueur -= 250;
+                    joueur.attaque += 75;
+                }
+                else if (choixB == 6 && joueur.orJoueur >= 1750)
+                {
+                    joueur.orJoueur -= 1750;
+                    joueur.attaque += 370;
+                }
+                else if (choixB == 7 && joueur.orJoueur >= 35)
+                {
+                    joueur.orJoueur -= 35;
+                    joueur.inventaire.nombreBouclier++;
+                }
+                else if (choixB == 8 && joueur.orJoueur >= 65)
+                {
+                    joueur.orJoueur -= 65;
+                    joueur.inventaire.nombreBouclier += 2;
+                }
+                else if (choixB == 9 && joueur.orJoueur >= 80)
+                {
+                    joueur.orJoueur -= 80;
+                    joueur.vieMax += 15;
+                    joueur.vie += 15;
+                }
+                else if (choixB == 10 && joueur.orJoueur >= 180)
+                {
+                    joueur.orJoueur -= 180;
+                    joueur.vieMax += 40;
+                    joueur.vie += 40;
+                }
+                else if (choixB == 11 && joueur.orJoueur >= 20)
+                {
+                    joueur.orJoueur -= 20;
+                    joueur.inventaire.potionsNormales++;
+                }
+                else if (choixB == 12 && joueur.orJoueur >= 50)
+                {
+                    joueur.orJoueur -= 50;
+                    joueur.inventaire.grandesPotions++;
+                }
+                else if (choixB == 13 && joueur.orJoueur >= 90)
+                {
+                    joueur.orJoueur -= 90;
+                    joueur.xp += 50;
+                    if (joueur.xp >= joueur.xpSeuil)
+                    {
+                        joueur.niveau++;
+                        joueur.xp -= joueur.xpSeuil;
+                        joueur.xpSeuil += 50;
+                        joueur.vieMax += 25;
+                        joueur.attaque += 7;
+                        joueur.vie = joueur.vieMax;
                     }
                 }
-                else if (choixB == 14 && joueur.orJoueur >= 100) { joueur.orJoueur -= 100; joueur.attaque += 5; }
-                else if (choixB == 15 && joueur.orJoueur >= 45) { joueur.orJoueur -= 45; joueur.vie = joueur.vieMax; }
-                else if (choixB == 16 && joueur.orJoueur >= 70) {
+                else if (choixB == 14 && joueur.orJoueur >= 100)
+                {
+                    joueur.orJoueur -= 100;
+                    joueur.attaque += 5;
+                }
+                else if (choixB == 15 && joueur.orJoueur >= 45)
+                {
+                    joueur.orJoueur -= 45;
+                    joueur.vie = joueur.vieMax;
+                }
+                else if (choixB == 16 && joueur.orJoueur >= 70)
+                {
                     int *nouveauSac = new int[joueur.inventaire.capaciteSac + 2]{0};
-                    for (int i = 0; i < joueur.inventaire.capaciteSac; i++) nouveauSac[i] = joueur.inventaire.sac[i];
+                    for (int i = 0; i < joueur.inventaire.capaciteSac; i++)
+                        nouveauSac[i] = joueur.inventaire.sac[i];
                     delete[] joueur.inventaire.sac;
                     joueur.inventaire.sac = nouveauSac;
                     joueur.inventaire.capaciteSac += 2;
                     joueur.orJoueur -= 70;
                 }
-                else if (choixB == 17 && joueur.orJoueur >= 150) {
+                else if (choixB == 17 && joueur.orJoueur >= 150)
+                {
                     int *nouveauSac = new int[joueur.inventaire.capaciteSac + 5]{0};
-                    for (int i = 0; i < joueur.inventaire.capaciteSac; i++) nouveauSac[i] = joueur.inventaire.sac[i];
+                    for (int i = 0; i < joueur.inventaire.capaciteSac; i++)
+                        nouveauSac[i] = joueur.inventaire.sac[i];
                     delete[] joueur.inventaire.sac;
                     joueur.inventaire.sac = nouveauSac;
                     joueur.inventaire.capaciteSac += 5;
                     joueur.orJoueur -= 150;
                 }
-                else if (choixB == 0) dansBoutique = false;
-                else cout << "Action impossible.\n";
+                else if (choixB == 0)
+                    dansBoutique = false;
+                else
+                    cout << "Action impossible.\n";
             }
         }
-        else if (option == 6) break;
+        else if (option == 6)
+            break;
     }
+}
+
+bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueur, int &zoneActuelle, int &territoiresConquis)
+{
+    float screenW = static_cast<float>(window.getSize().x);
+    float screenH = static_cast<float>(window.getSize().y);
+
+    // 1. Zone du HAUT (70%)
+    float hauteurHaut = screenH * 0.70f;
+    sf::RectangleShape zoneHaut(sf::Vector2f(screenW, hauteurHaut));
+    zoneHaut.setFillColor(sf::Color(15, 15, 25));
+
+    // 2. Zone du BAS (30%)
+    float hauteurBas = screenH * 0.30f;
+    sf::RectangleShape zoneBas(sf::Vector2f(screenW, hauteurBas));
+    zoneBas.setPosition(0.0f, hauteurHaut);
+    zoneBas.setFillColor(sf::Color(20, 24, 35));
+
+    // 3. Ligne de séparation dorée
+    sf::RectangleShape ligneSeparation(sf::Vector2f(screenW, 4.0f));
+    ligneSeparation.setPosition(0.0f, hauteurHaut - 2.0f);
+    ligneSeparation.setFillColor(sf::Color(212, 175, 55));
+
+    sf::Text txtStatut("", font, static_cast<unsigned int>(screenH * 0.025f));
+    txtStatut.setFillColor(sf::Color::White);
+    txtStatut.setPosition(25.0f, 20.0f);
+
+    sf::Text txtNarration("Vous vous enfoncez prudemment dans les terres sauvages...", font, static_cast<unsigned int>(screenH * 0.024f));
+    txtNarration.setFillColor(sf::Color(220, 220, 240));
+    txtNarration.setPosition(35.0f, hauteurHaut + 30.0f);
+
+    float btnW = screenW * 0.16f;
+    float btnH = screenH * 0.06f;
+
+    sf::RectangleShape btnAvancer(sf::Vector2f(btnW, btnH));
+    btnAvancer.setOrigin(btnW / 2.0f, btnH / 2.0f);
+    btnAvancer.setPosition(screenW * 0.88f, hauteurHaut + (hauteurBas * 0.30f));
+    btnAvancer.setFillColor(sf::Color(40, 140, 40));
+
+    sf::Text txtAvancer("AVANCER", font, static_cast<unsigned int>(btnH * 0.40f));
+    sf::FloatRect boundsAv = txtAvancer.getLocalBounds();
+    txtAvancer.setOrigin(boundsAv.left + boundsAv.width / 2.0f, boundsAv.top + boundsAv.height / 2.0f);
+    txtAvancer.setPosition(btnAvancer.getPosition());
+
+
+    sf::RectangleShape btnVille(sf::Vector2f(btnW, btnH));
+    btnVille.setOrigin(btnW / 2.0f, btnH / 2.0f);
+    btnVille.setPosition(screenW * 0.88f, hauteurHaut + (hauteurBas * 0.70f));
+    btnVille.setFillColor(sf::Color(60, 60, 120));
+
+    sf::Text txtVille("RETOUR VILLE", font, static_cast<unsigned int>(btnH * 0.35f));
+    sf::FloatRect boundsVi = txtVille.getLocalBounds();
+    txtVille.setOrigin(boundsVi.left + boundsVi.width / 2.0f, boundsVi.top + boundsVi.height / 2.0f);
+    txtVille.setPosition(btnVille.getPosition());
+
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+            {
+                window.close();
+                return false;
+            }
+
+            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+            {
+                sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+
+                if (btnAvancer.getGlobalBounds().contains(mousePos.x, mousePos.y))
+                {
+                    txtNarration.setString("Un bruit feutre retentit dans les buissons...\nQu'allez-vous faire ?");
+                }
+                else if (btnVille.getGlobalBounds().contains(mousePos.x, mousePos.y))
+                {
+                    return true; 
+                }
+            }
+        }
+
+        sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+        if (btnAvancer.getGlobalBounds().contains(mousePos.x, mousePos.y))
+            btnAvancer.setFillColor(sf::Color(60, 180, 60));
+        else
+            btnAvancer.setFillColor(sf::Color(40, 140, 40));
+
+        if (btnVille.getGlobalBounds().contains(mousePos.x, mousePos.y))
+            btnVille.setFillColor(sf::Color(90, 90, 170));
+        else
+            btnVille.setFillColor(sf::Color(60, 60, 120));
+
+        window.clear();
+        window.draw(zoneHaut);
+        window.draw(zoneBas);
+        window.draw(ligneSeparation);
+
+        std::string infoHeros = joueur.nom + " (Niv. " + std::to_string(joueur.niveau) + ")"
+            + " | PV: " + std::to_string(joueur.vie) + "/" + std::to_string(joueur.vieMax)
+            + " | Or: " + std::to_string(joueur.orJoueur) + " PO";
+        txtStatut.setString(infoHeros);
+        window.draw(txtStatut);
+
+        window.draw(txtNarration);
+        window.draw(btnAvancer);
+        window.draw(txtAvancer);
+        window.draw(btnVille);
+        window.draw(txtVille);
+
+        window.display();
+    }
+
+    return true;
+}
+
+bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueur, int &zoneActuelle, int &territoiresConquis)
+{
+    float screenW = static_cast<float>(window.getSize().x);
+    float screenH = static_cast<float>(window.getSize().y);
+    float centerX = screenW / 2.0f;
+
+    // Titre de la Ville
+    sf::Text titreVille("LA CITE DE RIVENOIR", font, static_cast<unsigned int>(screenH * 0.06f));
+    titreVille.setFillColor(sf::Color(212, 175, 55));
+    sf::FloatRect boundsTitre = titreVille.getLocalBounds();
+    titreVille.setOrigin(boundsTitre.left + boundsTitre.width / 2.0f, boundsTitre.top + boundsTitre.height / 2.0f);
+    titreVille.setPosition(centerX, screenH * 0.08f);
+
+    sf::Text sousTitre("Capitale & Bastion de la Zone " + std::to_string(zoneActuelle), font, static_cast<unsigned int>(screenH * 0.025f));
+    sousTitre.setFillColor(sf::Color(180, 180, 200));
+    sf::FloatRect boundsSous = sousTitre.getLocalBounds();
+    sousTitre.setOrigin(boundsSous.left + boundsSous.width / 2.0f, boundsSous.top + boundsSous.height / 2.0f);
+    sousTitre.setPosition(centerX, screenH * 0.13f);
+
+    // Panneau de Fiche du Héros (Gauche)
+    sf::RectangleShape panneauHeros(sf::Vector2f(screenW * 0.28f, screenH * 0.65f));
+    panneauHeros.setPosition(screenW * 0.05f, screenH * 0.20f);
+    panneauHeros.setFillColor(sf::Color(20, 24, 38, 220));
+    panneauHeros.setOutlineThickness(2.0f);
+    panneauHeros.setOutlineColor(sf::Color(212, 175, 55));
+
+    sf::Text txtFiche("STATISTIQUES DU HEROS", font, static_cast<unsigned int>(screenH * 0.028f));
+    txtFiche.setFillColor(sf::Color(212, 175, 55));
+    txtFiche.setPosition(screenW * 0.07f, screenH * 0.22f);
+
+    // Boutons de la Ville (Droite)
+    float btnW = screenW * 0.45f;
+    float btnH = screenH * 0.08f;
+    float startY = screenH * 0.22f;
+    float gapY = screenH * 0.11f;
+
+    // 1. Explorer
+    sf::RectangleShape btnExplo(sf::Vector2f(btnW, btnH));
+    btnExplo.setPosition(screenW * 0.40f, startY);
+    btnExplo.setFillColor(sf::Color(40, 130, 50));
+
+    sf::Text txtExplo("EXPLORER LA CONTREE", font, static_cast<unsigned int>(btnH * 0.38f));
+    sf::FloatRect bExp = txtExplo.getLocalBounds();
+    txtExplo.setOrigin(bExp.left + bExp.width / 2.0f, bExp.top + bExp.height / 2.0f);
+    txtExplo.setPosition(btnExplo.getPosition().x + (btnW / 2.0f), btnExplo.getPosition().y + (btnH / 2.0f));
+
+    // 2. Auberge (Soin)
+    sf::RectangleShape btnAuberge(sf::Vector2f(btnW, btnH));
+    btnAuberge.setPosition(screenW * 0.40f, startY + gapY);
+    btnAuberge.setFillColor(sf::Color(160, 100, 30));
+
+    sf::Text txtAuberge("SE REPOSER A L'AUBERGE (20 PO)", font, static_cast<unsigned int>(btnH * 0.32f));
+    sf::FloatRect bAub = txtAuberge.getLocalBounds();
+    txtAuberge.setOrigin(bAub.left + bAub.width / 2.0f, bAub.top + bAub.height / 2.0f);
+    txtAuberge.setPosition(btnAuberge.getPosition().x + (btnW / 2.0f), btnAuberge.getPosition().y + (btnH / 2.0f));
+
+    // 3. Raid Boss
+    sf::RectangleShape btnBoss(sf::Vector2f(btnW, btnH));
+    btnBoss.setPosition(screenW * 0.40f, startY + (gapY * 2.0f));
+    btnBoss.setFillColor(sf::Color(160, 40, 40));
+
+    sf::Text txtBoss("LANCER LE RAID CONTRE LE BOSS", font, static_cast<unsigned int>(btnH * 0.34f));
+    sf::FloatRect bBos = txtBoss.getLocalBounds();
+    txtBoss.setOrigin(bBos.left + bBos.width / 2.0f, bBos.top + bBos.height / 2.0f);
+    txtBoss.setPosition(btnBoss.getPosition().x + (btnW / 2.0f), btnBoss.getPosition().y + (btnH / 2.0f));
+
+    // 4. Menu Principal
+    sf::RectangleShape btnQuitter(sf::Vector2f(btnW, btnH));
+    btnQuitter.setPosition(screenW * 0.40f, startY + (gapY * 3.5f));
+    btnQuitter.setFillColor(sf::Color(80, 30, 40));
+
+    sf::Text txtQuitter("MENU PRINCIPAL", font, static_cast<unsigned int>(btnH * 0.35f));
+    sf::FloatRect bQui = txtQuitter.getLocalBounds();
+    txtQuitter.setOrigin(bQui.left + bQui.width / 2.0f, bQui.top + bQui.height / 2.0f);
+    txtQuitter.setPosition(btnQuitter.getPosition().x + (btnW / 2.0f), btnQuitter.getPosition().y + (btnH / 2.0f));
+
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+            {
+                window.close();
+                return false;
+            }
+
+            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+            {
+                sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+
+                if (btnExplo.getGlobalBounds().contains(mousePos.x, mousePos.y))
+                {
+                    explorerMondeSFML(window, font, joueur, zoneActuelle, territoiresConquis);
+                }
+                else if (btnAuberge.getGlobalBounds().contains(mousePos.x, mousePos.y))
+                {
+                    if (joueur.orJoueur >= 20)
+                    {
+                        joueur.orJoueur -= 20;
+                        joueur.vie = joueur.vieMax;
+                    }
+                }
+                else if (btnQuitter.getGlobalBounds().contains(mousePos.x, mousePos.y))
+                {
+                    return false; // Retour au Menu Titre principal
+                }
+            }
+        }
+
+        // Hover Effect
+        sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+        btnExplo.setFillColor(btnExplo.getGlobalBounds().contains(mousePos.x, mousePos.y) ? sf::Color(60, 170, 70) : sf::Color(40, 130, 50));
+        btnAuberge.setFillColor(btnAuberge.getGlobalBounds().contains(mousePos.x, mousePos.y) ? sf::Color(190, 130, 40) : sf::Color(160, 100, 30));
+        btnBoss.setFillColor(btnBoss.getGlobalBounds().contains(mousePos.x, mousePos.y) ? sf::Color(200, 60, 60) : sf::Color(160, 40, 40));
+        btnQuitter.setFillColor(btnQuitter.getGlobalBounds().contains(mousePos.x, mousePos.y) ? sf::Color(120, 40, 50) : sf::Color(80, 30, 40));
+
+        window.clear(sf::Color(12, 14, 22));
+
+        window.draw(titreVille);
+        window.draw(sousTitre);
+
+        // Dessiner le Panneau Héros
+        window.draw(panneauHeros);
+        window.draw(txtFiche);
+
+        std::string statsStr = "Nom : " + joueur.nom + "\n\n"
+            + "Niveau : " + std::to_string(joueur.niveau) + "\n\n"
+            + "PV : " + std::to_string(joueur.vie) + " / " + std::to_string(joueur.vieMax) + "\n\n"
+            + "Attaque : " + std::to_string(joueur.attaque) + "\n\n"
+            + "Bourse : " + std::to_string(joueur.orJoueur) + " PO\n\n"
+            + "Boucliers : " + std::to_string(joueur.inventaire.nombreBouclier) + "\n\n"
+            + "Potions : " + std::to_string(joueur.inventaire.potionsNormales);
+
+        sf::Text txtStatsContent(statsStr, font, static_cast<unsigned int>(screenH * 0.022f));
+        txtStatsContent.setFillColor(sf::Color(220, 220, 240));
+        txtStatsContent.setPosition(screenW * 0.07f, screenH * 0.28f);
+        window.draw(txtStatsContent);
+
+        // Dessiner les boutons
+        window.draw(btnExplo); window.draw(txtExplo);
+        window.draw(btnAuberge); window.draw(txtAuberge);
+        window.draw(btnBoss); window.draw(txtBoss);
+        window.draw(btnQuitter); window.draw(txtQuitter);
+
+        window.display();
+    }
+
+    return true;
 }
