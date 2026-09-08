@@ -4,6 +4,22 @@
 #include <chrono>
 #include <cstdlib>
 #include "../structure.h"
+#include <vector>
+
+std::vector<Noeud> genererCarteZone(int zone, float screenW, float screenH){
+    std::vector<Noeud> carte;
+    int nombreEtapes = 15; // Nombre d'étapes dans la zone
+
+    for(int i = 0; i < nombreEtapes; i++){
+        Noeud n;
+        n.id = i;
+        n.visite = false;
+        n.accessible = (i == 0); // Seul le premier noeud est accessible au départ
+        carte.push_back(n);
+    }
+
+    return carte;
+}
 
 using namespace std;
 
