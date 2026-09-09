@@ -4,6 +4,7 @@
 #include <ctime>
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 
 #include "structure.h"
 #include "personnages/personnage.cpp"
@@ -92,6 +93,16 @@ int main()
     sf::FloatRect boundsQuitter = txtQuitter.getLocalBounds();
     txtQuitter.setOrigin(boundsQuitter.left + boundsQuitter.width / 2.0f, boundsQuitter.top + boundsQuitter.height / 2.0f);
     txtQuitter.setPosition(btnQuitter.getPosition());
+
+    sf::Music musicFond;
+    if (!musicFond.openFromFile("assets/Music/Fantasy RPG title screen music _ OpenGameArt.org.ogg"))
+    {
+        std::cout << "Erreur : Impossible de charger la musique de fond !" << std::endl;
+    }
+    musicFond.setLoop(true);
+    musicFond.setVolume(30.0f);
+    musicFond.play();
+
 
     bool programmeEnCours = true;
 
