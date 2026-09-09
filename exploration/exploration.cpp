@@ -441,37 +441,30 @@ bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueur,
     float screenW = static_cast<float>(window.getSize().x);
     float screenH = static_cast<float>(window.getSize().y);
 
-    // 1. Zone du HAUT (70%)
     float hauteurHaut = screenH * 0.70f;
     sf::RectangleShape zoneHaut(sf::Vector2f(screenW, hauteurHaut));
     zoneHaut.setFillColor(sf::Color(15, 15, 25));
 
-    // 2. Zone du BAS (30%)
     float hauteurBas = screenH * 0.30f;
     sf::RectangleShape zoneBas(sf::Vector2f(screenW, hauteurBas));
     zoneBas.setPosition(0.0f, hauteurHaut);
     zoneBas.setFillColor(sf::Color(20, 24, 35));
 
-    // 3. Ligne de séparation dorée
     sf::RectangleShape ligneSeparation(sf::Vector2f(screenW, 4.0f));
     ligneSeparation.setPosition(0.0f, hauteurHaut - 2.0f);
     ligneSeparation.setFillColor(sf::Color(212, 175, 55));
 
-    // Statut Héros (Haut Gauche)
     sf::Text txtStatut("", font, static_cast<unsigned int>(screenH * 0.025f));
     txtStatut.setFillColor(sf::Color::White);
     txtStatut.setPosition(25.0f, 20.0f);
 
-    // Texte Narratif (Zone du Bas - Gauche)
     sf::Text txtNarration("Vous vous enfoncez prudemment dans les terres sauvages...", font, static_cast<unsigned int>(screenH * 0.024f));
     txtNarration.setFillColor(sf::Color(220, 220, 240));
     txtNarration.setPosition(35.0f, hauteurHaut + 30.0f);
 
-    // Boutons d'actions (Zone du Bas - Droite)
     float btnW = screenW * 0.16f;
     float btnH = screenH * 0.06f;
 
-    // Bouton 1 : AVANCER
     sf::RectangleShape btnAvancer(sf::Vector2f(btnW, btnH));
     btnAvancer.setOrigin(btnW / 2.0f, btnH / 2.0f);
     btnAvancer.setPosition(screenW * 0.88f, hauteurHaut + (hauteurBas * 0.30f));
@@ -485,7 +478,6 @@ bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueur,
     txtAvancer.setOrigin(boundsAv.left + boundsAv.width / 2.0f, boundsAv.top + boundsAv.height / 2.0f);
     txtAvancer.setPosition(btnAvancer.getPosition());
 
-    // Bouton 2 : VILLE / REPOS
     sf::RectangleShape btnVille(sf::Vector2f(btnW, btnH));
     btnVille.setOrigin(btnW / 2.0f, btnH / 2.0f);
     btnVille.setPosition(screenW * 0.88f, hauteurHaut + (hauteurBas * 0.70f));
@@ -525,7 +517,6 @@ bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueur,
             }
         }
 
-        // Effet Survol (Hover Inversé)
         sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
         if (btnAvancer.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
             btnAvancer.setFillColor(sf::Color::White);
@@ -572,7 +563,6 @@ bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joueur &jou
     float screenH = static_cast<float>(window.getSize().y);
     float centerX = screenW / 2.0f;
 
-    // Titre de la Ville
     sf::Text titreVille("LA CITE DE RIVENOIR", font, static_cast<unsigned int>(screenH * 0.06f));
     titreVille.setFillColor(sf::Color(212, 175, 55));
     sf::FloatRect boundsTitre = titreVille.getLocalBounds();
@@ -585,7 +575,6 @@ bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joueur &jou
     sousTitre.setOrigin(boundsSous.left + boundsSous.width / 2.0f, boundsSous.top + boundsSous.height / 2.0f);
     sousTitre.setPosition(centerX, screenH * 0.13f);
 
-    // Panneau de Fiche du Héros (Gauche)
     sf::RectangleShape panneauHeros(sf::Vector2f(screenW * 0.28f, screenH * 0.68f));
     panneauHeros.setPosition(screenW * 0.05f, screenH * 0.20f);
     panneauHeros.setFillColor(sf::Color(20, 24, 38, 220));
@@ -596,13 +585,11 @@ bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joueur &jou
     txtFiche.setFillColor(sf::Color(212, 175, 55));
     txtFiche.setPosition(screenW * 0.07f, screenH * 0.22f);
 
-    // Boutons de la Ville (Droite) - 5 Boutons Stylisés Transparents avec Bordure Blanche
     float btnW = screenW * 0.45f;
     float btnH = screenH * 0.075f;
     float startY = screenH * 0.20f;
     float gapY = screenH * 0.095f;
 
-    // Helper lambda pour configurer le style transparent de base
     auto styliserBouton = [btnW, btnH](sf::RectangleShape &btn, sf::Text &txt, float posX, float posY, const std::string &str, sf::Font &f, float txtSize) {
         btn.setSize(sf::Vector2f(btnW, btnH));
         btn.setPosition(posX, posY);
@@ -649,7 +636,6 @@ bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joueur &jou
                 }
                 else if (btnBoutique.getGlobalBounds().contains(mousePos.x, mousePos.y))
                 {
-                    // Ouvrir la Boutique
                     int optBoutique = 5;
                     explorerMonde(territoiresConquis, zoneActuelle, optBoutique, joueur);
                 }
@@ -668,7 +654,6 @@ bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joueur &jou
             }
         }
 
-        // Effet Hover Inversé (Fond Blanc & Texte Noir au survol)
         sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
         auto appliquerHover = [&mousePos](sf::RectangleShape &btn, sf::Text &txt) {
@@ -692,7 +677,6 @@ bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joueur &jou
         window.draw(titreVille);
         window.draw(sousTitre);
 
-        // Dessiner le Panneau Héros
         window.draw(panneauHeros);
         window.draw(txtFiche);
 
@@ -709,7 +693,6 @@ bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joueur &jou
         txtStatsContent.setPosition(screenW * 0.07f, screenH * 0.28f);
         window.draw(txtStatsContent);
 
-        // Dessiner les boutons
         window.draw(btnExplo); window.draw(txtExplo);
         window.draw(btnBoutique); window.draw(txtBoutique);
         window.draw(btnAuberge); window.draw(txtAuberge);
