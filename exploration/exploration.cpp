@@ -457,34 +457,44 @@ bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueur,
     ligneSeparation.setPosition(0.0f, hauteurHaut - 2.0f);
     ligneSeparation.setFillColor(sf::Color(212, 175, 55));
 
+    // Statut Héros (Haut Gauche)
     sf::Text txtStatut("", font, static_cast<unsigned int>(screenH * 0.025f));
     txtStatut.setFillColor(sf::Color::White);
     txtStatut.setPosition(25.0f, 20.0f);
 
+    // Texte Narratif (Zone du Bas - Gauche)
     sf::Text txtNarration("Vous vous enfoncez prudemment dans les terres sauvages...", font, static_cast<unsigned int>(screenH * 0.024f));
     txtNarration.setFillColor(sf::Color(220, 220, 240));
     txtNarration.setPosition(35.0f, hauteurHaut + 30.0f);
 
+    // Boutons d'actions (Zone du Bas - Droite)
     float btnW = screenW * 0.16f;
     float btnH = screenH * 0.06f;
 
+    // Bouton 1 : AVANCER
     sf::RectangleShape btnAvancer(sf::Vector2f(btnW, btnH));
     btnAvancer.setOrigin(btnW / 2.0f, btnH / 2.0f);
     btnAvancer.setPosition(screenW * 0.88f, hauteurHaut + (hauteurBas * 0.30f));
-    btnAvancer.setFillColor(sf::Color(40, 140, 40));
+    btnAvancer.setFillColor(sf::Color::Transparent);
+    btnAvancer.setOutlineThickness(2.0f);
+    btnAvancer.setOutlineColor(sf::Color::White);
 
     sf::Text txtAvancer("AVANCER", font, static_cast<unsigned int>(btnH * 0.40f));
+    txtAvancer.setFillColor(sf::Color::White);
     sf::FloatRect boundsAv = txtAvancer.getLocalBounds();
     txtAvancer.setOrigin(boundsAv.left + boundsAv.width / 2.0f, boundsAv.top + boundsAv.height / 2.0f);
     txtAvancer.setPosition(btnAvancer.getPosition());
 
-
+    // Bouton 2 : VILLE / REPOS
     sf::RectangleShape btnVille(sf::Vector2f(btnW, btnH));
     btnVille.setOrigin(btnW / 2.0f, btnH / 2.0f);
     btnVille.setPosition(screenW * 0.88f, hauteurHaut + (hauteurBas * 0.70f));
-    btnVille.setFillColor(sf::Color(60, 60, 120));
+    btnVille.setFillColor(sf::Color::Transparent);
+    btnVille.setOutlineThickness(2.0f);
+    btnVille.setOutlineColor(sf::Color::White);
 
     sf::Text txtVille("RETOUR VILLE", font, static_cast<unsigned int>(btnH * 0.35f));
+    txtVille.setFillColor(sf::Color::White);
     sf::FloatRect boundsVi = txtVille.getLocalBounds();
     txtVille.setOrigin(boundsVi.left + boundsVi.width / 2.0f, boundsVi.top + boundsVi.height / 2.0f);
     txtVille.setPosition(btnVille.getPosition());
@@ -515,16 +525,23 @@ bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueur,
             }
         }
 
+        // Effet Survol (Hover Inversé)
         sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-        if (btnAvancer.getGlobalBounds().contains(mousePos.x, mousePos.y))
-            btnAvancer.setFillColor(sf::Color(60, 180, 60));
-        else
-            btnAvancer.setFillColor(sf::Color(40, 140, 40));
+        if (btnAvancer.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+            btnAvancer.setFillColor(sf::Color::White);
+            txtAvancer.setFillColor(sf::Color::Black);
+        } else {
+            btnAvancer.setFillColor(sf::Color::Transparent);
+            txtAvancer.setFillColor(sf::Color::White);
+        }
 
-        if (btnVille.getGlobalBounds().contains(mousePos.x, mousePos.y))
-            btnVille.setFillColor(sf::Color(90, 90, 170));
-        else
-            btnVille.setFillColor(sf::Color(60, 60, 120));
+        if (btnVille.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+            btnVille.setFillColor(sf::Color::White);
+            txtVille.setFillColor(sf::Color::Black);
+        } else {
+            btnVille.setFillColor(sf::Color::Transparent);
+            txtVille.setFillColor(sf::Color::White);
+        }
 
         window.clear();
         window.draw(zoneHaut);
@@ -569,7 +586,7 @@ bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joueur &jou
     sousTitre.setPosition(centerX, screenH * 0.13f);
 
     // Panneau de Fiche du Héros (Gauche)
-    sf::RectangleShape panneauHeros(sf::Vector2f(screenW * 0.28f, screenH * 0.65f));
+    sf::RectangleShape panneauHeros(sf::Vector2f(screenW * 0.28f, screenH * 0.68f));
     panneauHeros.setPosition(screenW * 0.05f, screenH * 0.20f);
     panneauHeros.setFillColor(sf::Color(20, 24, 38, 220));
     panneauHeros.setOutlineThickness(2.0f);
@@ -579,51 +596,37 @@ bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joueur &jou
     txtFiche.setFillColor(sf::Color(212, 175, 55));
     txtFiche.setPosition(screenW * 0.07f, screenH * 0.22f);
 
-    // Boutons de la Ville (Droite)
+    // Boutons de la Ville (Droite) - 5 Boutons Stylisés Transparents avec Bordure Blanche
     float btnW = screenW * 0.45f;
-    float btnH = screenH * 0.08f;
-    float startY = screenH * 0.22f;
-    float gapY = screenH * 0.11f;
+    float btnH = screenH * 0.075f;
+    float startY = screenH * 0.20f;
+    float gapY = screenH * 0.095f;
 
-    // 1. Explorer
-    sf::RectangleShape btnExplo(sf::Vector2f(btnW, btnH));
-    btnExplo.setPosition(screenW * 0.40f, startY);
-    btnExplo.setFillColor(sf::Color(40, 130, 50));
+    // Helper lambda pour configurer le style transparent de base
+    auto styliserBouton = [btnW, btnH](sf::RectangleShape &btn, sf::Text &txt, float posX, float posY, const std::string &str, sf::Font &f, float txtSize) {
+        btn.setSize(sf::Vector2f(btnW, btnH));
+        btn.setPosition(posX, posY);
+        btn.setFillColor(sf::Color::Transparent);
+        btn.setOutlineThickness(2.0f);
+        btn.setOutlineColor(sf::Color::White);
 
-    sf::Text txtExplo("EXPLORER LA CONTREE", font, static_cast<unsigned int>(btnH * 0.38f));
-    sf::FloatRect bExp = txtExplo.getLocalBounds();
-    txtExplo.setOrigin(bExp.left + bExp.width / 2.0f, bExp.top + bExp.height / 2.0f);
-    txtExplo.setPosition(btnExplo.getPosition().x + (btnW / 2.0f), btnExplo.getPosition().y + (btnH / 2.0f));
+        txt.setFont(f);
+        txt.setString(str);
+        txt.setCharacterSize(static_cast<unsigned int>(txtSize));
+        txt.setFillColor(sf::Color::White);
+        sf::FloatRect b = txt.getLocalBounds();
+        txt.setOrigin(b.left + b.width / 2.0f, b.top + b.height / 2.0f);
+        txt.setPosition(posX + (btnW / 2.0f), posY + (btnH / 2.0f));
+    };
 
-    // 2. Auberge (Soin)
-    sf::RectangleShape btnAuberge(sf::Vector2f(btnW, btnH));
-    btnAuberge.setPosition(screenW * 0.40f, startY + gapY);
-    btnAuberge.setFillColor(sf::Color(160, 100, 30));
+    sf::RectangleShape btnExplo, btnBoutique, btnAuberge, btnBoss, btnQuitter;
+    sf::Text txtExplo, txtBoutique, txtAuberge, txtBoss, txtQuitter;
 
-    sf::Text txtAuberge("SE REPOSER A L'AUBERGE (20 PO)", font, static_cast<unsigned int>(btnH * 0.32f));
-    sf::FloatRect bAub = txtAuberge.getLocalBounds();
-    txtAuberge.setOrigin(bAub.left + bAub.width / 2.0f, bAub.top + bAub.height / 2.0f);
-    txtAuberge.setPosition(btnAuberge.getPosition().x + (btnW / 2.0f), btnAuberge.getPosition().y + (btnH / 2.0f));
-
-    // 3. Raid Boss
-    sf::RectangleShape btnBoss(sf::Vector2f(btnW, btnH));
-    btnBoss.setPosition(screenW * 0.40f, startY + (gapY * 2.0f));
-    btnBoss.setFillColor(sf::Color(160, 40, 40));
-
-    sf::Text txtBoss("LANCER LE RAID CONTRE LE BOSS", font, static_cast<unsigned int>(btnH * 0.34f));
-    sf::FloatRect bBos = txtBoss.getLocalBounds();
-    txtBoss.setOrigin(bBos.left + bBos.width / 2.0f, bBos.top + bBos.height / 2.0f);
-    txtBoss.setPosition(btnBoss.getPosition().x + (btnW / 2.0f), btnBoss.getPosition().y + (btnH / 2.0f));
-
-    // 4. Menu Principal
-    sf::RectangleShape btnQuitter(sf::Vector2f(btnW, btnH));
-    btnQuitter.setPosition(screenW * 0.40f, startY + (gapY * 3.5f));
-    btnQuitter.setFillColor(sf::Color(80, 30, 40));
-
-    sf::Text txtQuitter("MENU PRINCIPAL", font, static_cast<unsigned int>(btnH * 0.35f));
-    sf::FloatRect bQui = txtQuitter.getLocalBounds();
-    txtQuitter.setOrigin(bQui.left + bQui.width / 2.0f, bQui.top + bQui.height / 2.0f);
-    txtQuitter.setPosition(btnQuitter.getPosition().x + (btnW / 2.0f), btnQuitter.getPosition().y + (btnH / 2.0f));
+    styliserBouton(btnExplo, txtExplo, screenW * 0.40f, startY, "1. EXPLORER LA CONTREE", font, btnH * 0.38f);
+    styliserBouton(btnBoutique, txtBoutique, screenW * 0.40f, startY + gapY, "2. BOUTIQUE DE LA CITE", font, btnH * 0.38f);
+    styliserBouton(btnAuberge, txtAuberge, screenW * 0.40f, startY + (gapY * 2.0f), "3. SE REPOSER A L'AUBERGE (20 PO)", font, btnH * 0.34f);
+    styliserBouton(btnBoss, txtBoss, screenW * 0.40f, startY + (gapY * 3.0f), "4. RAID CONTRE LE BOSS DE ZONE", font, btnH * 0.34f);
+    styliserBouton(btnQuitter, txtQuitter, screenW * 0.40f, startY + (gapY * 4.0f), "5. MENU PRINCIPAL", font, btnH * 0.38f);
 
     while (window.isOpen())
     {
@@ -644,6 +647,12 @@ bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joueur &jou
                 {
                     explorerMondeSFML(window, font, joueur, zoneActuelle, territoiresConquis);
                 }
+                else if (btnBoutique.getGlobalBounds().contains(mousePos.x, mousePos.y))
+                {
+                    // Ouvrir la Boutique
+                    int optBoutique = 5;
+                    explorerMonde(territoiresConquis, zoneActuelle, optBoutique, joueur);
+                }
                 else if (btnAuberge.getGlobalBounds().contains(mousePos.x, mousePos.y))
                 {
                     if (joueur.orJoueur >= 20)
@@ -654,17 +663,29 @@ bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joueur &jou
                 }
                 else if (btnQuitter.getGlobalBounds().contains(mousePos.x, mousePos.y))
                 {
-                    return false; // Retour au Menu Titre principal
+                    return false;
                 }
             }
         }
 
-        // Hover Effect
+        // Effet Hover Inversé (Fond Blanc & Texte Noir au survol)
         sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-        btnExplo.setFillColor(btnExplo.getGlobalBounds().contains(mousePos.x, mousePos.y) ? sf::Color(60, 170, 70) : sf::Color(40, 130, 50));
-        btnAuberge.setFillColor(btnAuberge.getGlobalBounds().contains(mousePos.x, mousePos.y) ? sf::Color(190, 130, 40) : sf::Color(160, 100, 30));
-        btnBoss.setFillColor(btnBoss.getGlobalBounds().contains(mousePos.x, mousePos.y) ? sf::Color(200, 60, 60) : sf::Color(160, 40, 40));
-        btnQuitter.setFillColor(btnQuitter.getGlobalBounds().contains(mousePos.x, mousePos.y) ? sf::Color(120, 40, 50) : sf::Color(80, 30, 40));
+
+        auto appliquerHover = [&mousePos](sf::RectangleShape &btn, sf::Text &txt) {
+            if (btn.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                btn.setFillColor(sf::Color::White);
+                txt.setFillColor(sf::Color::Black);
+            } else {
+                btn.setFillColor(sf::Color::Transparent);
+                txt.setFillColor(sf::Color::White);
+            }
+        };
+
+        appliquerHover(btnExplo, txtExplo);
+        appliquerHover(btnBoutique, txtBoutique);
+        appliquerHover(btnAuberge, txtAuberge);
+        appliquerHover(btnBoss, txtBoss);
+        appliquerHover(btnQuitter, txtQuitter);
 
         window.clear(sf::Color(12, 14, 22));
 
@@ -690,6 +711,7 @@ bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joueur &jou
 
         // Dessiner les boutons
         window.draw(btnExplo); window.draw(txtExplo);
+        window.draw(btnBoutique); window.draw(txtBoutique);
         window.draw(btnAuberge); window.draw(txtAuberge);
         window.draw(btnBoss); window.draw(txtBoss);
         window.draw(btnQuitter); window.draw(txtQuitter);

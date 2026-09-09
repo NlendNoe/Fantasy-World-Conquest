@@ -74,9 +74,12 @@ int main()
     sf::RectangleShape btnJouer(sf::Vector2f(btnWidth, btnHeight));
     btnJouer.setOrigin(btnWidth / 2.0f, btnHeight / 2.0f);
     btnJouer.setPosition(centerX, yPremierBouton);
-    btnJouer.setFillColor(sf::Color(40, 140, 40));
+    btnJouer.setFillColor(sf::Color::Transparent);
+    btnJouer.setOutlineThickness(2.0f);
+    btnJouer.setOutlineColor(sf::Color::White);
 
     sf::Text txtJouer("Commencer", font, taillePoliceBouton);
+    txtJouer.setFillColor(sf::Color::White);
     sf::FloatRect boundsJouer = txtJouer.getLocalBounds();
     txtJouer.setOrigin(boundsJouer.left + boundsJouer.width / 2.0f, boundsJouer.top + boundsJouer.height / 2.0f);
     txtJouer.setPosition(btnJouer.getPosition());
@@ -84,9 +87,12 @@ int main()
     sf::RectangleShape btnQuitter(sf::Vector2f(btnWidth, btnHeight));
     btnQuitter.setOrigin(btnWidth / 2.0f, btnHeight / 2.0f);
     btnQuitter.setPosition(centerX, ySecondBouton);
-    btnQuitter.setFillColor(sf::Color(180, 40, 40));
+    btnQuitter.setFillColor(sf::Color::Transparent);
+    btnQuitter.setOutlineThickness(2.0f);
+    btnQuitter.setOutlineColor(sf::Color::White);
 
     sf::Text txtQuitter("Quitter", font, taillePoliceBouton);
+    txtQuitter.setFillColor(sf::Color::White);
     sf::FloatRect boundsQuitter = txtQuitter.getLocalBounds();
     txtQuitter.setOrigin(boundsQuitter.left + boundsQuitter.width / 2.0f, boundsQuitter.top + boundsQuitter.height / 2.0f);
     txtQuitter.setPosition(btnQuitter.getPosition());
@@ -125,15 +131,21 @@ int main()
 
             sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
-            if (btnJouer.getGlobalBounds().contains(mousePos.x, mousePos.y))
-                btnJouer.setFillColor(sf::Color(60, 200, 60));
-            else
-                btnJouer.setFillColor(sf::Color(40, 140, 40));
+            if (btnJouer.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                btnJouer.setFillColor(sf::Color::White);
+                txtJouer.setFillColor(sf::Color::Black);
+            } else {
+                btnJouer.setFillColor(sf::Color::Transparent);
+                txtJouer.setFillColor(sf::Color::White);
+            }
 
-            if (btnQuitter.getGlobalBounds().contains(mousePos.x, mousePos.y))
-                btnQuitter.setFillColor(sf::Color(230, 60, 60));
-            else
-                btnQuitter.setFillColor(sf::Color(180, 40, 40));
+            if (btnQuitter.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                btnQuitter.setFillColor(sf::Color::White);
+                txtQuitter.setFillColor(sf::Color::Black);
+            } else {
+                btnQuitter.setFillColor(sf::Color::Transparent);
+                txtQuitter.setFillColor(sf::Color::White);
+            }
 
             window.clear(sf::Color(15, 15, 20));
 
