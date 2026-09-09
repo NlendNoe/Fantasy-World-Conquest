@@ -1,4 +1,6 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
+
 #include <iostream>
 #include <string>
 #include "../structure.h"
@@ -129,6 +131,16 @@ bool creerPersonnageSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueu
     sf::FloatRect boundsValider = txtValider.getLocalBounds();
     txtValider.setOrigin(boundsValider.left + boundsValider.width / 2.0f, boundsValider.top + boundsValider.height / 2.0f);
     txtValider.setPosition(btnValider.getPosition());
+
+    sf::Music musiqueFond;
+    if (!musiqueFond.openFromFile("assets/Music/Town Theme RPG _ OpenGameArt.org.ogg"))
+    {
+        std::cout << "Erreur : Impossible de charger la musique de fond !" << std::endl;
+    }
+    musiqueFond.setLoop(true);
+    musiqueFond.setVolume(30.0f);
+    musiqueFond.play();
+
 
     while (window.isOpen() && !creationTerminee)
     {
