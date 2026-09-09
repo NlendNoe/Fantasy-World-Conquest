@@ -16,7 +16,7 @@ bool creerPersonnageSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueu
     float centerX = screenW / 2.0f;
 
     sf::Texture textureFond;
-    bool fondCharge = textureFond.loadFromFile("assets/backgrounds/aaaaaa.jpg");
+    bool fondCharge = textureFond.loadFromFile("assets/backgrounds/perso.jpg");
     sf::Sprite spriteFond;
     if (fondCharge)
     {

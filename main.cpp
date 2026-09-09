@@ -36,7 +36,7 @@ int main()
     }
 
     sf::Texture textureFond;
-    bool fondCharge = textureFond.loadFromFile("assets/backgrounds/fondPince-2.jpg");
+    bool fondCharge = textureFond.loadFromFile("assets/backgrounds/font.jpg");
     sf::Sprite spriteFond;
     if (fondCharge)
     {
@@ -45,23 +45,19 @@ int main()
         spriteFond.setScale((float)window.getSize().x / tailleImage.x, (float)window.getSize().y / tailleImage.y);
     }
 
-    // Calcul des dimensions dynamiques par rapport à la taille de l'écran
     float screenW = static_cast<float>(window.getSize().x);
     float screenH = static_cast<float>(window.getSize().y);
     float centerX = screenW / 2.0f;
     float centerY = screenH / 2.0f;
 
-    //  Dimensions et marges dynamiques
-    float btnWidth = screenW * 0.22f;          // Largeur des boutons (22% de la largeur)
-    float btnHeight = screenH * 0.07f;         // Hauteur des boutons (7% de la hauteur)
+    float btnWidth = screenW * 0.22f;          
+    float btnHeight = screenH * 0.07f;         
     float margeTitreBoutons = screenH * 0.08f; 
     float margeEntreBoutons = screenH * 0.03f; 
 
-    //  Tailles de police adaptatives
     unsigned int taillePoliceTitre = static_cast<unsigned int>(screenH * 0.07f);
     unsigned int taillePoliceBouton = static_cast<unsigned int>(btnHeight * 0.45f);
 
-    // Positions Y de référence
     float yPremierBouton = centerY;
     float ySecondBouton = yPremierBouton + btnHeight + margeEntreBoutons;
 
