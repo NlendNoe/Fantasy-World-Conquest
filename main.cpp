@@ -7,6 +7,7 @@
 #include <SFML/Audio.hpp>
 
 #include "structure.h"
+#include "chargement/chargement.cpp"
 #include "personnages/personnage.cpp"
 #include "bestiaire/bestiaire.cpp"
 #include "combat/combat.cpp"
@@ -169,6 +170,9 @@ int main()
 
         if (jeuDemarre)
         {
+            // Petit ecran immersif avant la creation de l'avatar
+            ecranChargementSFML(window, font);
+
             bool persoCree = creerPersonnageSFML(window, font, joueur);
 
             if (!persoCree)

@@ -132,6 +132,7 @@ bool creerPersonnageSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueu
     txtValider.setOrigin(boundsValider.left + boundsValider.width / 2.0f, boundsValider.top + boundsValider.height / 2.0f);
     txtValider.setPosition(btnValider.getPosition());
 
+    
     sf::Music musiqueFond;
     if (!musiqueFond.openFromFile("assets/Music/Town Theme RPG _ OpenGameArt.org.ogg"))
     {
