@@ -15,7 +15,7 @@ void ecranChargementSFML(sf::RenderWindow &window, sf::Font &font)
     float centerX = screenW / 2.0f;
 
     sf::Texture textureFond;
-    bool fondCharge = textureFond.loadFromFile("assets/backgrounds/fond2.jpg");
+    bool fondCharge = textureFond.loadFromFile("assets/backgrounds/font2.jpg");
     sf::Sprite spriteFond;
     if (fondCharge)
     {
@@ -61,7 +61,7 @@ void ecranChargementSFML(sf::RenderWindow &window, sf::Font &font)
                 window.close();
         }
 
-        if (horloge.getElapsedTime().asSeconds() >= prochaineEtape)
+        if (progression < 100 && horloge.getElapsedTime().asSeconds() >= prochaineEtape)
         {
             horloge.restart();
             prochaineEtape = 0.1f + static_cast<float>(rand() % 30) / 100.0f;
