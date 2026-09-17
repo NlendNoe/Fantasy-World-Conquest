@@ -628,6 +628,7 @@ bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joueur &jou
 
             if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
             {
+                
                 sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
                 if (btnExplo.getGlobalBounds().contains(mousePos.x, mousePos.y))
