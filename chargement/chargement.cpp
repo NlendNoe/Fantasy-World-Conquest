@@ -24,7 +24,6 @@ void ecranChargementSFML(sf::RenderWindow &window, sf::Font &font)
         spriteFond.setScale(screenW / tailleImage.x, screenH / tailleImage.y);
     }
 
-    // ---------- 2. La barre de chargement ----------
     float barreW = screenW * 0.40f;
     float barreH = screenH * 0.035f;
     float barreX = centerX - (barreW / 2.0f);

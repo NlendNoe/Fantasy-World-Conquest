@@ -9,16 +9,17 @@
 
 namespace UI
 {
-    const sf::Color Gold(212, 175, 55);
-    const sf::Color GoldBright(255, 225, 115);
-    const sf::Color DarkPanel(14, 18, 30, 235);
-    const sf::Color DarkPanelLight(24, 30, 48, 220);
-    const sf::Color Crimson(215, 45, 45);
-    const sf::Color GreenHP(45, 185, 85);
-    const sf::Color BlueMana(45, 135, 240);
-    const sf::Color AmberXP(235, 165, 30);
-    const sf::Color TextWhite(245, 245, 250);
-    const sf::Color TextMuted(175, 180, 200);
+    const sf::Color Silver(235, 242, 255);
+    const sf::Color Azure(90, 200, 255);
+    const sf::Color DarkPanel(14, 18, 28, 235);
+    const sf::Color DarkPanelLight(24, 32, 50, 225);
+    const sf::Color BorderMuted(65, 80, 115);
+    const sf::Color Crimson(215, 50, 50);
+    const sf::Color GreenHP(45, 195, 95);
+    const sf::Color BlueMana(45, 140, 245);
+    const sf::Color AmberGold(245, 185, 55);
+    const sf::Color TextWhite(250, 250, 255);
+    const sf::Color TextMuted(180, 190, 215);
 
     inline void drawProgressBar(sf::RenderWindow &window, float x, float y, float width, float height,
                                 int current, int maxVal, sf::Color fillColor, sf::Color emptyColor,
@@ -30,8 +31,8 @@ namespace UI
         sf::RectangleShape background(sf::Vector2f(width, height));
         background.setPosition(x, y);
         background.setFillColor(emptyColor);
-        background.setOutlineThickness(2.0f);
-        background.setOutlineColor(Gold);
+        background.setOutlineThickness(1.0f);
+        background.setOutlineColor(BorderMuted);
         window.draw(background);
 
         if (ratio > 0.0f)
@@ -57,20 +58,19 @@ namespace UI
 
     inline void drawButton(sf::RenderWindow &window, sf::RectangleShape &btn, sf::Text &txt, bool isHovered,
                            sf::Color normalFill = DarkPanelLight,
-                           sf::Color hoverFill = Gold,
+                           sf::Color hoverFill = sf::Color(45, 62, 95, 240),
                            sf::Color normalText = TextWhite,
-                           sf::Color hoverText = sf::Color::Black)
+                           sf::Color hoverText = Azure)
     {
+        btn.setOutlineThickness(0.0f);
         if (isHovered)
         {
             btn.setFillColor(hoverFill);
-            btn.setOutlineColor(GoldBright);
             txt.setFillColor(hoverText);
         }
         else
         {
             btn.setFillColor(normalFill);
-            btn.setOutlineColor(Gold);
             txt.setFillColor(normalText);
         }
 
@@ -84,27 +84,27 @@ namespace UI
         sf::RectangleShape panel(sf::Vector2f(width, height));
         panel.setPosition(x, y);
         panel.setFillColor(DarkPanel);
-        panel.setOutlineThickness(2.0f);
-        panel.setOutlineColor(Gold);
+        panel.setOutlineThickness(1.5f);
+        panel.setOutlineColor(BorderMuted);
         window.draw(panel);
 
         if (!title.empty() && font != nullptr)
         {
             sf::RectangleShape banner(sf::Vector2f(width - 4.0f, 38.0f));
             banner.setPosition(x + 2.0f, y + 2.0f);
-            banner.setFillColor(sf::Color(30, 36, 56, 200));
+            banner.setFillColor(sf::Color(26, 34, 52, 220));
             window.draw(banner);
 
             sf::Text txtTitle(title, *font, titleSize);
-            txtTitle.setFillColor(GoldBright);
+            txtTitle.setFillColor(Silver);
             sf::FloatRect b = txtTitle.getLocalBounds();
             txtTitle.setOrigin(b.left + b.width / 2.0f, b.top + b.height / 2.0f);
             txtTitle.setPosition(x + width / 2.0f, y + 21.0f);
             window.draw(txtTitle);
 
-            sf::RectangleShape line(sf::Vector2f(width - 20.0f, 1.5f));
+            sf::RectangleShape line(sf::Vector2f(width - 20.0f, 1.0f));
             line.setPosition(x + 10.0f, y + 42.0f);
-            line.setFillColor(Gold);
+            line.setFillColor(BorderMuted);
             window.draw(line);
         }
     }

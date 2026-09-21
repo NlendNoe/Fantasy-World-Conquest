@@ -29,13 +29,11 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
     float centerX = screenW / 2.0f;
     float centerY = screenH / 2.0f;
 
-    // Musique du combat
     if (isBossRaid)
         AudioJeu::jouer("assets/Music/Orchestral Epic Fantasy Music _ OpenGameArt.org.OGG", 35.0f, true);
     else
         AudioJeu::jouer("assets/Music/RPG Battle Theme - The Last Encounter _ OpenGameArt.org.ogg", 30.0f, true);
 
-    // Fond d'arène
     sf::Texture texFond;
     bool fondCharge = texFond.loadFromFile("assets/backgrounds/introBg.jpg");
     sf::Sprite spriteFond;
@@ -46,7 +44,6 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
         spriteFond.setScale(screenW / sz.x, screenH / sz.y);
     }
 
-    // Chargement des textures des sprites LPC
     sf::Texture texGuerrier, texMage, texArcher, texPaladin, texNecro, texAssassin;
     texGuerrier.loadFromFile("assets/pictures/dark_skinned_knight.png");
     texMage.loadFromFile("assets/pictures/robe.png");
@@ -59,28 +56,26 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
     int heroTexIdx = std::clamp(joueur.classeIndex, 0, 5);
 
     sf::Sprite spriteHero(*texturesHero[heroTexIdx]);
+    spriteHero.setTextureRect(sf::IntRect(0, 192, 64, 64));
     spriteHero.setOrigin(32.0f, 32.0f);
     float heroScale = screenH * 0.0055f;
     spriteHero.setScale(heroScale, heroScale);
     sf::Vector2f heroBasePos(screenW * 0.25f, screenH * 0.45f);
     spriteHero.setPosition(heroBasePos);
 
-    // Texture du monstre
     sf::Texture* texMonstre = texturesHero[monstre.spriteType % 6];
     sf::Sprite spriteMonstre(*texMonstre);
+    spriteMonstre.setTextureRect(sf::IntRect(0, 64, 64, 64));
     spriteMonstre.setOrigin(32.0f, 32.0f);
     float monstreScale = (isBossRaid ? screenH * 0.0070f : screenH * 0.0055f);
-    // Inverser horizontalement pour faire face au héros
-    spriteMonstre.setScale(-monstreScale, monstreScale);
+    spriteMonstre.setScale(monstreScale, monstreScale);
     sf::Vector2f monstreBasePos(screenW * 0.75f, screenH * 0.45f);
     spriteMonstre.setPosition(monstreBasePos);
 
-    // Journal de combat (log des messages)
     std::vector<std::string> journalCombat;
     journalCombat.push_back("Un redoutable " + monstre.nom + " surgit !");
     journalCombat.push_back("Que le combat commence ! A votre tour d'agir.");
 
-    // Textes flottants
     std::vector<UI::FloatingText> floatingTexts;
 
     CombatState etat = CombatState::PLAYER_TURN;
@@ -88,19 +83,16 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
     bool menuObjetsOuvert = false;
     bool combatTermine = false;
     bool victoireJoueur = false;
-    bool fuiteReussie = false;
 
     sf::Clock horlogeTour;
-    sf::Clock horlogeAnim;
+    sf::Clock horlogeTotal;
     float dureeAttente = 0.8f;
-    int heroFrame = 0;
-    int heroActionRow = 2; // 2 = marche/repos, 3 = attaque physique, 0 = magie
-    int monstreFrame = 0;
 
     float shakeHero = 0.0f;
     float shakeMonstre = 0.0f;
+    float heroLunge = 0.0f;
+    float monstreLunge = 0.0f;
 
-    // Dimensions des boutons de commande
     float btnW = screenW * 0.20f;
     float btnH = screenH * 0.065f;
     float deckX = screenW * 0.06f;
@@ -109,8 +101,7 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
 
     sf::RectangleShape btnAttaque(sf::Vector2f(btnW, btnH));
     btnAttaque.setPosition(deckX, deckY);
-    btnAttaque.setOutlineThickness(2.0f);
-    btnAttaque.setOutlineColor(UI::Gold);
+    btnAttaque.setOutlineThickness(0.0f);
 
     sf::Text txtAttaque("1. ATTAQUER", font, static_cast<unsigned int>(btnH * 0.40f));
     txtAttaque.setFillColor(UI::TextWhite);
@@ -118,8 +109,7 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
 
     sf::RectangleShape btnSort(sf::Vector2f(btnW, btnH));
     btnSort.setPosition(deckX, deckY + gapY);
-    btnSort.setOutlineThickness(2.0f);
-    btnSort.setOutlineColor(UI::Gold);
+    btnSort.setOutlineThickness(0.0f);
 
     std::string nomSortCourt = joueur.competenceSpeciale;
     if (nomSortCourt.length() > 18) nomSortCourt = nomSortCourt.substr(0, 16) + "..";
@@ -129,8 +119,7 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
 
     sf::RectangleShape btnObjets(sf::Vector2f(btnW, btnH));
     btnObjets.setPosition(deckX + btnW + screenW * 0.02f, deckY);
-    btnObjets.setOutlineThickness(2.0f);
-    btnObjets.setOutlineColor(UI::Gold);
+    btnObjets.setOutlineThickness(0.0f);
 
     sf::Text txtObjets("3. INVENTAIRE", font, static_cast<unsigned int>(btnH * 0.40f));
     txtObjets.setFillColor(UI::TextWhite);
@@ -138,14 +127,12 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
 
     sf::RectangleShape btnFuir(sf::Vector2f(btnW, btnH));
     btnFuir.setPosition(deckX + btnW + screenW * 0.02f, deckY + gapY);
-    btnFuir.setOutlineThickness(2.0f);
-    btnFuir.setOutlineColor(UI::Gold);
+    btnFuir.setOutlineThickness(0.0f);
 
     sf::Text txtFuir(isBossRaid ? "4. FUITE IMPOSSIBLE" : "4. FUIR", font, static_cast<unsigned int>(btnH * 0.40f));
     txtFuir.setFillColor(isBossRaid ? sf::Color(140, 140, 140) : UI::TextWhite);
     txtFuir.setPosition(deckX + btnW + screenW * 0.02f + 15.0f, deckY + gapY + btnH * 0.25f);
 
-    // Boutons de sous-menu Objets
     float popW = screenW * 0.28f;
     float popH = screenH * 0.26f;
     float popX = deckX + btnW * 0.5f;
@@ -154,15 +141,14 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
     sf::RectangleShape popPanel(sf::Vector2f(popW, popH));
     popPanel.setPosition(popX, popY);
     popPanel.setFillColor(UI::DarkPanel);
-    popPanel.setOutlineThickness(2.5f);
-    popPanel.setOutlineColor(UI::GoldBright);
+    popPanel.setOutlineThickness(1.5f);
+    popPanel.setOutlineColor(UI::BorderMuted);
 
     float itemBtnH = popH * 0.20f;
     sf::RectangleShape btnItemSoin(sf::Vector2f(popW - 20.0f, itemBtnH));
     btnItemSoin.setPosition(popX + 10.0f, popY + 12.0f);
     btnItemSoin.setFillColor(UI::DarkPanelLight);
-    btnItemSoin.setOutlineThickness(1.5f);
-    btnItemSoin.setOutlineColor(UI::Gold);
+    btnItemSoin.setOutlineThickness(0.0f);
 
     sf::Text txtItemSoin("", font, static_cast<unsigned int>(itemBtnH * 0.48f));
     txtItemSoin.setPosition(popX + 20.0f, popY + 15.0f);
@@ -170,8 +156,7 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
     sf::RectangleShape btnItemGrande(sf::Vector2f(popW - 20.0f, itemBtnH));
     btnItemGrande.setPosition(popX + 10.0f, popY + 16.0f + itemBtnH);
     btnItemGrande.setFillColor(UI::DarkPanelLight);
-    btnItemGrande.setOutlineThickness(1.5f);
-    btnItemGrande.setOutlineColor(UI::Gold);
+    btnItemGrande.setOutlineThickness(0.0f);
 
     sf::Text txtItemGrande("", font, static_cast<unsigned int>(itemBtnH * 0.48f));
     txtItemGrande.setPosition(popX + 20.0f, popY + 19.0f + itemBtnH);
@@ -179,8 +164,7 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
     sf::RectangleShape btnItemMana(sf::Vector2f(popW - 20.0f, itemBtnH));
     btnItemMana.setPosition(popX + 10.0f, popY + 20.0f + itemBtnH * 2.0f);
     btnItemMana.setFillColor(UI::DarkPanelLight);
-    btnItemMana.setOutlineThickness(1.5f);
-    btnItemMana.setOutlineColor(UI::Gold);
+    btnItemMana.setOutlineThickness(0.0f);
 
     sf::Text txtItemMana("", font, static_cast<unsigned int>(itemBtnH * 0.48f));
     txtItemMana.setPosition(popX + 20.0f, popY + 23.0f + itemBtnH * 2.0f);
@@ -188,24 +172,21 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
     sf::RectangleShape btnItemBouclier(sf::Vector2f(popW - 20.0f, itemBtnH));
     btnItemBouclier.setPosition(popX + 10.0f, popY + 24.0f + itemBtnH * 3.0f);
     btnItemBouclier.setFillColor(UI::DarkPanelLight);
-    btnItemBouclier.setOutlineThickness(1.5f);
-    btnItemBouclier.setOutlineColor(UI::Gold);
+    btnItemBouclier.setOutlineThickness(0.0f);
 
     sf::Text txtItemBouclier("", font, static_cast<unsigned int>(itemBtnH * 0.48f));
     txtItemBouclier.setPosition(popX + 20.0f, popY + 27.0f + itemBtnH * 3.0f);
 
-    // Bouton de fin de combat
     float btnFinW = screenW * 0.24f;
     float btnFinH = screenH * 0.07f;
     sf::RectangleShape btnFin(sf::Vector2f(btnFinW, btnFinH));
     btnFin.setOrigin(btnFinW / 2.0f, btnFinH / 2.0f);
     btnFin.setPosition(centerX, screenH * 0.70f);
-    btnFin.setFillColor(UI::Gold);
-    btnFin.setOutlineThickness(2.0f);
-    btnFin.setOutlineColor(UI::GoldBright);
+    btnFin.setFillColor(UI::DarkPanelLight);
+    btnFin.setOutlineThickness(0.0f);
 
     sf::Text txtFin("CONTINUER", font, static_cast<unsigned int>(btnFinH * 0.42f));
-    txtFin.setFillColor(sf::Color::Black);
+    txtFin.setFillColor(UI::TextWhite);
     sf::FloatRect bFin = txtFin.getLocalBounds();
     txtFin.setOrigin(bFin.left + bFin.width / 2.0f, bFin.top + bFin.height / 2.0f);
     txtFin.setPosition(btnFin.getPosition());
@@ -268,7 +249,7 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
                                 int manaRendu = 35;
                                 joueur.mana = std::min(joueur.mana + manaRendu, joueur.manaMax);
                                 floatingTexts.push_back({"+" + std::to_string(manaRendu) + " MP", heroBasePos, UI::BlueMana, 1.2f, 1.2f});
-                                journalCombat.push_back(joueur.nom + " boit un Élixir de Mana (+35 MP).");
+                                journalCombat.push_back(joueur.nom + " boit un Elixir de Mana (+35 MP).");
                                 menuObjetsOuvert = false;
                                 etat = CombatState::ACTION_RESOLVING;
                                 horlogeTour.restart();
@@ -280,8 +261,8 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
                             {
                                 joueur.inventaire.nombreBouclier--;
                                 postureDefensive = true;
-                                floatingTexts.push_back({"BOUCLIER ACTIF !", heroBasePos, UI::GoldBright, 1.2f, 1.2f});
-                                journalCombat.push_back(joueur.nom + " lève son Bouclier (Dégâts /2 au prochain coup) !");
+                                floatingTexts.push_back({"BOUCLIER ACTIF !", heroBasePos, UI::Silver, 1.2f, 1.2f});
+                                journalCombat.push_back(joueur.nom + " leve son Bouclier (Degats /2 au prochain coup) !");
                                 menuObjetsOuvert = false;
                                 etat = CombatState::ACTION_RESOLVING;
                                 horlogeTour.restart();
@@ -294,12 +275,9 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
                     }
                     else
                     {
-                        // Action 1: Attaquer
                         if (btnAttaque.getGlobalBounds().contains(mPos.x, mPos.y))
                         {
-                            heroActionRow = 3; // Slash
-                            heroFrame = 0;
-
+                            heroLunge = 0.25f;
                             bool isCrit = (rand() % 100) < joueur.chanceCrit;
                             int degatsBruts = joueur.attaque + (rand() % 5);
                             if (isCrit) degatsBruts = static_cast<int>(degatsBruts * 1.7f);
@@ -309,14 +287,13 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
 
                             shakeMonstre = 0.25f;
                             std::string txtDmg = (isCrit ? "CRITIQUE ! -" : "-") + std::to_string(degatsFinaux);
-                            floatingTexts.push_back({txtDmg, monstreBasePos, isCrit ? UI::GoldBright : UI::Crimson, 1.2f, 1.2f});
+                            floatingTexts.push_back({txtDmg, monstreBasePos, isCrit ? UI::Azure : UI::Crimson, 1.2f, 1.2f});
 
                             journalCombat.push_back(joueur.nom + " frappe " + monstre.nom + " pour " + std::to_string(degatsFinaux) + " degats !" + (isCrit ? " (Coup Critique !)" : ""));
 
                             etat = CombatState::ACTION_RESOLVING;
                             horlogeTour.restart();
                         }
-                        // Action 2: Sort Spécial
                         else if (btnSort.getGlobalBounds().contains(mPos.x, mPos.y))
                         {
                             int coutMana = 15;
@@ -327,52 +304,51 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
                             if (joueur.mana >= coutMana)
                             {
                                 joueur.mana -= coutMana;
-                                heroActionRow = 0; // Spellcast
-                                heroFrame = 0;
+                                heroLunge = 0.35f;
 
                                 int degatsSort = 0;
-                                if (joueur.classeIndex == 0) // Guerrier: Coup Puissant
+                                if (joueur.classeIndex == 0)
                                 {
                                     degatsSort = static_cast<int>(joueur.attaque * 2.3f);
                                     monstre.vie = std::max(0, monstre.vie - degatsSort);
-                                    floatingTexts.push_back({"FRACAS ! -" + std::to_string(degatsSort), monstreBasePos, UI::GoldBright, 1.3f, 1.3f});
-                                    journalCombat.push_back(joueur.nom + " assène un Coup Puissant devastateur (" + std::to_string(degatsSort) + " degats) !");
+                                    floatingTexts.push_back({"FRACAS ! -" + std::to_string(degatsSort), monstreBasePos, UI::Azure, 1.3f, 1.3f});
+                                    journalCombat.push_back(joueur.nom + " assene un Coup Puissant devastateur (" + std::to_string(degatsSort) + " degats) !");
                                 }
-                                else if (joueur.classeIndex == 1) // Mage: Boule de Feu
+                                else if (joueur.classeIndex == 1)
                                 {
                                     degatsSort = static_cast<int>(joueur.attaque * 2.6f);
                                     monstre.vie = std::max(0, monstre.vie - degatsSort);
-                                    floatingTexts.push_back({"INFERNO ! -" + std::to_string(degatsSort), monstreBasePos, sf::Color(255, 100, 30), 1.3f, 1.3f});
+                                    floatingTexts.push_back({"INFERNO ! -" + std::to_string(degatsSort), monstreBasePos, sf::Color(255, 120, 50), 1.3f, 1.3f});
                                     journalCombat.push_back(joueur.nom + " dechaîne une furieuse Boule de Feu (" + std::to_string(degatsSort) + " degats) !");
                                 }
-                                else if (joueur.classeIndex == 2) // Archer: Tir de Précision
+                                else if (joueur.classeIndex == 2)
                                 {
                                     degatsSort = static_cast<int>(joueur.attaque * 2.0f);
                                     monstre.vie = std::max(0, monstre.vie - degatsSort);
-                                    floatingTexts.push_back({"PERFORANT ! -" + std::to_string(degatsSort), monstreBasePos, UI::GoldBright, 1.3f, 1.3f});
-                                    journalCombat.push_back(joueur.nom + " décoche une flèche précise ignorant l'armure (" + std::to_string(degatsSort) + " degats) !");
+                                    floatingTexts.push_back({"PERFORANT ! -" + std::to_string(degatsSort), monstreBasePos, UI::Azure, 1.3f, 1.3f});
+                                    journalCombat.push_back(joueur.nom + " decoche une fleche precise ignorant l'armure (" + std::to_string(degatsSort) + " degats) !");
                                 }
-                                else if (joueur.classeIndex == 3) // Paladin: Soin Divin + Frappe
+                                else if (joueur.classeIndex == 3)
                                 {
                                     int soin = 45;
                                     joueur.vie = std::min(joueur.vie + soin, joueur.vieMax);
                                     degatsSort = static_cast<int>(joueur.attaque * 1.4f);
                                     monstre.vie = std::max(0, monstre.vie - degatsSort);
                                     floatingTexts.push_back({"+" + std::to_string(soin) + " PV", heroBasePos, UI::GreenHP, 1.2f, 1.2f});
-                                    floatingTexts.push_back({"CHATIMENT ! -" + std::to_string(degatsSort), monstreBasePos, UI::GoldBright, 1.2f, 1.2f});
+                                    floatingTexts.push_back({"CHATIMENT ! -" + std::to_string(degatsSort), monstreBasePos, UI::Azure, 1.2f, 1.2f});
                                     journalCombat.push_back(joueur.nom + " invoque la Lumiere : +" + std::to_string(soin) + " PV et " + std::to_string(degatsSort) + " degats infliges !");
                                 }
-                                else if (joueur.classeIndex == 4) // Nécromancien: Malédiction (vol de vie)
+                                else if (joueur.classeIndex == 4)
                                 {
                                     degatsSort = static_cast<int>(joueur.attaque * 1.8f);
                                     monstre.vie = std::max(0, monstre.vie - degatsSort);
                                     int volVie = degatsSort / 2;
                                     joueur.vie = std::min(joueur.vie + volVie, joueur.vieMax);
-                                    floatingTexts.push_back({"DRAIN ! -" + std::to_string(degatsSort), monstreBasePos, sf::Color(180, 80, 240), 1.2f, 1.2f});
+                                    floatingTexts.push_back({"DRAIN ! -" + std::to_string(degatsSort), monstreBasePos, sf::Color(190, 95, 255), 1.2f, 1.2f});
                                     floatingTexts.push_back({"+" + std::to_string(volVie) + " PV", heroBasePos, UI::GreenHP, 1.2f, 1.2f});
                                     journalCombat.push_back(joueur.nom + " draine la force vitale : -" + std::to_string(degatsSort) + " PV infliges, +" + std::to_string(volVie) + " PV absorbes !");
                                 }
-                                else // Assassin: Attaque Sournoise
+                                else
                                 {
                                     degatsSort = static_cast<int>(joueur.attaque * 2.5f);
                                     monstre.vie = std::max(0, monstre.vie - degatsSort);
@@ -389,12 +365,10 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
                                 floatingTexts.push_back({"MANA INSUFFISANT !", heroBasePos, UI::BlueMana, 1.0f, 1.0f});
                             }
                         }
-                        // Action 3: Ouvrir Inventaire
                         else if (btnObjets.getGlobalBounds().contains(mPos.x, mPos.y))
                         {
                             menuObjetsOuvert = true;
                         }
-                        // Action 4: Fuir
                         else if (btnFuir.getGlobalBounds().contains(mPos.x, mPos.y))
                         {
                             if (isBossRaid)
@@ -406,7 +380,6 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
                                 if ((rand() % 100) < 75)
                                 {
                                     journalCombat.push_back(joueur.nom + " profite d'une ouverture et s'enfuit avec succes !");
-                                    fuiteReussie = true;
                                     combatTermine = true;
                                     victoireJoueur = false;
                                 }
@@ -431,7 +404,6 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
             }
         }
 
-        // Gestion de l'état et résolution des tours
         if (etat == CombatState::ACTION_RESOLVING)
         {
             if (horlogeTour.getElapsedTime().asSeconds() >= dureeAttente)
@@ -447,7 +419,6 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
                     journalCombat.push_back("VICTOIRE ! " + monstre.nom + " s'effondre dans la poussiere !");
                     journalCombat.push_back("Vous ramassez " + std::to_string(monstre.orRecompense) + " PO et gagnez " + std::to_string(monstre.xpRecompense) + " XP !");
 
-                    // Vérifier Level Up
                     if (joueur.xp >= joueur.xpSeuil)
                     {
                         joueur.niveau++;
@@ -459,7 +430,7 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
                         joueur.defense += 3;
                         joueur.vie = joueur.vieMax;
                         joueur.mana = joueur.manaMax;
-                        journalCombat.push_back("★ LEVEL UP ! Vous atteignez le Niveau " + std::to_string(joueur.niveau) + " ! Stats augmenteed & Soins complets !");
+                        journalCombat.push_back("★ LEVEL UP ! Vous atteignez le Niveau " + std::to_string(joueur.niveau) + " ! Stats augmentees & Soins complets !");
                     }
                 }
                 else
@@ -473,13 +444,13 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
         {
             if (horlogeTour.getElapsedTime().asSeconds() >= 0.5f)
             {
-                // Attaque du monstre
+                monstreLunge = 0.25f;
                 int degatsEnnemi = monstre.attaque + (rand() % 4);
                 if (postureDefensive)
                 {
                     degatsEnnemi /= 2;
                     postureDefensive = false;
-                    floatingTexts.push_back({"BOUCLIER ACTIF !", heroBasePos, UI::Gold, 1.0f, 1.0f});
+                    floatingTexts.push_back({"BOUCLIER ACTIF !", heroBasePos, UI::Silver, 1.0f, 1.0f});
                 }
 
                 degatsEnnemi = std::max(1, degatsEnnemi - (joueur.defense / 4));
@@ -498,83 +469,76 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
                 else
                 {
                     etat = CombatState::PLAYER_TURN;
-                    heroActionRow = 2; // Repos
                 }
             }
         }
 
-        // Animations des sprites
-        if (horlogeAnim.getElapsedTime().asSeconds() > 0.15f)
-        {
-            heroFrame = (heroFrame + 1) % 6;
-            monstreFrame = (monstreFrame + 1) % 6;
-            horlogeAnim.restart();
-        }
+        float totalTime = horlogeTotal.getElapsedTime().asSeconds();
+        float bobHero = std::sin(totalTime * 3.0f) * 2.0f;
+        float bobMonstre = std::sin((totalTime + 1.0f) * 3.0f) * 2.0f;
 
-        // Tremblement d'impact
         sf::Vector2f curHeroPos = heroBasePos;
+        curHeroPos.y += bobHero;
+        if (heroLunge > 0.0f)
+        {
+            heroLunge -= dt;
+            curHeroPos.x += 35.0f;
+        }
         if (shakeHero > 0.0f)
         {
             shakeHero -= dt;
-            curHeroPos.x += (rand() % 11 - 5);
+            curHeroPos.x += (rand() % 9 - 4);
             curHeroPos.y += (rand() % 7 - 3);
         }
         spriteHero.setPosition(curHeroPos);
 
         sf::Vector2f curMonstrePos = monstreBasePos;
+        curMonstrePos.y += bobMonstre;
+        if (monstreLunge > 0.0f)
+        {
+            monstreLunge -= dt;
+            curMonstrePos.x -= 35.0f;
+        }
         if (shakeMonstre > 0.0f)
         {
             shakeMonstre -= dt;
-            curMonstrePos.x += (rand() % 11 - 5);
+            curMonstrePos.x += (rand() % 9 - 4);
             curMonstrePos.y += (rand() % 7 - 3);
         }
         spriteMonstre.setPosition(curMonstrePos);
 
-        // Rectangles des textures de sprites
-        spriteHero.setTextureRect(sf::IntRect(heroFrame * 64, heroActionRow * 64, 64, 64));
-        spriteMonstre.setTextureRect(sf::IntRect(monstreFrame * 64, 128, 64, 64)); // row 2
-
-        // Rendu
-        window.clear(sf::Color(10, 10, 15));
-
+        window.clear(sf::Color(10, 12, 18));
         if (fondCharge) window.draw(spriteFond);
 
-        // Voile d'ambiance
         sf::RectangleShape voile(sf::Vector2f(screenW, screenH));
-        voile.setFillColor(sf::Color(12, 16, 24, 170));
+        voile.setFillColor(sf::Color(12, 16, 24, 180));
         window.draw(voile);
 
-        // En-tête de combat
         UI::drawPanel(window, screenW * 0.05f, screenH * 0.03f, screenW * 0.90f, screenH * 0.08f);
-        sf::Text txtTitreCombat(isBossRaid ? "⚔ COMBAT DE BOSS DE ZONE : " + monstre.nom : "⚔ ENGAGEMENT : " + monstre.nom, font, static_cast<unsigned int>(screenH * 0.035f));
-        txtTitreCombat.setFillColor(isBossRaid ? UI::Crimson : UI::GoldBright);
+        sf::Text txtTitreCombat(isBossRaid ? "COMBAT DE BOSS DE ZONE : " + monstre.nom : "ENGAGEMENT : " + monstre.nom, font, static_cast<unsigned int>(screenH * 0.035f));
+        txtTitreCombat.setFillColor(isBossRaid ? UI::Crimson : UI::Silver);
         sf::FloatRect bTC = txtTitreCombat.getLocalBounds();
         txtTitreCombat.setOrigin(bTC.left + bTC.width / 2.0f, bTC.top + bTC.height / 2.0f);
         txtTitreCombat.setPosition(centerX, screenH * 0.07f);
         window.draw(txtTitreCombat);
 
-        // Cartes de statistiques au-dessus des combattants
         float cardW = screenW * 0.32f;
         float cardH = screenH * 0.12f;
 
-        // Fiche Héros (Haut Gauche)
         UI::drawPanel(window, screenW * 0.08f, screenH * 0.14f, cardW, cardH, joueur.nom + " (" + joueur.classeNom + " Niv." + std::to_string(joueur.niveau) + ")", &font, 18);
-        UI::drawProgressBar(window, screenW * 0.10f, screenH * 0.20f, cardW - screenW * 0.04f, 18.0f, joueur.vie, joueur.vieMax, UI::GreenHP, sf::Color(60, 20, 20), "PV: " + std::to_string(joueur.vie) + " / " + std::to_string(joueur.vieMax), font, 13);
-        UI::drawProgressBar(window, screenW * 0.10f, screenH * 0.23f, cardW - screenW * 0.04f, 14.0f, joueur.mana, joueur.manaMax, UI::BlueMana, sf::Color(20, 30, 60), "Mana: " + std::to_string(joueur.mana) + " / " + std::to_string(joueur.manaMax), font, 11);
+        UI::drawProgressBar(window, screenW * 0.10f, screenH * 0.20f, cardW - screenW * 0.04f, 18.0f, joueur.vie, joueur.vieMax, UI::GreenHP, sf::Color(55, 20, 20), "PV: " + std::to_string(joueur.vie) + " / " + std::to_string(joueur.vieMax), font, 13);
+        UI::drawProgressBar(window, screenW * 0.10f, screenH * 0.23f, cardW - screenW * 0.04f, 14.0f, joueur.mana, joueur.manaMax, UI::BlueMana, sf::Color(20, 30, 55), "Mana: " + std::to_string(joueur.mana) + " / " + std::to_string(joueur.manaMax), font, 11);
 
-        // Fiche Monstre (Haut Droite)
         UI::drawPanel(window, screenW * 0.60f, screenH * 0.14f, cardW, cardH, monstre.nom + (isBossRaid ? " [BOSS]" : ""), &font, 18);
-        UI::drawProgressBar(window, screenW * 0.62f, screenH * 0.20f, cardW - screenW * 0.04f, 18.0f, monstre.vie, monstre.vieMax, UI::Crimson, sf::Color(50, 50, 50), "PV: " + std::to_string(monstre.vie) + " / " + std::to_string(monstre.vieMax), font, 13);
+        UI::drawProgressBar(window, screenW * 0.62f, screenH * 0.20f, cardW - screenW * 0.04f, 18.0f, monstre.vie, monstre.vieMax, UI::Crimson, sf::Color(45, 45, 45), "PV: " + std::to_string(monstre.vie) + " / " + std::to_string(monstre.vieMax), font, 13);
         sf::Text txtStatsM("ATQ: " + std::to_string(monstre.attaque) + " | DEF: " + std::to_string(monstre.defense) + " | " + monstre.capaciteSpeciale, font, 14);
         txtStatsM.setFillColor(UI::TextMuted);
         txtStatsM.setPosition(screenW * 0.62f, screenH * 0.23f);
         window.draw(txtStatsM);
 
-        // Dessin des sprites des combattants
         window.draw(spriteHero);
         window.draw(spriteMonstre);
 
-        // Panneau Journal de Combat (Bas Droite)
         float logW = screenW * 0.44f;
         float logH = screenH * 0.28f;
         float logX = screenW * 0.50f;
@@ -587,7 +551,7 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
         {
             sf::Text txtLigne(journalCombat[i], font, static_cast<unsigned int>(screenH * 0.020f));
             if (i == journalCombat.size() - 1)
-                txtLigne.setFillColor(UI::GoldBright);
+                txtLigne.setFillColor(UI::Azure);
             else
                 txtLigne.setFillColor(UI::TextWhite);
 
@@ -595,7 +559,6 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
             window.draw(txtLigne);
         }
 
-        // Command Deck (Bas Gauche)
         sf::Vector2f mPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
         if (etat == CombatState::PLAYER_TURN)
@@ -605,7 +568,6 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
             UI::drawButton(window, btnObjets, txtObjets, btnObjets.getGlobalBounds().contains(mPos.x, mPos.y));
             UI::drawButton(window, btnFuir, txtFuir, (!isBossRaid && btnFuir.getGlobalBounds().contains(mPos.x, mPos.y)));
 
-            // Sous-menu inventaire
             if (menuObjetsOuvert)
             {
                 window.draw(popPanel);
@@ -613,7 +575,7 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
                 txtItemSoin.setString("1. Potion de Soin (+35 PV)  x" + std::to_string(joueur.inventaire.potionsNormales));
                 txtItemGrande.setString("2. Grande Potion (100% PV)  x" + std::to_string(joueur.inventaire.grandesPotions));
                 txtItemMana.setString("3. Potion de Mana (+35 MP)  x" + std::to_string(joueur.inventaire.potionsMana));
-                txtItemBouclier.setString("4. Bouclier (Dégâts /2)    x" + std::to_string(joueur.inventaire.nombreBouclier));
+                txtItemBouclier.setString("4. Bouclier (Degats /2)    x" + std::to_string(joueur.inventaire.nombreBouclier));
 
                 UI::drawButton(window, btnItemSoin, txtItemSoin, btnItemSoin.getGlobalBounds().contains(mPos.x, mPos.y));
                 UI::drawButton(window, btnItemGrande, txtItemGrande, btnItemGrande.getGlobalBounds().contains(mPos.x, mPos.y));
@@ -622,19 +584,18 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
             }
         }
 
-        // Écran de Victoire / Défaite superposé
         if (etat == CombatState::VICTORY_SCREEN || etat == CombatState::DEFEAT_SCREEN)
         {
             sf::RectangleShape popFin(sf::Vector2f(screenW * 0.50f, screenH * 0.40f));
             popFin.setOrigin(popFin.getSize().x / 2.0f, popFin.getSize().y / 2.0f);
             popFin.setPosition(centerX, centerY);
             popFin.setFillColor(UI::DarkPanel);
-            popFin.setOutlineThickness(3.0f);
-            popFin.setOutlineColor(etat == CombatState::VICTORY_SCREEN ? UI::GoldBright : UI::Crimson);
+            popFin.setOutlineThickness(2.0f);
+            popFin.setOutlineColor(etat == CombatState::VICTORY_SCREEN ? UI::Azure : UI::Crimson);
             window.draw(popFin);
 
-            sf::Text txtTitreFin(etat == CombatState::VICTORY_SCREEN ? "★ VICTOIRE TRIOMPHALE ★" : "☠ VOUS AVEZ PÉRI ☠", font, static_cast<unsigned int>(screenH * 0.045f));
-            txtTitreFin.setFillColor(etat == CombatState::VICTORY_SCREEN ? UI::GoldBright : UI::Crimson);
+            sf::Text txtTitreFin(etat == CombatState::VICTORY_SCREEN ? "★ VICTOIRE TRIOMPHALE ★" : "VOUS AVEZ PERI", font, static_cast<unsigned int>(screenH * 0.045f));
+            txtTitreFin.setFillColor(etat == CombatState::VICTORY_SCREEN ? UI::Silver : UI::Crimson);
             sf::FloatRect bTF = txtTitreFin.getLocalBounds();
             txtTitreFin.setOrigin(bTF.left + bTF.width / 2.0f, bTF.top + bTF.height / 2.0f);
             txtTitreFin.setPosition(centerX, centerY - screenH * 0.12f);
@@ -643,13 +604,13 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
             std::string resumeText;
             if (etat == CombatState::VICTORY_SCREEN)
             {
-                resumeText = "Le monstre " + monstre.nom + " a été vaincu !\n\n"
-                    + "Gains : +" + std::to_string(monstre.orRecompense) + " Pièces d'Or | +" + std::to_string(monstre.xpRecompense) + " XP\n"
+                resumeText = "Le monstre " + monstre.nom + " a ete vaincu !\n\n"
+                    + "Gains : +" + std::to_string(monstre.orRecompense) + " Pieces d'Or | +" + std::to_string(monstre.xpRecompense) + " XP\n"
                     + "Niveau actuel : " + std::to_string(joueur.niveau) + " (" + std::to_string(joueur.xp) + "/" + std::to_string(joueur.xpSeuil) + " XP)";
             }
             else
             {
-                resumeText = "Vos blessures sont trop profondes...\nLes prêtres de la Cité vous rapatrient au sanctuaire.";
+                resumeText = "Vos blessures sont trop profondes...\nLes pretres de la Cite vous rapatrient au sanctuaire.";
             }
 
             sf::Text txtResume(resumeText, font, static_cast<unsigned int>(screenH * 0.024f));
@@ -666,13 +627,12 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
             txtFin.setOrigin(bF2.left + bF2.width / 2.0f, bF2.top + bF2.height / 2.0f);
 
             UI::drawButton(window, btnFin, txtFin, btnFin.getGlobalBounds().contains(mPos.x, mPos.y),
-                           etat == CombatState::VICTORY_SCREEN ? UI::Gold : UI::Crimson,
-                           UI::GoldBright,
-                           sf::Color::Black,
-                           sf::Color::Black);
+                           etat == CombatState::VICTORY_SCREEN ? sf::Color(35, 75, 120) : sf::Color(120, 35, 35),
+                           etat == CombatState::VICTORY_SCREEN ? sf::Color(50, 100, 160) : sf::Color(160, 45, 45),
+                           UI::TextWhite,
+                           UI::Silver);
         }
 
-        // Textes flottants
         UI::updateAndDrawFloatingTexts(window, font, floatingTexts, dt);
 
         window.display();
@@ -680,7 +640,6 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
 
     if (joueur.vie <= 0)
     {
-        // Résurrection avec 50% de PV
         joueur.vie = std::max(1, joueur.vieMax / 2);
     }
 

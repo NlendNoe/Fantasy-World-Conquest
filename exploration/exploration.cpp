@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <cmath>
 
 #include "../structure.h"
 #include "../ui_utils.h"
@@ -15,9 +16,6 @@
 #include "../bestiaire/bestiaire.cpp"
 #include "../combat/combat.cpp"
 
-// -------------------------------------------------------------
-// 1. BOUTIQUE DE LA CITÉ EN SFML
-// -------------------------------------------------------------
 inline bool afficherBoutiqueSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueur)
 {
     float screenW = static_cast<float>(window.getSize().x);
@@ -34,55 +32,93 @@ inline bool afficherBoutiqueSFML(sf::RenderWindow &window, sf::Font &font, Joueu
         spriteFond.setScale(screenW / sz.x, screenH / sz.y);
     }
 
+    sf::Texture texEpee, texBouclier, texArmure, texPotionSoin, texPotionMana, texGrandePotion, texParchemin, texSac;
+    texEpee.loadFromFile("assets/pictures/epee/epee.png");
+    texBouclier.loadFromFile("assets/pictures/bouclier/bouclier.png");
+    texArmure.loadFromFile("assets/pictures/armure/armure.png");
+    texPotionSoin.loadFromFile("assets/pictures/potion_soin/potion_soin.png");
+    texPotionMana.loadFromFile("assets/pictures/potion_mana/potion_mana.png");
+    texGrandePotion.loadFromFile("assets/pictures/grande_potion/grande_potion.png");
+    texParchemin.loadFromFile("assets/pictures/parchemin/parchemin.png");
+    texSac.loadFromFile("assets/pictures/sac/sac.png");
+
+    sf::Texture* texturesObjets[8] = {
+        &texEpee, &texBouclier, &texArmure, &texPotionSoin,
+        &texPotionMana, &texGrandePotion, &texParchemin, &texSac
+    };
+
     struct ItemBoutique {
         std::string nom;
-        std::string effet;
+        std::string categorie;
+        std::string description;
         int prix;
-        int type; // 0: arme, 1: armure, 2: potion, 3: mana, 4: grande potion, 5: parchemin, 6: sac
+        int type;
         int valeur;
+        int iconIdx;
     };
 
     std::vector<ItemBoutique> items = {
-        {"Épée de Fer", "+5 ATQ permanente", 15, 0, 5},
-        {"Épée d'Acier", "+15 ATQ permanente", 40, 0, 15},
-        {"Lame Runique", "+25 ATQ permanente", 75, 0, 25},
-        {"Claymore Vorpale", "+40 ATQ permanente", 130, 0, 40},
-        {"Épée du Héros", "+75 ATQ permanente", 250, 0, 75},
-        {"Bouclier en Bois", "+1 Bouclier défensif", 35, 1, 1},
-        {"Bouclier d'Acier", "+2 Boucliers défensifs", 65, 1, 2},
-        {"Cotte de Mailles", "+20 PV Max & Soins", 80, 1, 20},
-        {"Armure de Plaques", "+45 PV Max & +10 DEF", 180, 1, 45},
-        {"Potion de Soin", "+35 PV en combat/explo", 20, 2, 1},
-        {"Grande Potion", "Restaure 100% des PV", 50, 4, 1},
-        {"Potion de Mana", "+35 MP en combat", 25, 3, 1},
-        {"Parchemin de Force", "+6 ATQ permanent", 100, 5, 6},
-        {"Agrandir Sac", "+2 Emplacements d'objets", 70, 6, 2}
+        {"Épée de Fer", "Arme", "Lame forgee en fer solide.\nAugmente l'Attaque permanente de 5 points.", 15, 0, 5, 0},
+        {"Épée d'Acier", "Arme", "Fine epee trempee dans l'acier.\nAugmente l'Attaque permanente de 15 points.", 40, 0, 15, 0},
+        {"Lame Runique", "Arme", "Lame gravee d'anciennes runes de bravoure.\nAugmente l'Attaque permanente de 25 points.", 75, 0, 25, 0},
+        {"Claymore Vorpale", "Arme", "Lourde epee capable de fendre les armures.\nAugmente l'Attaque permanente de 40 points.", 130, 0, 40, 0},
+        {"Épée du Héros", "Arme", "Arme mythique doree des champions du royaume.\nAugmente l'Attaque permanente de 75 points.", 250, 0, 75, 0},
+        {"Bouclier en Bois", "Bouclier", "Rondache en chene renforcee de ferrures.\nAjoute 1 Bouclier dans l'inventaire.", 35, 1, 1, 1},
+        {"Bouclier d'Acier", "Bouclier", "Robuste ecu en acier trempe.\nAjoute 2 Boucliers dans l'inventaire.", 65, 1, 2, 1},
+        {"Cotte de Mailles", "Armure", "Armure de mailles souple et protectrice.\nAccroît les PV Max de 20 et restaure 20 PV.", 80, 1, 20, 2},
+        {"Armure de Plaques", "Armure", "Harnois complet d'acier massif.\nAccroît les PV Max de 45 et la Defense de 10.", 180, 1, 45, 2},
+        {"Potion de Soin", "Consommable", "Fiole curative restaure 35 PV en combat\nou lors de vos explorations.", 20, 2, 1, 3},
+        {"Grande Potion", "Consommable", "Precieuse liqueur restaurant instantanement\n100% de la sante maximale du heros.", 50, 4, 1, 5},
+        {"Potion de Mana", "Consommable", "Fiole d'energie arcanique restituant\n35 Points de Mana lors des affrontements.", 25, 3, 1, 4},
+        {"Parchemin de Force", "Magie", "Parchemin runique millenaire.\nConfere un gain definitif de 6 points d'Attaque.", 100, 5, 6, 6},
+        {"Agrandir Sac", "Amélioration", "Ceinture de cuir et sacoches suplementaires.\nPermet de transporter 2 objets de plus.", 70, 6, 2, 7}
     };
 
-    float cardW = screenW * 0.42f;
-    float cardH = screenH * 0.065f;
-    float col1X = screenW * 0.06f;
-    float col2X = screenW * 0.52f;
-    float startY = screenH * 0.17f;
-    float gapY = screenH * 0.082f;
+    int itemSelectionne = 0;
+    std::string messageNotif = "Cliquez sur un article pour voir ses details et l'acquerir.";
+    sf::Color couleurNotif = UI::Silver;
 
-    std::string messageNotification = "Bienvenue a la Boutique Royale ! Cliquez sur un article pour acheter.";
-    sf::Color couleurNotif = UI::GoldBright;
+    float listX = screenW * 0.05f;
+    float listY = screenH * 0.16f;
+    float listW = screenW * 0.42f;
+    float rowH = screenH * 0.048f;
+    float gapRow = screenH * 0.005f;
 
-    float btnRetW = screenW * 0.22f;
-    float btnRetH = screenH * 0.065f;
+    float rightX = screenW * 0.50f;
+    float rightY = screenH * 0.16f;
+    float rightW = screenW * 0.45f;
+    float rightH = screenH * 0.74f;
+
+    float btnRetW = screenW * 0.20f;
+    float btnRetH = screenH * 0.060f;
     sf::RectangleShape btnRetour(sf::Vector2f(btnRetW, btnRetH));
-    btnRetour.setOrigin(btnRetW / 2.0f, btnRetH / 2.0f);
-    btnRetour.setPosition(centerX, screenH * 0.93f);
-    btnRetour.setFillColor(UI::Gold);
-    btnRetour.setOutlineThickness(2.0f);
-    btnRetour.setOutlineColor(UI::GoldBright);
+    btnRetour.setPosition(listX, screenH * 0.915f);
+    btnRetour.setFillColor(UI::DarkPanelLight);
+    btnRetour.setOutlineThickness(0.0f);
 
     sf::Text txtRetour("RETOUR A LA CITE", font, static_cast<unsigned int>(btnRetH * 0.40f));
-    txtRetour.setFillColor(sf::Color::Black);
+    txtRetour.setFillColor(UI::TextWhite);
     sf::FloatRect bRet = txtRetour.getLocalBounds();
     txtRetour.setOrigin(bRet.left + bRet.width / 2.0f, bRet.top + bRet.height / 2.0f);
-    txtRetour.setPosition(btnRetour.getPosition());
+    txtRetour.setPosition(btnRetour.getPosition().x + btnRetW / 2.0f, btnRetour.getPosition().y + btnRetH / 2.0f);
+
+    float btnAchatW = rightW * 0.85f;
+    float btnAchatH = screenH * 0.065f;
+    sf::RectangleShape btnAcheter(sf::Vector2f(btnAchatW, btnAchatH));
+    btnAcheter.setPosition(rightX + (rightW - btnAchatW) / 2.0f, rightY + rightH - btnAchatH - screenH * 0.035f);
+    btnAcheter.setFillColor(sf::Color(35, 115, 60));
+    btnAcheter.setOutlineThickness(0.0f);
+
+    sf::Text txtAcheter("ACHETER L'OBJET", font, static_cast<unsigned int>(btnAchatH * 0.40f));
+    txtAcheter.setFillColor(UI::TextWhite);
+    sf::FloatRect bAch = txtAcheter.getLocalBounds();
+    txtAcheter.setOrigin(bAch.left + bAch.width / 2.0f, bAch.top + bAch.height / 2.0f);
+    txtAcheter.setPosition(btnAcheter.getPosition().x + btnAchatW / 2.0f, btnAcheter.getPosition().y + btnAchatH / 2.0f);
+
+    sf::Sprite spriteApercu;
+    spriteApercu.setOrigin(64.0f, 64.0f);
+    spriteApercu.setScale(1.4f, 1.4f);
+    spriteApercu.setPosition(rightX + rightW / 2.0f, rightY + screenH * 0.16f);
 
     while (window.isOpen())
     {
@@ -106,75 +142,79 @@ inline bool afficherBoutiqueSFML(sf::RenderWindow &window, sf::Font &font, Joueu
 
                 for (size_t i = 0; i < items.size(); ++i)
                 {
-                    float x = (i < 7) ? col1X : col2X;
-                    float y = startY + (i % 7) * gapY;
-                    sf::FloatRect boundsItem(x, y, cardW, cardH);
-
-                    if (boundsItem.contains(mPos.x, mPos.y))
+                    float y = listY + i * (rowH + gapRow);
+                    sf::FloatRect boundsRow(listX, y, listW, rowH);
+                    if (boundsRow.contains(mPos.x, mPos.y))
                     {
-                        if (joueur.orJoueur >= items[i].prix)
-                        {
-                            joueur.orJoueur -= items[i].prix;
+                        itemSelectionne = static_cast<int>(i);
+                    }
+                }
 
-                            if (items[i].type == 0) // Arme
-                            {
-                                joueur.attaque += items[i].valeur;
-                                messageNotification = "Achete: " + items[i].nom + " (+ " + std::to_string(items[i].valeur) + " ATQ) !";
-                            }
-                            else if (items[i].type == 1) // Armure / Bouclier
-                            {
-                                if (items[i].nom.find("Bouclier") != std::string::npos)
-                                {
-                                    joueur.inventaire.nombreBouclier += items[i].valeur;
-                                    messageNotification = "Achete: " + items[i].nom + " (+ " + std::to_string(items[i].valeur) + " Bouclier) !";
-                                }
-                                else if (items[i].nom.find("Cotte") != std::string::npos)
-                                {
-                                    joueur.vieMax += items[i].valeur;
-                                    joueur.vie += items[i].valeur;
-                                    messageNotification = "Achete: " + items[i].nom + " (+ " + std::to_string(items[i].valeur) + " PV Max) !";
-                                }
-                                else // Armure plaques
-                                {
-                                    joueur.vieMax += items[i].valeur;
-                                    joueur.vie += items[i].valeur;
-                                    joueur.defense += 10;
-                                    messageNotification = "Achete: " + items[i].nom + " (+45 PV Max, +10 DEF) !";
-                                }
-                            }
-                            else if (items[i].type == 2) // Potion
-                            {
-                                joueur.inventaire.potionsNormales += items[i].valeur;
-                                messageNotification = "Achete: Potion de Soin ajoutee a votre sac !";
-                            }
-                            else if (items[i].type == 3) // Mana
-                            {
-                                joueur.inventaire.potionsMana += items[i].valeur;
-                                messageNotification = "Achete: Potion de Mana ajoutee a votre sac !";
-                            }
-                            else if (items[i].type == 4) // Grande potion
-                            {
-                                joueur.inventaire.grandesPotions += items[i].valeur;
-                                messageNotification = "Achete: Grande Potion ajoutee a votre sac !";
-                            }
-                            else if (items[i].type == 5) // Parchemin
-                            {
-                                joueur.attaque += items[i].valeur;
-                                messageNotification = "Achete: Parchemin de Force (+6 ATQ permanent) !";
-                            }
-                            else if (items[i].type == 6) // Agrandir sac
-                            {
-                                joueur.inventaire.capaciteSac += items[i].valeur;
-                                messageNotification = "Achete: Sac agrandi (+2 emplacements) !";
-                            }
+                if (btnAcheter.getGlobalBounds().contains(mPos.x, mPos.y))
+                {
+                    ItemBoutique &itemActuel = items[itemSelectionne];
+                    if (joueur.orJoueur >= itemActuel.prix)
+                    {
+                        joueur.orJoueur -= itemActuel.prix;
 
-                            couleurNotif = UI::GreenHP;
-                        }
-                        else
+                        if (itemActuel.type == 0)
                         {
-                            messageNotification = "Or insuffisant pour acheter: " + items[i].nom + " !";
-                            couleurNotif = UI::Crimson;
+                            joueur.attaque += itemActuel.valeur;
+                            messageNotif = "Succes: " + itemActuel.nom + " equipee (+ " + std::to_string(itemActuel.valeur) + " ATQ) !";
                         }
+                        else if (itemActuel.type == 1)
+                        {
+                            if (itemActuel.nom.find("Bouclier") != std::string::npos)
+                            {
+                                joueur.inventaire.nombreBouclier += itemActuel.valeur;
+                                messageNotif = "Succes: " + itemActuel.nom + " ajoute au sac (+ " + std::to_string(itemActuel.valeur) + ") !";
+                            }
+                            else if (itemActuel.nom.find("Cotte") != std::string::npos)
+                            {
+                                joueur.vieMax += itemActuel.valeur;
+                                joueur.vie += itemActuel.valeur;
+                                messageNotif = "Succes: " + itemActuel.nom + " portee (+ " + std::to_string(itemActuel.valeur) + " PV Max) !";
+                            }
+                            else
+                            {
+                                joueur.vieMax += itemActuel.valeur;
+                                joueur.vie += itemActuel.valeur;
+                                joueur.defense += 10;
+                                messageNotif = "Succes: " + itemActuel.nom + " (+45 PV Max, +10 DEF) !";
+                            }
+                        }
+                        else if (itemActuel.type == 2)
+                        {
+                            joueur.inventaire.potionsNormales += itemActuel.valeur;
+                            messageNotif = "Succes: Potion de Soin rangee dans votre sac !";
+                        }
+                        else if (itemActuel.type == 3)
+                        {
+                            joueur.inventaire.potionsMana += itemActuel.valeur;
+                            messageNotif = "Succes: Potion de Mana rangee dans votre sac !";
+                        }
+                        else if (itemActuel.type == 4)
+                        {
+                            joueur.inventaire.grandesPotions += itemActuel.valeur;
+                            messageNotif = "Succes: Grande Potion rangee dans votre sac !";
+                        }
+                        else if (itemActuel.type == 5)
+                        {
+                            joueur.attaque += itemActuel.valeur;
+                            messageNotif = "Succes: Parchemin de Force utilise (+6 ATQ permanent) !";
+                        }
+                        else if (itemActuel.type == 6)
+                        {
+                            joueur.inventaire.capaciteSac += itemActuel.valeur;
+                            messageNotif = "Succes: Capacite du sac etendue (+2 places) !";
+                        }
+
+                        couleurNotif = UI::GreenHP;
+                    }
+                    else
+                    {
+                        messageNotif = "Or insuffisant pour acheter: " + itemActuel.nom + " !";
+                        couleurNotif = UI::Crimson;
                     }
                 }
             }
@@ -182,67 +222,146 @@ inline bool afficherBoutiqueSFML(sf::RenderWindow &window, sf::Font &font, Joueu
 
         sf::Vector2f mPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
-        window.clear(sf::Color(12, 14, 20));
+        window.clear(sf::Color(10, 12, 18));
         if (fondCharge) window.draw(spriteFond);
 
         sf::RectangleShape voile(sf::Vector2f(screenW, screenH));
-        voile.setFillColor(sf::Color(10, 12, 22, 210));
+        voile.setFillColor(sf::Color(10, 14, 24, 215));
         window.draw(voile);
 
-        // En-tête
         UI::drawPanel(window, screenW * 0.05f, screenH * 0.02f, screenW * 0.90f, screenH * 0.09f);
         sf::Text txtTitreShop("BOUTIQUE ROYALE DE RIVENOIR", font, static_cast<unsigned int>(screenH * 0.038f));
-        txtTitreShop.setFillColor(UI::GoldBright);
+        txtTitreShop.setFillColor(UI::Silver);
         txtTitreShop.setPosition(screenW * 0.08f, screenH * 0.035f);
         window.draw(txtTitreShop);
 
-        sf::Text txtOrShop("Bourse : " + std::to_string(joueur.orJoueur) + " PO", font, static_cast<unsigned int>(screenH * 0.032f));
-        txtOrShop.setFillColor(UI::AmberXP);
+        sf::Text txtOrShop("Bourse : " + std::to_string(joueur.orJoueur) + " PO", font, static_cast<unsigned int>(screenH * 0.030f));
+        txtOrShop.setFillColor(UI::AmberGold);
         sf::FloatRect bOrS = txtOrShop.getLocalBounds();
         txtOrShop.setPosition(screenW * 0.92f - bOrS.width, screenH * 0.04f);
         window.draw(txtOrShop);
 
-        // Bandeau de notification
-        sf::Text txtNotif(messageNotification, font, static_cast<unsigned int>(screenH * 0.022f));
+        sf::Text txtNotif(messageNotif, font, static_cast<unsigned int>(screenH * 0.020f));
         txtNotif.setFillColor(couleurNotif);
         sf::FloatRect bN = txtNotif.getLocalBounds();
         txtNotif.setOrigin(bN.left + bN.width / 2.0f, bN.top + bN.height / 2.0f);
-        txtNotif.setPosition(centerX, screenH * 0.135f);
+        txtNotif.setPosition(centerX, screenH * 0.130f);
         window.draw(txtNotif);
 
-        // Liste des articles
         for (size_t i = 0; i < items.size(); ++i)
         {
-            float x = (i < 7) ? col1X : col2X;
-            float y = startY + (i % 7) * gapY;
-            sf::FloatRect boundsItem(x, y, cardW, cardH);
-            bool isHov = boundsItem.contains(mPos.x, mPos.y);
+            float y = listY + i * (rowH + gapRow);
+            sf::FloatRect boundsRow(listX, y, listW, rowH);
+            bool isSelected = (itemSelectionne == static_cast<int>(i));
+            bool isHovered = boundsRow.contains(mPos.x, mPos.y);
 
-            sf::RectangleShape card(sf::Vector2f(cardW, cardH));
-            card.setPosition(x, y);
-            card.setFillColor(isHov ? sf::Color(35, 45, 75, 230) : UI::DarkPanel);
-            card.setOutlineThickness(1.5f);
-            card.setOutlineColor(isHov ? UI::GoldBright : UI::Gold);
-            window.draw(card);
+            sf::RectangleShape row(sf::Vector2f(listW, rowH));
+            row.setPosition(listX, y);
+            row.setOutlineThickness(0.0f);
 
-            sf::Text txtNom(items[i].nom, font, static_cast<unsigned int>(cardH * 0.38f));
-            txtNom.setFillColor(isHov ? UI::GoldBright : UI::TextWhite);
-            txtNom.setPosition(x + 12.0f, y + 6.0f);
+            if (isSelected)
+                row.setFillColor(sf::Color(45, 75, 135, 240));
+            else if (isHovered)
+                row.setFillColor(sf::Color(32, 45, 70, 210));
+            else
+                row.setFillColor(UI::DarkPanel);
+
+            window.draw(row);
+
+            sf::Text txtNom(items[i].nom, font, static_cast<unsigned int>(rowH * 0.44f));
+            txtNom.setFillColor(isSelected ? UI::Azure : UI::TextWhite);
+            txtNom.setPosition(listX + 15.0f, y + rowH * 0.22f);
             window.draw(txtNom);
 
-            sf::Text txtEffet(items[i].effet, font, static_cast<unsigned int>(cardH * 0.28f));
-            txtEffet.setFillColor(UI::TextMuted);
-            txtEffet.setPosition(x + 14.0f, y + cardH * 0.50f);
-            window.draw(txtEffet);
+            sf::Text txtCat(items[i].categorie, font, static_cast<unsigned int>(rowH * 0.36f));
+            txtCat.setFillColor(UI::TextMuted);
+            txtCat.setPosition(listX + listW * 0.58f, y + rowH * 0.26f);
+            window.draw(txtCat);
 
-            sf::Text txtPrix(std::to_string(items[i].prix) + " PO", font, static_cast<unsigned int>(cardH * 0.38f));
-            txtPrix.setFillColor(joueur.orJoueur >= items[i].prix ? UI::AmberXP : UI::Crimson);
+            sf::Text txtPrix(std::to_string(items[i].prix) + " PO", font, static_cast<unsigned int>(rowH * 0.44f));
+            txtPrix.setFillColor(joueur.orJoueur >= items[i].prix ? UI::AmberGold : UI::Crimson);
             sf::FloatRect bP = txtPrix.getLocalBounds();
-            txtPrix.setPosition(x + cardW - bP.width - 15.0f, y + cardH * 0.28f);
+            txtPrix.setPosition(listX + listW - bP.width - 15.0f, y + rowH * 0.22f);
             window.draw(txtPrix);
         }
 
-        // Bouton retour
+        UI::drawPanel(window, rightX, rightY, rightW, rightH, "FICHE DETAILLEE DE L'ARTICLE", &font, 20);
+
+        ItemBoutique &itemActuel = items[itemSelectionne];
+
+        float frameBoxSz = screenH * 0.22f;
+        sf::RectangleShape boxImage(sf::Vector2f(frameBoxSz, frameBoxSz));
+        boxImage.setOrigin(frameBoxSz / 2.0f, frameBoxSz / 2.0f);
+        boxImage.setPosition(rightX + rightW / 2.0f, rightY + screenH * 0.16f);
+        boxImage.setFillColor(sf::Color(18, 24, 38, 240));
+        boxImage.setOutlineThickness(1.0f);
+        boxImage.setOutlineColor(UI::BorderMuted);
+        window.draw(boxImage);
+
+        int iconId = itemActuel.iconIdx;
+        spriteApercu.setTexture(*texturesObjets[iconId]);
+        spriteApercu.setPosition(boxImage.getPosition());
+        window.draw(spriteApercu);
+
+        sf::Text txtNomGrand(itemActuel.nom, font, static_cast<unsigned int>(screenH * 0.034f));
+        txtNomGrand.setFillColor(UI::Silver);
+        sf::FloatRect bNG = txtNomGrand.getLocalBounds();
+        txtNomGrand.setOrigin(bNG.left + bNG.width / 2.0f, bNG.top + bNG.height / 2.0f);
+        txtNomGrand.setPosition(rightX + rightW / 2.0f, rightY + screenH * 0.32f);
+        window.draw(txtNomGrand);
+
+        sf::Text txtType("Categorie : " + itemActuel.categorie, font, static_cast<unsigned int>(screenH * 0.022f));
+        txtType.setFillColor(UI::Azure);
+        sf::FloatRect bT = txtType.getLocalBounds();
+        txtType.setOrigin(bT.left + bT.width / 2.0f, bT.top + bT.height / 2.0f);
+        txtType.setPosition(rightX + rightW / 2.0f, rightY + screenH * 0.365f);
+        window.draw(txtType);
+
+        sf::Text txtPrixGrand("Prix d'acquisition : " + std::to_string(itemActuel.prix) + " Pieces d'Or", font, static_cast<unsigned int>(screenH * 0.026f));
+        txtPrixGrand.setFillColor(joueur.orJoueur >= itemActuel.prix ? UI::AmberGold : UI::Crimson);
+        sf::FloatRect bPG = txtPrixGrand.getLocalBounds();
+        txtPrixGrand.setOrigin(bPG.left + bPG.width / 2.0f, bPG.top + bPG.height / 2.0f);
+        txtPrixGrand.setPosition(rightX + rightW / 2.0f, rightY + screenH * 0.41f);
+        window.draw(txtPrixGrand);
+
+        sf::RectangleShape sepDesc(sf::Vector2f(rightW * 0.85f, 1.0f));
+        sepDesc.setOrigin(sepDesc.getSize().x / 2.0f, 0.5f);
+        sepDesc.setPosition(rightX + rightW / 2.0f, rightY + screenH * 0.455f);
+        sepDesc.setFillColor(UI::BorderMuted);
+        window.draw(sepDesc);
+
+        sf::Text txtDesc(itemActuel.description, font, static_cast<unsigned int>(screenH * 0.023f));
+        txtDesc.setFillColor(UI::TextWhite);
+        sf::FloatRect bD = txtDesc.getLocalBounds();
+        txtDesc.setOrigin(bD.left + bD.width / 2.0f, bD.top + bD.height / 2.0f);
+        txtDesc.setPosition(rightX + rightW / 2.0f, rightY + screenH * 0.525f);
+        window.draw(txtDesc);
+
+        std::string statutActuel = "";
+        if (itemActuel.type == 0) statutActuel = "Votre Attaque actuelle : " + std::to_string(joueur.attaque);
+        else if (itemActuel.type == 1 && itemActuel.nom.find("Bouclier") != std::string::npos) statutActuel = "Boucliers en stock : " + std::to_string(joueur.inventaire.nombreBouclier);
+        else if (itemActuel.type == 1) statutActuel = "Vos PV Max actuels : " + std::to_string(joueur.vieMax) + " | DEF: " + std::to_string(joueur.defense);
+        else if (itemActuel.type == 2) statutActuel = "Potions de soin en stock : " + std::to_string(joueur.inventaire.potionsNormales);
+        else if (itemActuel.type == 3) statutActuel = "Potions de mana en stock : " + std::to_string(joueur.inventaire.potionsMana);
+        else if (itemActuel.type == 4) statutActuel = "Grandes potions en stock : " + std::to_string(joueur.inventaire.grandesPotions);
+        else if (itemActuel.type == 6) statutActuel = "Capacite de votre sac : " + std::to_string(joueur.inventaire.capaciteSac) + " objets";
+
+        if (!statutActuel.empty())
+        {
+            sf::Text txtStatut(statutActuel, font, static_cast<unsigned int>(screenH * 0.021f));
+            txtStatut.setFillColor(UI::TextMuted);
+            sf::FloatRect bS = txtStatut.getLocalBounds();
+            txtStatut.setOrigin(bS.left + bS.width / 2.0f, bS.top + bS.height / 2.0f);
+            txtStatut.setPosition(rightX + rightW / 2.0f, rightY + screenH * 0.60f);
+            window.draw(txtStatut);
+        }
+
+        UI::drawButton(window, btnAcheter, txtAcheter, btnAcheter.getGlobalBounds().contains(mPos.x, mPos.y),
+                       joueur.orJoueur >= itemActuel.prix ? sf::Color(35, 120, 60) : sf::Color(70, 70, 75),
+                       joueur.orJoueur >= itemActuel.prix ? sf::Color(48, 160, 80) : sf::Color(80, 80, 85),
+                       UI::TextWhite,
+                       UI::TextWhite);
+
         UI::drawButton(window, btnRetour, txtRetour, btnRetour.getGlobalBounds().contains(mPos.x, mPos.y));
 
         window.display();
@@ -251,9 +370,6 @@ inline bool afficherBoutiqueSFML(sf::RenderWindow &window, sf::Font &font, Joueu
     return true;
 }
 
-// -------------------------------------------------------------
-// 2. EXPLORATION DE CONTREE EN SFML
-// -------------------------------------------------------------
 inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueur, int &zoneActuelle, int &territoiresConquis)
 {
     float screenW = static_cast<float>(window.getSize().x);
@@ -272,7 +388,6 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
         spriteFond.setScale(screenW / sz.x, screenH / sz.y);
     }
 
-    // Sprite du joueur en marche
     sf::Texture texHero;
     std::string cheminPerso = "assets/pictures/dark_skinned_knight.png";
     if (joueur.classeIndex == 1) cheminPerso = "assets/pictures/robe.png";
@@ -283,6 +398,7 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
 
     texHero.loadFromFile(cheminPerso);
     sf::Sprite spriteHero(texHero);
+    spriteHero.setTextureRect(sf::IntRect(0, 128, 64, 64));
     spriteHero.setOrigin(32.0f, 32.0f);
     spriteHero.setScale(screenH * 0.007f, screenH * 0.007f);
     spriteHero.setPosition(centerX, screenH * 0.44f);
@@ -300,8 +416,7 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
     btnAvancer.setOrigin(btnW / 2.0f, btnH / 2.0f);
     btnAvancer.setPosition(screenW * 0.26f, actionsY);
     btnAvancer.setFillColor(UI::DarkPanelLight);
-    btnAvancer.setOutlineThickness(2.0f);
-    btnAvancer.setOutlineColor(UI::Gold);
+    btnAvancer.setOutlineThickness(0.0f);
 
     sf::Text txtAvancer("1. AVANCER", font, static_cast<unsigned int>(btnH * 0.40f));
     txtAvancer.setFillColor(UI::TextWhite);
@@ -313,8 +428,7 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
     btnPotion.setOrigin(btnW / 2.0f, btnH / 2.0f);
     btnPotion.setPosition(screenW * 0.50f, actionsY);
     btnPotion.setFillColor(UI::DarkPanelLight);
-    btnPotion.setOutlineThickness(2.0f);
-    btnPotion.setOutlineColor(UI::Gold);
+    btnPotion.setOutlineThickness(0.0f);
 
     sf::Text txtPotion("2. BOIRE POTION", font, static_cast<unsigned int>(btnH * 0.40f));
     txtPotion.setFillColor(UI::TextWhite);
@@ -326,8 +440,7 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
     btnVille.setOrigin(btnW / 2.0f, btnH / 2.0f);
     btnVille.setPosition(screenW * 0.74f, actionsY);
     btnVille.setFillColor(UI::DarkPanelLight);
-    btnVille.setOutlineThickness(2.0f);
-    btnVille.setOutlineColor(UI::Gold);
+    btnVille.setOutlineThickness(0.0f);
 
     sf::Text txtVille("3. RETOUR CITE", font, static_cast<unsigned int>(btnH * 0.40f));
     txtVille.setFillColor(UI::TextWhite);
@@ -336,7 +449,6 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
     txtVille.setPosition(btnVille.getPosition());
 
     sf::Clock animClock;
-    int animFrame = 0;
     sf::Clock deltaClock;
 
     while (window.isOpen() && joueur.vie > 0)
@@ -387,7 +499,7 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
                 {
                     int roll = rand() % 100;
 
-                    if (roll < 38) // 38% Combat de monstre
+                    if (roll < 38)
                     {
                         Monstre monstre;
                         genererMonstre(zoneActuelle, rand() % 4, monstre);
@@ -397,7 +509,7 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
 
                         if (joueur.vie <= 0)
                         {
-                            return true; // Retour ville après mort
+                            return true;
                         }
 
                         if (gagne)
@@ -409,115 +521,103 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
                             narration = "Vous avez reussi a fuir le combat et vous vous cachez dans un fourre...";
                         }
                     }
-                    else if (roll < 65) // 27% Coffre au trésor
+                    else if (roll < 65)
                     {
                         int typeTresor = rand() % 4;
                         if (typeTresor == 0)
                         {
                             int orTrouve = (rand() % 25) + 15 + (zoneActuelle * 10);
                             joueur.orJoueur += orTrouve;
-                            floatingTexts.push_back({"+" + std::to_string(orTrouve) + " PO", {centerX, screenH * 0.40f}, UI::AmberXP, 1.3f, 1.3f});
-                            narration = "★ DECOUVERTE ! Vous denichez un coffre en bois mousseux contenant " + std::to_string(orTrouve) + " pièces d'or !";
+                            floatingTexts.push_back({"+" + std::to_string(orTrouve) + " PO", {centerX, screenH * 0.40f}, UI::AmberGold, 1.3f, 1.3f});
+                            narration = "DECOUVERTE ! Vous denichez un coffre en bois mousseux contenant " + std::to_string(orTrouve) + " pieces d'or !";
                         }
                         else if (typeTresor == 1)
                         {
                             joueur.inventaire.potionsNormales++;
                             floatingTexts.push_back({"+1 POTION", {centerX, screenH * 0.40f}, UI::GreenHP, 1.3f, 1.3f});
-                            narration = "★ TRESOR ! Une Potion de Soin etait cachee sous une dalle de pierre antique !";
+                            narration = "TRESOR ! Une Potion de Soin etait cachee sous une dalle de pierre antique !";
                         }
                         else if (typeTresor == 2)
                         {
                             joueur.inventaire.potionsMana++;
                             floatingTexts.push_back({"+1 POTION MANA", {centerX, screenH * 0.40f}, UI::BlueMana, 1.3f, 1.3f});
-                            narration = "★ MAGIE ! Vous trouvez une fiole d'Elixir de Mana étincelante !";
+                            narration = "MAGIE ! Vous trouvez une fiole d'Elixir de Mana etincelante !";
                         }
                         else
                         {
                             joueur.inventaire.nombreBouclier++;
-                            floatingTexts.push_back({"+1 BOUCLIER", {centerX, screenH * 0.40f}, UI::GoldBright, 1.3f, 1.3f});
-                            narration = "★ EQUIPEMENT ! Un bouclier renforce etait abandonne contre un tertre !";
+                            floatingTexts.push_back({"+1 BOUCLIER", {centerX, screenH * 0.40f}, UI::Silver, 1.3f, 1.3f});
+                            narration = "EQUIPEMENT ! Un bouclier renforce etait abandonne contre un tertre !";
                         }
                     }
-                    else if (roll < 78) // 13% Piège
+                    else if (roll < 78)
                     {
                         int degatsPiege = (rand() % 12) + (zoneActuelle * 6);
                         joueur.vie = std::max(1, joueur.vie - degatsPiege);
                         floatingTexts.push_back({"PIEGE ! -" + std::to_string(degatsPiege) + " PV", {centerX, screenH * 0.40f}, UI::Crimson, 1.3f, 1.3f});
-                        narration = "⚠ PIEGE ! Un piege dissimule se declenche ! Vous subissez " + std::to_string(degatsPiege) + " degats de pointes rouillees !";
+                        narration = "PIEGE ! Un piege dissimule se declenche ! Vous subissez " + std::to_string(degatsPiege) + " degats !";
                     }
-                    else if (roll < 90) // 12% Écho d'Épée / Bénédiction
+                    else if (roll < 90)
                     {
                         int bonusAtq = (rand() % 4) + 2;
                         joueur.attaque += bonusAtq;
-                        floatingTexts.push_back({"+" + std::to_string(bonusAtq) + " ATQ PERMANENTE !", {centerX, screenH * 0.40f}, UI::GoldBright, 1.4f, 1.4f});
-                        narration = "⚔ ARTEFACT ! Vous affûtez votre arme sur une Pierre de Guerre Sacree. Attaque permamentee +" + std::to_string(bonusAtq) + " !";
+                        floatingTexts.push_back({"+" + std::to_string(bonusAtq) + " ATQ PERMANENTE !", {centerX, screenH * 0.40f}, UI::Azure, 1.4f, 1.4f});
+                        narration = "ARTEFACT ! Vous affûtez votre arme sur une Pierre Sacree. Attaque permanente +" + std::to_string(bonusAtq) + " !";
                     }
-                    else // 10% Fontaine de Jouvence
+                    else
                     {
                         int soin = 40;
                         int mana = 30;
                         joueur.vie = std::min(joueur.vie + soin, joueur.vieMax);
                         joueur.mana = std::min(joueur.mana + mana, joueur.manaMax);
                         floatingTexts.push_back({"+40 PV  +30 MP", {centerX, screenH * 0.40f}, UI::BlueMana, 1.4f, 1.4f});
-                        narration = "✨ SANCTUAIRE ! Une source feerique restaure 40 PV et 30 Mana a votre hero !";
+                        narration = "SANCTUAIRE ! Une source feerique restaure 40 PV et 30 Mana a votre heros !";
                     }
                 }
             }
         }
 
-        // Animation du marcheur
-        if (animClock.getElapsedTime().asSeconds() > 0.16f)
-        {
-            animFrame = (animFrame + 1) % 9;
-            animClock.restart();
-        }
-
         sf::Vector2f mPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
-        window.clear(sf::Color(10, 15, 20));
+        float bobbing = std::sin(animClock.getElapsedTime().asSeconds() * 3.5f) * 2.5f;
+        spriteHero.setPosition(centerX, screenH * 0.44f + bobbing);
+
+        window.clear(sf::Color(10, 14, 20));
         if (fondCharge) window.draw(spriteFond);
 
-        // Voile atmosphérique
         sf::RectangleShape voile(sf::Vector2f(screenW, screenH));
-        voile.setFillColor(sf::Color(10, 15, 25, 150));
+        voile.setFillColor(sf::Color(10, 15, 25, 160));
         window.draw(voile);
 
-        // Barre supérieure HUD
         UI::drawPanel(window, screenW * 0.04f, screenH * 0.02f, screenW * 0.92f, screenH * 0.10f);
 
         sf::Text txtZone(zoneNom + " (Zone " + std::to_string(zoneActuelle) + ")", font, static_cast<unsigned int>(screenH * 0.032f));
-        txtZone.setFillColor(UI::GoldBright);
+        txtZone.setFillColor(UI::Silver);
         txtZone.setPosition(screenW * 0.06f, screenH * 0.032f);
         window.draw(txtZone);
 
-        // Barres de vie / Mana du héros dans le HUD
         float hudBarW = screenW * 0.22f;
-        UI::drawProgressBar(window, screenW * 0.44f, screenH * 0.035f, hudBarW, 16.0f, joueur.vie, joueur.vieMax, UI::GreenHP, sf::Color(60, 20, 20), "PV: " + std::to_string(joueur.vie) + " / " + std::to_string(joueur.vieMax), font, 12);
-        UI::drawProgressBar(window, screenW * 0.44f, screenH * 0.065f, hudBarW, 14.0f, joueur.mana, joueur.manaMax, UI::BlueMana, sf::Color(20, 30, 60), "Mana: " + std::to_string(joueur.mana) + " / " + std::to_string(joueur.manaMax), font, 11);
+        UI::drawProgressBar(window, screenW * 0.44f, screenH * 0.035f, hudBarW, 16.0f, joueur.vie, joueur.vieMax, UI::GreenHP, sf::Color(55, 20, 20), "PV: " + std::to_string(joueur.vie) + " / " + std::to_string(joueur.vieMax), font, 12);
+        UI::drawProgressBar(window, screenW * 0.44f, screenH * 0.065f, hudBarW, 14.0f, joueur.mana, joueur.manaMax, UI::BlueMana, sf::Color(20, 30, 55), "Mana: " + std::to_string(joueur.mana) + " / " + std::to_string(joueur.manaMax), font, 11);
 
         sf::Text txtBourse("Bourse : " + std::to_string(joueur.orJoueur) + " PO | Niv. " + std::to_string(joueur.niveau), font, static_cast<unsigned int>(screenH * 0.024f));
-        txtBourse.setFillColor(UI::AmberXP);
+        txtBourse.setFillColor(UI::AmberGold);
         sf::FloatRect bB = txtBourse.getLocalBounds();
         txtBourse.setPosition(screenW * 0.94f - bB.width, screenH * 0.04f);
         window.draw(txtBourse);
 
-        // Sprite animé au centre
-        spriteHero.setTextureRect(sf::IntRect(animFrame * 64, 128, 64, 64)); // walkcycle
         window.draw(spriteHero);
 
-        // Panneau de narration
         UI::drawPanel(window, screenW * 0.10f, screenH * 0.65f, screenW * 0.80f, screenH * 0.16f, "REGISTRE D'EXPLORATION", &font, 18);
         sf::Text txtNar(narration, font, static_cast<unsigned int>(screenH * 0.023f));
         txtNar.setFillColor(UI::TextWhite);
         txtNar.setPosition(screenW * 0.12f, screenH * 0.72f);
         window.draw(txtNar);
 
-        // Boutons d'action
         UI::drawButton(window, btnAvancer, txtAvancer, btnAvancer.getGlobalBounds().contains(mPos.x, mPos.y));
         UI::drawButton(window, btnPotion, txtPotion, btnPotion.getGlobalBounds().contains(mPos.x, mPos.y));
         UI::drawButton(window, btnVille, txtVille, btnVille.getGlobalBounds().contains(mPos.x, mPos.y));
 
-        // Textes flottants
         UI::updateAndDrawFloatingTexts(window, font, floatingTexts, dt);
 
         window.display();
@@ -527,9 +627,6 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
     return true;
 }
 
-// -------------------------------------------------------------
-// 3. ÉCRAN DE VICTOIRE ABSOLUE DU JEU
-// -------------------------------------------------------------
 inline void afficherVictoireAbsolueSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueur)
 {
     float screenW = static_cast<float>(window.getSize().x);
@@ -553,12 +650,11 @@ inline void afficherVictoireAbsolueSFML(sf::RenderWindow &window, sf::Font &font
     sf::RectangleShape btnFin(sf::Vector2f(btnW, btnH));
     btnFin.setOrigin(btnW / 2.0f, btnH / 2.0f);
     btnFin.setPosition(centerX, screenH * 0.85f);
-    btnFin.setFillColor(UI::Gold);
-    btnFin.setOutlineThickness(2.0f);
-    btnFin.setOutlineColor(UI::GoldBright);
+    btnFin.setFillColor(UI::DarkPanelLight);
+    btnFin.setOutlineThickness(0.0f);
 
     sf::Text txtFin("GLOIRE ETERNELLE (MENU)", font, static_cast<unsigned int>(btnH * 0.40f));
-    txtFin.setFillColor(sf::Color::Black);
+    txtFin.setFillColor(UI::TextWhite);
     sf::FloatRect bF = txtFin.getLocalBounds();
     txtFin.setOrigin(bF.left + bF.width / 2.0f, bF.top + bF.height / 2.0f);
     txtFin.setPosition(btnFin.getPosition());
@@ -592,21 +688,20 @@ inline void afficherVictoireAbsolueSFML(sf::RenderWindow &window, sf::Font &font
         if (fondCharge) window.draw(spriteFond);
 
         sf::RectangleShape voile(sf::Vector2f(screenW, screenH));
-        voile.setFillColor(sf::Color(15, 18, 30, 220));
+        voile.setFillColor(sf::Color(12, 16, 26, 220));
         window.draw(voile);
 
-        // Panneau central
         UI::drawPanel(window, screenW * 0.15f, screenH * 0.10f, screenW * 0.70f, screenH * 0.68f, "VICTOIRE ABSOLUE DU ROYAUME", &font, 26);
 
         sf::Text txtVictoire("★ FANTASY WORLD CONQUEST EST ACCOMPLI ! ★", font, static_cast<unsigned int>(screenH * 0.045f));
-        txtVictoire.setFillColor(UI::GoldBright);
+        txtVictoire.setFillColor(UI::Silver);
         sf::FloatRect bV = txtVictoire.getLocalBounds();
         txtVictoire.setOrigin(bV.left + bV.width / 2.0f, bV.top + bV.height / 2.0f);
         txtVictoire.setPosition(centerX, screenH * 0.22f);
         window.draw(txtVictoire);
 
         std::string epilogue = "Toutes les 6 contrees ont ete liberees du joug des tenebres !\n"
-            "La Reine des Fees Malefique et l'Empereur des Ombres ont ete terrassee.\n\n"
+            "La Reine des Fees Malefique et l'Empereur des Ombres ont ete terrasses.\n\n"
             "Champion : " + joueur.nom + " (" + joueur.classeNom + ")\n"
             "Niveau Final : " + std::to_string(joueur.niveau) + "  |  Monstres Terrasses : " + std::to_string(joueur.monstresVaincus) + "\n"
             "Fortune Amassee : " + std::to_string(joueur.orJoueur) + " Pieces d'Or\n\n"
@@ -625,9 +720,6 @@ inline void afficherVictoireAbsolueSFML(sf::RenderWindow &window, sf::Font &font
     }
 }
 
-// -------------------------------------------------------------
-// 4. MENU DE LA VILLE / BASTION SFML
-// -------------------------------------------------------------
 inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joueur &joueur, int &zoneActuelle, int &territoiresConquis)
 {
     float screenW = static_cast<float>(window.getSize().x);
@@ -646,7 +738,6 @@ inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joue
         spriteFond.setScale(screenW / sz.x, screenH / sz.y);
     }
 
-    // Avatar miniature du joueur
     sf::Texture texHero;
     std::string cheminPerso = "assets/pictures/dark_skinned_knight.png";
     if (joueur.classeIndex == 1) cheminPerso = "assets/pictures/robe.png";
@@ -657,25 +748,25 @@ inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joue
 
     texHero.loadFromFile(cheminPerso);
     sf::Sprite spriteHero(texHero);
+    spriteHero.setTextureRect(sf::IntRect(0, 128, 64, 64));
     spriteHero.setOrigin(32.0f, 32.0f);
     spriteHero.setScale(screenH * 0.0035f, screenH * 0.0035f);
 
     std::string notifVille = "Bienvenue au Bastion de Rivenoir, aventurier.";
-    sf::Color couleurNotif = UI::GoldBright;
+    sf::Color couleurNotif = UI::Silver;
 
-    // Dimensions des boutons de commande de la cité
     float btnW = screenW * 0.46f;
     float btnH = screenH * 0.072f;
     float startY = screenH * 0.19f;
     float gapY = screenH * 0.088f;
     float btnX = screenW * 0.44f;
 
-    sf::RectangleShape btnExplo(sf::Vector2f(btnW, btnH)); btnExplo.setPosition(btnX, startY);
-    sf::RectangleShape btnBoutique(sf::Vector2f(btnW, btnH)); btnBoutique.setPosition(btnX, startY + gapY);
-    sf::RectangleShape btnAuberge(sf::Vector2f(btnW, btnH)); btnAuberge.setPosition(btnX, startY + gapY * 2.0f);
-    sf::RectangleShape btnBoss(sf::Vector2f(btnW, btnH)); btnBoss.setPosition(btnX, startY + gapY * 3.0f);
-    sf::RectangleShape btnSave(sf::Vector2f(btnW, btnH)); btnSave.setPosition(btnX, startY + gapY * 4.0f);
-    sf::RectangleShape btnQuitter(sf::Vector2f(btnW, btnH)); btnQuitter.setPosition(btnX, startY + gapY * 5.0f);
+    sf::RectangleShape btnExplo(sf::Vector2f(btnW, btnH)); btnExplo.setPosition(btnX, startY); btnExplo.setOutlineThickness(0.0f);
+    sf::RectangleShape btnBoutique(sf::Vector2f(btnW, btnH)); btnBoutique.setPosition(btnX, startY + gapY); btnBoutique.setOutlineThickness(0.0f);
+    sf::RectangleShape btnAuberge(sf::Vector2f(btnW, btnH)); btnAuberge.setPosition(btnX, startY + gapY * 2.0f); btnAuberge.setOutlineThickness(0.0f);
+    sf::RectangleShape btnBoss(sf::Vector2f(btnW, btnH)); btnBoss.setPosition(btnX, startY + gapY * 3.0f); btnBoss.setOutlineThickness(0.0f);
+    sf::RectangleShape btnSave(sf::Vector2f(btnW, btnH)); btnSave.setPosition(btnX, startY + gapY * 4.0f); btnSave.setOutlineThickness(0.0f);
+    sf::RectangleShape btnQuitter(sf::Vector2f(btnW, btnH)); btnQuitter.setPosition(btnX, startY + gapY * 5.0f); btnQuitter.setOutlineThickness(0.0f);
 
     unsigned int szBtn = static_cast<unsigned int>(btnH * 0.38f);
     sf::Text txtExplo("1. EXPLORER LA CONTREE", font, szBtn); txtExplo.setPosition(btnX + 20.0f, startY + btnH * 0.28f);
@@ -685,7 +776,6 @@ inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joue
     sf::Text txtSave("5. SAUVEGARDER LA PARTIE", font, szBtn); txtSave.setPosition(btnX + 20.0f, startY + gapY * 4.0f + btnH * 0.28f);
     sf::Text txtQuitter("6. RETOUR AU MENU PRINCIPAL", font, szBtn); txtQuitter.setPosition(btnX + 20.0f, startY + gapY * 5.0f + btnH * 0.28f);
 
-    // Modal de confirmation du Boss
     bool modalBossOuvert = false;
     Monstre bossZone;
 
@@ -697,8 +787,7 @@ inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joue
     sf::RectangleShape btnAssaut(sf::Vector2f(modalW * 0.42f, screenH * 0.065f));
     btnAssaut.setPosition(modalX + modalW * 0.05f, modalY + modalH * 0.75f);
     btnAssaut.setFillColor(UI::Crimson);
-    btnAssaut.setOutlineThickness(2.0f);
-    btnAssaut.setOutlineColor(UI::GoldBright);
+    btnAssaut.setOutlineThickness(0.0f);
 
     sf::Text txtAssaut("LANCER L'ASSAUT", font, static_cast<unsigned int>(screenH * 0.026f));
     txtAssaut.setFillColor(UI::TextWhite);
@@ -709,8 +798,7 @@ inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joue
     sf::RectangleShape btnAnnulerBoss(sf::Vector2f(modalW * 0.42f, screenH * 0.065f));
     btnAnnulerBoss.setPosition(modalX + modalW * 0.53f, modalY + modalH * 0.75f);
     btnAnnulerBoss.setFillColor(UI::DarkPanelLight);
-    btnAnnulerBoss.setOutlineThickness(2.0f);
-    btnAnnulerBoss.setOutlineColor(UI::Gold);
+    btnAnnulerBoss.setOutlineThickness(0.0f);
 
     sf::Text txtAnnulerBoss("SE REPLIER", font, static_cast<unsigned int>(screenH * 0.026f));
     txtAnnulerBoss.setFillColor(UI::TextWhite);
@@ -719,7 +807,6 @@ inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joue
     txtAnnulerBoss.setPosition(btnAnnulerBoss.getPosition().x + (modalW * 0.21f), btnAnnulerBoss.getPosition().y + (screenH * 0.032f));
 
     sf::Clock animClock;
-    int animFrame = 0;
 
     while (window.isOpen())
     {
@@ -753,13 +840,13 @@ inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joue
                             if (zoneActuelle >= 6 || territoiresConquis >= 6)
                             {
                                 afficherVictoireAbsolueSFML(window, font, joueur);
-                                return false; // Fin triomphale
+                                return false;
                             }
                             else
                             {
                                 zoneActuelle++;
-                                notifVille = "★ CONQUETE REUSSIE ! Boss terrasse. Zone " + std::to_string(zoneActuelle) + " deverrouillee !";
-                                couleurNotif = UI::GoldBright;
+                                notifVille = "CONQUETE REUSSIE ! Boss terrasse. Zone " + std::to_string(zoneActuelle) + " deverrouillee !";
+                                couleurNotif = UI::Azure;
                                 sauvegarderPartie(joueur, zoneActuelle, territoiresConquis);
                             }
                         }
@@ -826,37 +913,28 @@ inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joue
             }
         }
 
-        // Animation du sprite héros dans la fiche
-        if (animClock.getElapsedTime().asSeconds() > 0.18f)
-        {
-            animFrame = (animFrame + 1) % 9;
-            animClock.restart();
-        }
-
         sf::Vector2f mPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
         window.clear(sf::Color(12, 14, 22));
         if (fondCharge) window.draw(spriteFond);
 
         sf::RectangleShape voile(sf::Vector2f(screenW, screenH));
-        voile.setFillColor(sf::Color(12, 16, 26, 200));
+        voile.setFillColor(sf::Color(12, 16, 26, 205));
         window.draw(voile);
 
-        // Titre de la Ville
         UI::drawPanel(window, screenW * 0.05f, screenH * 0.02f, screenW * 0.90f, screenH * 0.09f);
         sf::Text titreVille("LA CITE DE RIVENOIR - BASTION DU MONDE", font, static_cast<unsigned int>(screenH * 0.038f));
-        titreVille.setFillColor(UI::GoldBright);
+        titreVille.setFillColor(UI::Silver);
         titreVille.setPosition(screenW * 0.08f, screenH * 0.035f);
         window.draw(titreVille);
 
         std::string nomZoneActuelle = getNomZone(zoneActuelle);
         sf::Text sousTitre("Zone " + std::to_string(zoneActuelle) + " : " + nomZoneActuelle + " | Conquetes : " + std::to_string(territoiresConquis) + "/6", font, static_cast<unsigned int>(screenH * 0.025f));
-        sousTitre.setFillColor(UI::AmberXP);
+        sousTitre.setFillColor(UI::Azure);
         sf::FloatRect bST = sousTitre.getLocalBounds();
         sousTitre.setPosition(screenW * 0.92f - bST.width, screenH * 0.042f);
         window.draw(sousTitre);
 
-        // Bandeau de notification
         sf::Text txtNotif(notifVille, font, static_cast<unsigned int>(screenH * 0.022f));
         txtNotif.setFillColor(couleurNotif);
         sf::FloatRect bN = txtNotif.getLocalBounds();
@@ -864,35 +942,30 @@ inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joue
         txtNotif.setPosition(centerX, screenH * 0.14f);
         window.draw(txtNotif);
 
-        // Panneau Gauche : Fiche Héros
         float cardHerosW = screenW * 0.34f;
         float cardHerosH = screenH * 0.72f;
         UI::drawPanel(window, screenW * 0.06f, startY, cardHerosW, cardHerosH, "FEUILLE DU HEROS", &font, 20);
 
-        // Sprite animé
-        spriteHero.setPosition(screenW * 0.11f, startY + 80.0f);
-        spriteHero.setTextureRect(sf::IntRect(animFrame * 64, 128, 64, 64));
+        float bobbing = std::sin(animClock.getElapsedTime().asSeconds() * 3.0f) * 2.0f;
+        spriteHero.setPosition(screenW * 0.11f, startY + 80.0f + bobbing);
         window.draw(spriteHero);
 
-        // Identité
         sf::Text txtIdentite(joueur.nom + "\n" + joueur.classeNom + " - Niv. " + std::to_string(joueur.niveau), font, static_cast<unsigned int>(screenH * 0.024f));
-        txtIdentite.setFillColor(UI::GoldBright);
+        txtIdentite.setFillColor(UI::Silver);
         txtIdentite.setPosition(screenW * 0.16f, startY + 55.0f);
         window.draw(txtIdentite);
 
-        // Barres de progression
         float barX = screenW * 0.08f;
         float barW = cardHerosW - screenW * 0.04f;
         float curY = startY + 130.0f;
 
-        UI::drawProgressBar(window, barX, curY, barW, 18.0f, joueur.vie, joueur.vieMax, UI::GreenHP, sf::Color(60, 20, 20), "PV : " + std::to_string(joueur.vie) + " / " + std::to_string(joueur.vieMax), font, 13);
+        UI::drawProgressBar(window, barX, curY, barW, 18.0f, joueur.vie, joueur.vieMax, UI::GreenHP, sf::Color(55, 20, 20), "PV : " + std::to_string(joueur.vie) + " / " + std::to_string(joueur.vieMax), font, 13);
         curY += 26.0f;
-        UI::drawProgressBar(window, barX, curY, barW, 16.0f, joueur.mana, joueur.manaMax, UI::BlueMana, sf::Color(20, 30, 60), "Mana : " + std::to_string(joueur.mana) + " / " + std::to_string(joueur.manaMax), font, 12);
+        UI::drawProgressBar(window, barX, curY, barW, 14.0f, joueur.mana, joueur.manaMax, UI::BlueMana, sf::Color(20, 30, 55), "Mana : " + std::to_string(joueur.mana) + " / " + std::to_string(joueur.manaMax), font, 12);
         curY += 24.0f;
-        UI::drawProgressBar(window, barX, curY, barW, 14.0f, joueur.xp, joueur.xpSeuil, UI::AmberXP, sf::Color(50, 40, 20), "XP : " + std::to_string(joueur.xp) + " / " + std::to_string(joueur.xpSeuil), font, 11);
+        UI::drawProgressBar(window, barX, curY, barW, 14.0f, joueur.xp, joueur.xpSeuil, UI::Azure, sf::Color(30, 45, 65), "XP : " + std::to_string(joueur.xp) + " / " + std::to_string(joueur.xpSeuil), font, 11);
         curY += 30.0f;
 
-        // Statistiques détaillées
         std::string statsTexte = "Attaque : " + std::to_string(joueur.attaque) + "       Defense : " + std::to_string(joueur.defense) + "\n\n"
             + "Critique : " + std::to_string(joueur.chanceCrit) + "%      Sort : " + joueur.competenceSpeciale + "\n\n"
             + "Bourse : " + std::to_string(joueur.orJoueur) + " PO       Monstres terrasses : " + std::to_string(joueur.monstresVaincus) + "\n\n"
@@ -908,15 +981,13 @@ inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joue
         txtStats.setPosition(barX, curY);
         window.draw(txtStats);
 
-        // Boutons de la Cité
         UI::drawButton(window, btnExplo, txtExplo, btnExplo.getGlobalBounds().contains(mPos.x, mPos.y));
         UI::drawButton(window, btnBoutique, txtBoutique, btnBoutique.getGlobalBounds().contains(mPos.x, mPos.y));
         UI::drawButton(window, btnAuberge, txtAuberge, btnAuberge.getGlobalBounds().contains(mPos.x, mPos.y));
-        UI::drawButton(window, btnBoss, txtBoss, btnBoss.getGlobalBounds().contains(mPos.x, mPos.y), UI::Crimson, UI::GoldBright, UI::Gold, sf::Color::Black);
+        UI::drawButton(window, btnBoss, txtBoss, btnBoss.getGlobalBounds().contains(mPos.x, mPos.y), sf::Color(140, 35, 35), sf::Color(180, 45, 45), UI::TextWhite, UI::TextWhite);
         UI::drawButton(window, btnSave, txtSave, btnSave.getGlobalBounds().contains(mPos.x, mPos.y));
         UI::drawButton(window, btnQuitter, txtQuitter, btnQuitter.getGlobalBounds().contains(mPos.x, mPos.y));
 
-        // Modal de Raid de Boss
         if (modalBossOuvert)
         {
             UI::drawPanel(window, modalX, modalY, modalW, modalH, "ORDRE DE BATAILLE : BOSS DE ZONE", &font, 22);
@@ -933,7 +1004,7 @@ inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joue
             txtBInfo.setPosition(modalX + 25.0f, modalY + 55.0f);
             window.draw(txtBInfo);
 
-            UI::drawButton(window, btnAssaut, txtAssaut, btnAssaut.getGlobalBounds().contains(mPos.x, mPos.y), UI::Crimson, UI::GoldBright, UI::Gold, sf::Color::Black);
+            UI::drawButton(window, btnAssaut, txtAssaut, btnAssaut.getGlobalBounds().contains(mPos.x, mPos.y), sf::Color(140, 35, 35), sf::Color(180, 45, 45), UI::TextWhite, UI::TextWhite);
             UI::drawButton(window, btnAnnulerBoss, txtAnnulerBoss, btnAnnulerBoss.getGlobalBounds().contains(mPos.x, mPos.y));
         }
 

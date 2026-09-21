@@ -25,7 +25,7 @@ inline void genererMonstre(int zone, int numeroAleatoire, Monstre &monstre)
 
     switch (zone)
     {
-    case 1: // FORÊT DES ANCIENS
+    case 1:
         switch (numeroAleatoire)
         {
         case 0:  monstre = {"Gobelin", 35, 35, 8, 2, 10, 15, false, "Coup Sournois", 0}; break;
@@ -37,7 +37,7 @@ inline void genererMonstre(int zone, int numeroAleatoire, Monstre &monstre)
         }
         break;
 
-    case 2: // MONTAGNES DU DESTIN
+    case 2:
         switch (numeroAleatoire)
         {
         case 0:  monstre = {"Orc Guerrier", 90, 90, 22, 8, 25, 40, false, "Fendoir Brise-Crane", 0}; break;
@@ -49,7 +49,7 @@ inline void genererMonstre(int zone, int numeroAleatoire, Monstre &monstre)
         }
         break;
 
-    case 3: // DÉSERT MAUDIT
+    case 3:
         switch (numeroAleatoire)
         {
         case 0:  monstre = {"Scorpion Geant", 130, 130, 32, 12, 40, 60, false, "Dard Toxique", 2}; break;
@@ -61,7 +61,7 @@ inline void genererMonstre(int zone, int numeroAleatoire, Monstre &monstre)
         }
         break;
 
-    case 4: // ROYAUME DES OMBRES
+    case 4:
         switch (numeroAleatoire)
         {
         case 0:  monstre = {"Chevalier Noir", 240, 240, 48, 22, 75, 160, false, "Lame Noire", 5}; break;
@@ -73,7 +73,7 @@ inline void genererMonstre(int zone, int numeroAleatoire, Monstre &monstre)
         }
         break;
 
-    case 5: // LE DOMAINE VAMPIRIQUE
+    case 5:
         switch (numeroAleatoire)
         {
         case 0:  monstre = {"Goule", 260, 260, 50, 15, 60, 160, false, "Griffes Pourries", 1}; break;
@@ -85,7 +85,7 @@ inline void genererMonstre(int zone, int numeroAleatoire, Monstre &monstre)
         }
         break;
 
-    case 6: // FORÊT MAUDITE
+    case 6:
         switch (numeroAleatoire)
         {
         case 0:  monstre = {"Fee Malefique", 300, 300, 75, 20, 90, 220, false, "Sortilefe Corrompu", 3}; break;
