@@ -27,6 +27,7 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
     float screenW = static_cast<float>(window.getSize().x);
     float screenH = static_cast<float>(window.getSize().y);
     float centerX = screenW / 2.0f;
+    float centerY = screenH / 2.0f;
 
     // Musique du combat
     if (isBossRaid)
@@ -648,8 +649,7 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
             }
             else
             {
-                resumeText = "Vos blessures sont trop profondes...\n"
-                    + "Les prêtres de la Cité vous rapatrient au sanctuaire.";
+                resumeText = "Vos blessures sont trop profondes...\nLes prêtres de la Cité vous rapatrient au sanctuaire.";
             }
 
             sf::Text txtResume(resumeText, font, static_cast<unsigned int>(screenH * 0.024f));
