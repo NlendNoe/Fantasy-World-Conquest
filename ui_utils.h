@@ -9,7 +9,6 @@
 
 namespace UI
 {
-    // Palette de couleurs
     const sf::Color Gold(212, 175, 55);
     const sf::Color GoldBright(255, 225, 115);
     const sf::Color DarkPanel(14, 18, 30, 235);
@@ -21,7 +20,6 @@ namespace UI
     const sf::Color TextWhite(245, 245, 250);
     const sf::Color TextMuted(175, 180, 200);
 
-    // Dessin d'une barre de progression (Vie, Mana, XP)
     inline void drawProgressBar(sf::RenderWindow &window, float x, float y, float width, float height,
                                 int current, int maxVal, sf::Color fillColor, sf::Color emptyColor,
                                 const std::string &label, sf::Font &font, unsigned int textSize = 16)
@@ -29,7 +27,6 @@ namespace UI
         if (maxVal <= 0) maxVal = 1;
         float ratio = std::clamp(static_cast<float>(current) / static_cast<float>(maxVal), 0.0f, 1.0f);
 
-        // Fond sombre
         sf::RectangleShape background(sf::Vector2f(width, height));
         background.setPosition(x, y);
         background.setFillColor(emptyColor);
@@ -37,7 +34,6 @@ namespace UI
         background.setOutlineColor(Gold);
         window.draw(background);
 
-        // Remplissage
         if (ratio > 0.0f)
         {
             sf::RectangleShape fill(sf::Vector2f(width * ratio, height));
@@ -46,7 +42,6 @@ namespace UI
             window.draw(fill);
         }
 
-        // Texte au centre
         if (!label.empty())
         {
             sf::Text txt(label, font, textSize);
@@ -60,7 +55,6 @@ namespace UI
         }
     }
 
-    // Dessin d'un bouton stylisé
     inline void drawButton(sf::RenderWindow &window, sf::RectangleShape &btn, sf::Text &txt, bool isHovered,
                            sf::Color normalFill = DarkPanelLight,
                            sf::Color hoverFill = Gold,
@@ -84,7 +78,6 @@ namespace UI
         window.draw(txt);
     }
 
-    // Dessin d'un panneau fantasy
     inline void drawPanel(sf::RenderWindow &window, float x, float y, float width, float height,
                           const std::string &title = "", sf::Font *font = nullptr, unsigned int titleSize = 22)
     {
@@ -97,7 +90,6 @@ namespace UI
 
         if (!title.empty() && font != nullptr)
         {
-            // Bannière de titre
             sf::RectangleShape banner(sf::Vector2f(width - 4.0f, 38.0f));
             banner.setPosition(x + 2.0f, y + 2.0f);
             banner.setFillColor(sf::Color(30, 36, 56, 200));
@@ -110,7 +102,6 @@ namespace UI
             txtTitle.setPosition(x + width / 2.0f, y + 21.0f);
             window.draw(txtTitle);
 
-            // Ligne séparatrice
             sf::RectangleShape line(sf::Vector2f(width - 20.0f, 1.5f));
             line.setPosition(x + 10.0f, y + 42.0f);
             line.setFillColor(Gold);
@@ -118,13 +109,12 @@ namespace UI
         }
     }
 
-    // Système de textes flottants (dégâts, soins, alertes)
     struct FloatingText
     {
         std::string text;
         sf::Vector2f pos;
         sf::Color color;
-        float timer = 1.0f; // secondes
+        float timer = 1.0f;
         float maxTimer = 1.0f;
     };
 
@@ -140,7 +130,7 @@ namespace UI
             }
             else
             {
-                it->pos.y -= 40.0f * dt; // monte lentement
+                it->pos.y -= 40.0f * dt;
                 float alpha = (it->timer / it->maxTimer) * 255.0f;
                 sf::Color c = it->color;
                 c.a = static_cast<sf::Uint8>(std::clamp(alpha, 0.0f, 255.0f));

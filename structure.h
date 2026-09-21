@@ -18,7 +18,7 @@ struct Joueur
 {
     std::string nom = "Héros";
     std::string classeNom = "Guerrier";
-    int classeIndex = 0; // 0: Guerrier, 1: Mage, 2: Archer, 3: Paladin, 4: Nécromancien, 5: Assassin
+    int classeIndex = 0;
     std::string competenceSpeciale = "Coup puissant";
     Inventaire inventaire;
     int vie = 120;
@@ -46,7 +46,7 @@ struct Monstre
     int xpRecompense = 15;
     bool isBoss = false;
     std::string capaciteSpeciale = "Coup Sournois";
-    int spriteType = 0; // 0: bandit, 1: skeleton, 2: leather/creature, 3: robe/mage, 4: plate, 5: boss/spectre
+    int spriteType = 0;
 };
 
 #endif
