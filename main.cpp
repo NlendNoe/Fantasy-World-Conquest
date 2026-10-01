@@ -30,7 +30,7 @@ int main()
     window.setFramerateLimit(60);
 
     sf::Font font;
-    if (!font.loadFromFile("assets/fonts/GamePocket-Regular.ttf"))
+    if (!font.loadFromFile("assets/fonts/Gameday.otf"))
     {
         if (!font.loadFromFile("assets/fonts/pixelart.ttf"))
         {
@@ -40,7 +40,7 @@ int main()
     }
 
     sf::Texture textureFond;
-    bool fondCharge = textureFond.loadFromFile("assets/backgrounds/font.jpg");
+    bool fondCharge = textureFond.loadFromFile("assets/backgrounds/fondPince-2.jpg");
     sf::Sprite spriteFond;
     if (fondCharge)
     {
