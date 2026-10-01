@@ -65,13 +65,13 @@ inline bool afficherBoutiqueSFML(sf::RenderWindow &window, sf::Font &font, Joueu
         {"Épée du Héros", "Arme", "Arme mythique doree des champions du royaume.\nAugmente l'Attaque permanente de 75 points.", 250, 0, 75, 0},
         {"Bouclier en Bois", "Bouclier", "Rondache en chene renforcee de ferrures.\nAjoute 1 Bouclier dans l'inventaire.", 35, 1, 1, 1},
         {"Bouclier d'Acier", "Bouclier", "Robuste ecu en acier trempe.\nAjoute 2 Boucliers dans l'inventaire.", 65, 1, 2, 1},
-        {"Cotte de Mailles", "Armure", "Armure de mailles souple et protectrice.\nAccroît les PV Max de 20 et restaure 20 PV.", 80, 1, 20, 2},
+        {"Cotte de Mailles", "Armure", "Armure de mailles souple et protectrice.\nAccroit les PV Max de 20 et restaure 20 PV.", 80, 1, 20, 2},
         {"Armure de Plaques", "Armure", "Harnois complet d'acier massif.\nAccroît les PV Max de 45 et la Defense de 10.", 180, 1, 45, 2},
         {"Potion de Soin", "Consommable", "Fiole curative restaure 35 PV en combat\nou lors de vos explorations.", 20, 2, 1, 3},
         {"Grande Potion", "Consommable", "Precieuse liqueur restaurant instantanement\n100% de la sante maximale du heros.", 50, 4, 1, 5},
         {"Potion de Mana", "Consommable", "Fiole d'energie arcanique restituant\n35 Points de Mana lors des affrontements.", 25, 3, 1, 4},
         {"Parchemin de Force", "Magie", "Parchemin runique millenaire.\nConfere un gain definitif de 6 points d'Attaque.", 100, 5, 6, 6},
-        {"Agrandir Sac", "Amélioration", "Ceinture de cuir et sacoches suplementaires.\nPermet de transporter 2 objets de plus.", 70, 6, 2, 7}
+        {"Agrandir Sac", "Amelioration", "Ceinture de cuir et sacoches supplementaires.\nPermet de transporter 2 objets de plus.", 70, 6, 2, 7}
     };
 
     int itemSelectionne = 0;
@@ -241,7 +241,7 @@ inline bool afficherBoutiqueSFML(sf::RenderWindow &window, sf::Font &font, Joueu
         txtOrShop.setPosition(screenW * 0.92f - bOrS.width, screenH * 0.04f);
         window.draw(txtOrShop);
 
-        sf::Text txtNotif(messageNotif, font, static_cast<unsigned int>(screenH * 0.020f));
+        sf::Text txtNotif(messageNotif, font, static_cast<unsigned int>(screenH * 0.024f));
         txtNotif.setFillColor(couleurNotif);
         sf::FloatRect bN = txtNotif.getLocalBounds();
         txtNotif.setOrigin(bN.left + bN.width / 2.0f, bN.top + bN.height / 2.0f);
@@ -268,24 +268,24 @@ inline bool afficherBoutiqueSFML(sf::RenderWindow &window, sf::Font &font, Joueu
 
             window.draw(row);
 
-            sf::Text txtNom(items[i].nom, font, static_cast<unsigned int>(rowH * 0.44f));
+            sf::Text txtNom(items[i].nom, font, static_cast<unsigned int>(rowH * 0.48f));
             txtNom.setFillColor(isSelected ? UI::Azure : UI::TextWhite);
             txtNom.setPosition(listX + 15.0f, y + rowH * 0.22f);
             window.draw(txtNom);
 
-            sf::Text txtCat(items[i].categorie, font, static_cast<unsigned int>(rowH * 0.36f));
+            sf::Text txtCat(items[i].categorie, font, static_cast<unsigned int>(rowH * 0.40f));
             txtCat.setFillColor(UI::TextMuted);
             txtCat.setPosition(listX + listW * 0.58f, y + rowH * 0.26f);
             window.draw(txtCat);
 
-            sf::Text txtPrix(std::to_string(items[i].prix) + " PO", font, static_cast<unsigned int>(rowH * 0.44f));
+            sf::Text txtPrix(std::to_string(items[i].prix) + " PO", font, static_cast<unsigned int>(rowH * 0.48f));
             txtPrix.setFillColor(joueur.orJoueur >= items[i].prix ? UI::AmberGold : UI::Crimson);
             sf::FloatRect bP = txtPrix.getLocalBounds();
             txtPrix.setPosition(listX + listW - bP.width - 15.0f, y + rowH * 0.22f);
             window.draw(txtPrix);
         }
 
-        UI::drawPanel(window, rightX, rightY, rightW, rightH, "FICHE DETAILLEE DE L'ARTICLE", &font, 20);
+        UI::drawPanel(window, rightX, rightY, rightW, rightH, "FICHE DETAILLEE DE L'ARTICLE", &font, 22);
 
         ItemBoutique &itemActuel = items[itemSelectionne];
 
@@ -310,14 +310,14 @@ inline bool afficherBoutiqueSFML(sf::RenderWindow &window, sf::Font &font, Joueu
         txtNomGrand.setPosition(rightX + rightW / 2.0f, rightY + screenH * 0.32f);
         window.draw(txtNomGrand);
 
-        sf::Text txtType("Categorie : " + itemActuel.categorie, font, static_cast<unsigned int>(screenH * 0.022f));
+        sf::Text txtType("Categorie : " + itemActuel.categorie, font, static_cast<unsigned int>(screenH * 0.026f));
         txtType.setFillColor(UI::Azure);
         sf::FloatRect bT = txtType.getLocalBounds();
         txtType.setOrigin(bT.left + bT.width / 2.0f, bT.top + bT.height / 2.0f);
         txtType.setPosition(rightX + rightW / 2.0f, rightY + screenH * 0.365f);
         window.draw(txtType);
 
-        sf::Text txtPrixGrand("Prix d'acquisition : " + std::to_string(itemActuel.prix) + " Pieces d'Or", font, static_cast<unsigned int>(screenH * 0.026f));
+        sf::Text txtPrixGrand("Prix d'acquisition : " + std::to_string(itemActuel.prix) + " Pieces d'Or", font, static_cast<unsigned int>(screenH * 0.030f));
         txtPrixGrand.setFillColor(joueur.orJoueur >= itemActuel.prix ? UI::AmberGold : UI::Crimson);
         sf::FloatRect bPG = txtPrixGrand.getLocalBounds();
         txtPrixGrand.setOrigin(bPG.left + bPG.width / 2.0f, bPG.top + bPG.height / 2.0f);
@@ -330,7 +330,7 @@ inline bool afficherBoutiqueSFML(sf::RenderWindow &window, sf::Font &font, Joueu
         sepDesc.setFillColor(UI::BorderMuted);
         window.draw(sepDesc);
 
-        sf::Text txtDesc(itemActuel.description, font, static_cast<unsigned int>(screenH * 0.023f));
+        sf::Text txtDesc(itemActuel.description, font, static_cast<unsigned int>(screenH * 0.027f));
         txtDesc.setFillColor(UI::TextWhite);
         sf::FloatRect bD = txtDesc.getLocalBounds();
         txtDesc.setOrigin(bD.left + bD.width / 2.0f, bD.top + bD.height / 2.0f);
@@ -348,7 +348,7 @@ inline bool afficherBoutiqueSFML(sf::RenderWindow &window, sf::Font &font, Joueu
 
         if (!statutActuel.empty())
         {
-            sf::Text txtStatut(statutActuel, font, static_cast<unsigned int>(screenH * 0.021f));
+            sf::Text txtStatut(statutActuel, font, static_cast<unsigned int>(screenH * 0.025f));
             txtStatut.setFillColor(UI::TextMuted);
             sf::FloatRect bS = txtStatut.getLocalBounds();
             txtStatut.setOrigin(bS.left + bS.width / 2.0f, bS.top + bS.height / 2.0f);
@@ -405,6 +405,18 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
 
     std::string zoneNom = getNomZone(zoneActuelle);
     std::string narration = "Vous avancez a pas de loup au coeur de " + zoneNom + "...\nLe vent souffle a travers les arbres centenaires.";
+
+    // Effet machine a ecrire : le texte s'affiche progressivement (latence voulue)
+    std::string narrationAffichee = narration;
+    size_t narrationIndex = narration.size(); // texte initial affiche directement
+    sf::Clock horlogeLettre;
+
+    auto narrer = [&narration, &narrationIndex, &horlogeLettre](const std::string &txt)
+    {
+        narration = txt;
+        narrationIndex = 0;
+        horlogeLettre.restart();
+    };
 
     std::vector<UI::FloatingText> floatingTexts;
 
@@ -481,14 +493,14 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
                         int soin = 35;
                         joueur.vie = std::min(joueur.vie + soin, joueur.vieMax);
                         floatingTexts.push_back({"+" + std::to_string(soin) + " PV", {centerX, screenH * 0.40f}, UI::GreenHP, 1.2f, 1.2f});
-                        narration = "Vous buvez une Potion de Soin. Vos forces sont revigorees (" + std::to_string(joueur.vie) + "/" + std::to_string(joueur.vieMax) + " PV) !";
+                        narrer("Vous buvez une Potion de Soin. Vos forces sont revigorees (" + std::to_string(joueur.vie) + "/" + std::to_string(joueur.vieMax) + " PV) !");
                     }
                     else if (joueur.inventaire.grandesPotions > 0 && joueur.vie < joueur.vieMax)
                     {
                         joueur.inventaire.grandesPotions--;
                         joueur.vie = joueur.vieMax;
                         floatingTexts.push_back({"VIE 100% !", {centerX, screenH * 0.40f}, UI::GreenHP, 1.2f, 1.2f});
-                        narration = "Grande Potion consommee ! Vos PV sont entierement restaures !";
+                        narrer("Grande Potion consommee ! Vos PV sont entierement restaures !");
                     }
                     else
                     {
@@ -514,11 +526,11 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
 
                         if (gagne)
                         {
-                            narration = "Apres une rude empoignade, vous fouillez le cadavre du " + monstre.nom + " et continuez votre chemin !";
+                            narrer("Apres une rude empoignade, vous fouillez le cadavre du " + monstre.nom + " et continuez votre chemin !");
                         }
                         else
                         {
-                            narration = "Vous avez reussi a fuir le combat et vous vous cachez dans un fourre...";
+                            narrer("Vous avez reussi a fuir le combat et vous vous cachez dans un fourre...");
                         }
                     }
                     else if (roll < 65)
@@ -529,25 +541,25 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
                             int orTrouve = (rand() % 25) + 15 + (zoneActuelle * 10);
                             joueur.orJoueur += orTrouve;
                             floatingTexts.push_back({"+" + std::to_string(orTrouve) + " PO", {centerX, screenH * 0.40f}, UI::AmberGold, 1.3f, 1.3f});
-                            narration = "DECOUVERTE ! Vous denichez un coffre en bois mousseux contenant " + std::to_string(orTrouve) + " pieces d'or !";
+                            narrer("DECOUVERTE ! Vous denichez un coffre en bois mousseux contenant " + std::to_string(orTrouve) + " pieces d'or !");
                         }
                         else if (typeTresor == 1)
                         {
                             joueur.inventaire.potionsNormales++;
                             floatingTexts.push_back({"+1 POTION", {centerX, screenH * 0.40f}, UI::GreenHP, 1.3f, 1.3f});
-                            narration = "TRESOR ! Une Potion de Soin etait cachee sous une dalle de pierre antique !";
+                            narrer("TRESOR ! Une Potion de Soin etait cachee sous une dalle de pierre antique !");
                         }
                         else if (typeTresor == 2)
                         {
                             joueur.inventaire.potionsMana++;
                             floatingTexts.push_back({"+1 POTION MANA", {centerX, screenH * 0.40f}, UI::BlueMana, 1.3f, 1.3f});
-                            narration = "MAGIE ! Vous trouvez une fiole d'Elixir de Mana etincelante !";
+                            narrer("MAGIE ! Vous trouvez une fiole d'Elixir de Mana etincelante !");
                         }
                         else
                         {
                             joueur.inventaire.nombreBouclier++;
                             floatingTexts.push_back({"+1 BOUCLIER", {centerX, screenH * 0.40f}, UI::Silver, 1.3f, 1.3f});
-                            narration = "EQUIPEMENT ! Un bouclier renforce etait abandonne contre un tertre !";
+                            narrer("EQUIPEMENT ! Un bouclier renforce etait abandonne contre un tertre !");
                         }
                     }
                     else if (roll < 78)
@@ -555,14 +567,14 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
                         int degatsPiege = (rand() % 12) + (zoneActuelle * 6);
                         joueur.vie = std::max(1, joueur.vie - degatsPiege);
                         floatingTexts.push_back({"PIEGE ! -" + std::to_string(degatsPiege) + " PV", {centerX, screenH * 0.40f}, UI::Crimson, 1.3f, 1.3f});
-                        narration = "PIEGE ! Un piege dissimule se declenche ! Vous subissez " + std::to_string(degatsPiege) + " degats !";
+                        narrer("PIEGE ! Un piege dissimule se declenche ! Vous subissez " + std::to_string(degatsPiege) + " degats !");
                     }
                     else if (roll < 90)
                     {
                         int bonusAtq = (rand() % 4) + 2;
                         joueur.attaque += bonusAtq;
                         floatingTexts.push_back({"+" + std::to_string(bonusAtq) + " ATQ PERMANENTE !", {centerX, screenH * 0.40f}, UI::Azure, 1.4f, 1.4f});
-                        narration = "ARTEFACT ! Vous affûtez votre arme sur une Pierre Sacree. Attaque permanente +" + std::to_string(bonusAtq) + " !";
+                        narrer("ARTEFACT ! Vous affutez votre arme sur une Pierre Sacree. Attaque permanente +" + std::to_string(bonusAtq) + " !");
                     }
                     else
                     {
@@ -571,7 +583,7 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
                         joueur.vie = std::min(joueur.vie + soin, joueur.vieMax);
                         joueur.mana = std::min(joueur.mana + mana, joueur.manaMax);
                         floatingTexts.push_back({"+40 PV  +30 MP", {centerX, screenH * 0.40f}, UI::BlueMana, 1.4f, 1.4f});
-                        narration = "SANCTUAIRE ! Une source feerique restaure 40 PV et 30 Mana a votre heros !";
+                        narrer("SANCTUAIRE ! Une source feerique restaure 40 PV et 30 Mana a votre heros !");
                     }
                 }
             }
@@ -597,10 +609,10 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
         window.draw(txtZone);
 
         float hudBarW = screenW * 0.22f;
-        UI::drawProgressBar(window, screenW * 0.44f, screenH * 0.035f, hudBarW, 16.0f, joueur.vie, joueur.vieMax, UI::GreenHP, sf::Color(55, 20, 20), "PV: " + std::to_string(joueur.vie) + " / " + std::to_string(joueur.vieMax), font, 12);
-        UI::drawProgressBar(window, screenW * 0.44f, screenH * 0.065f, hudBarW, 14.0f, joueur.mana, joueur.manaMax, UI::BlueMana, sf::Color(20, 30, 55), "Mana: " + std::to_string(joueur.mana) + " / " + std::to_string(joueur.manaMax), font, 11);
+        UI::drawProgressBar(window, screenW * 0.44f, screenH * 0.035f, hudBarW, 16.0f, joueur.vie, joueur.vieMax, UI::GreenHP, sf::Color(55, 20, 20), "PV: " + std::to_string(joueur.vie) + " / " + std::to_string(joueur.vieMax), font, 14);
+        UI::drawProgressBar(window, screenW * 0.44f, screenH * 0.065f, hudBarW, 14.0f, joueur.mana, joueur.manaMax, UI::BlueMana, sf::Color(20, 30, 55), "Mana: " + std::to_string(joueur.mana) + " / " + std::to_string(joueur.manaMax), font, 13);
 
-        sf::Text txtBourse("Bourse : " + std::to_string(joueur.orJoueur) + " PO | Niv. " + std::to_string(joueur.niveau), font, static_cast<unsigned int>(screenH * 0.024f));
+        sf::Text txtBourse("Bourse : " + std::to_string(joueur.orJoueur) + " PO | Niv. " + std::to_string(joueur.niveau), font, static_cast<unsigned int>(screenH * 0.028f));
         txtBourse.setFillColor(UI::AmberGold);
         sf::FloatRect bB = txtBourse.getLocalBounds();
         txtBourse.setPosition(screenW * 0.94f - bB.width, screenH * 0.04f);
@@ -608,10 +620,20 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
 
         window.draw(spriteHero);
 
-        UI::drawPanel(window, screenW * 0.10f, screenH * 0.65f, screenW * 0.80f, screenH * 0.16f, "REGISTRE D'EXPLORATION", &font, 18);
-        sf::Text txtNar(narration, font, static_cast<unsigned int>(screenH * 0.023f));
+        // Machine a ecrire : une lettre toutes les 0.035 s (latence + animation)
+        if (narrationIndex < narration.size() && horlogeLettre.getElapsedTime().asSeconds() >= 0.035f)
+        {
+            horlogeLettre.restart();
+            ++narrationIndex;
+            if (narrationIndex > narration.size()) narrationIndex = narration.size();
+            narrationAffichee = narration.substr(0, narrationIndex);
+        }
+
+        UI::drawPanel(window, screenW * 0.10f, screenH * 0.65f, screenW * 0.80f, screenH * 0.16f, "REGISTRE D'EXPLORATION", &font, 20);
+        std::string texteNarration = UI::wrapText(narrationAffichee, font, static_cast<unsigned int>(screenH * 0.027f), screenW * 0.76f);
+        sf::Text txtNar(texteNarration, font, static_cast<unsigned int>(screenH * 0.027f));
         txtNar.setFillColor(UI::TextWhite);
-        txtNar.setPosition(screenW * 0.12f, screenH * 0.72f);
+        txtNar.setPosition(screenW * 0.12f, screenH * 0.705f);
         window.draw(txtNar);
 
         UI::drawButton(window, btnAvancer, txtAvancer, btnAvancer.getGlobalBounds().contains(mPos.x, mPos.y));
@@ -693,7 +715,7 @@ inline void afficherVictoireAbsolueSFML(sf::RenderWindow &window, sf::Font &font
 
         UI::drawPanel(window, screenW * 0.15f, screenH * 0.10f, screenW * 0.70f, screenH * 0.68f, "VICTOIRE ABSOLUE DU ROYAUME", &font, 26);
 
-        sf::Text txtVictoire("★ FANTASY WORLD CONQUEST EST ACCOMPLI ! ★", font, static_cast<unsigned int>(screenH * 0.045f));
+        sf::Text txtVictoire("★ FANTASY WORLD CONQUEST EST ACCOMPLI ! ★", font, static_cast<unsigned int>(screenH * 0.050f));
         txtVictoire.setFillColor(UI::Silver);
         sf::FloatRect bV = txtVictoire.getLocalBounds();
         txtVictoire.setOrigin(bV.left + bV.width / 2.0f, bV.top + bV.height / 2.0f);
@@ -707,7 +729,7 @@ inline void afficherVictoireAbsolueSFML(sf::RenderWindow &window, sf::Font &font
             "Fortune Amassee : " + std::to_string(joueur.orJoueur) + " Pieces d'Or\n\n"
             "Votre nom restera grave a jamais dans les chroniques de ce monde.";
 
-        sf::Text txtEpi(epilogue, font, static_cast<unsigned int>(screenH * 0.026f));
+        sf::Text txtEpi(epilogue, font, static_cast<unsigned int>(screenH * 0.030f));
         txtEpi.setFillColor(UI::TextWhite);
         sf::FloatRect bE = txtEpi.getLocalBounds();
         txtEpi.setOrigin(bE.left + bE.width / 2.0f, bE.top + bE.height / 2.0f);
@@ -852,7 +874,7 @@ inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joue
                         }
                         else
                         {
-                            notifVille = "Defaite contre le Boss de Zone... Entraînez-vous encore !";
+                            notifVille = "Defaite contre le Boss de Zone... Entrainez-vous encore !";
                             couleurNotif = UI::Crimson;
                         }
                     }
@@ -929,13 +951,13 @@ inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joue
         window.draw(titreVille);
 
         std::string nomZoneActuelle = getNomZone(zoneActuelle);
-        sf::Text sousTitre("Zone " + std::to_string(zoneActuelle) + " : " + nomZoneActuelle + " | Conquetes : " + std::to_string(territoiresConquis) + "/6", font, static_cast<unsigned int>(screenH * 0.025f));
+        sf::Text sousTitre("Zone " + std::to_string(zoneActuelle) + " : " + nomZoneActuelle + " | Conquetes : " + std::to_string(territoiresConquis) + "/6", font, static_cast<unsigned int>(screenH * 0.028f));
         sousTitre.setFillColor(UI::Azure);
         sf::FloatRect bST = sousTitre.getLocalBounds();
         sousTitre.setPosition(screenW * 0.92f - bST.width, screenH * 0.042f);
         window.draw(sousTitre);
 
-        sf::Text txtNotif(notifVille, font, static_cast<unsigned int>(screenH * 0.022f));
+        sf::Text txtNotif(notifVille, font, static_cast<unsigned int>(screenH * 0.026f));
         txtNotif.setFillColor(couleurNotif);
         sf::FloatRect bN = txtNotif.getLocalBounds();
         txtNotif.setOrigin(bN.left + bN.width / 2.0f, bN.top + bN.height / 2.0f);
@@ -944,13 +966,13 @@ inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joue
 
         float cardHerosW = screenW * 0.34f;
         float cardHerosH = screenH * 0.72f;
-        UI::drawPanel(window, screenW * 0.06f, startY, cardHerosW, cardHerosH, "FEUILLE DU HEROS", &font, 20);
+        UI::drawPanel(window, screenW * 0.06f, startY, cardHerosW, cardHerosH, "FEUILLE DU HEROS", &font, 22);
 
         float bobbing = std::sin(animClock.getElapsedTime().asSeconds() * 3.0f) * 2.0f;
         spriteHero.setPosition(screenW * 0.11f, startY + 80.0f + bobbing);
         window.draw(spriteHero);
 
-        sf::Text txtIdentite(joueur.nom + "\n" + joueur.classeNom + " - Niv. " + std::to_string(joueur.niveau), font, static_cast<unsigned int>(screenH * 0.024f));
+        sf::Text txtIdentite(joueur.nom + "\n" + joueur.classeNom + " - Niv. " + std::to_string(joueur.niveau), font, static_cast<unsigned int>(screenH * 0.028f));
         txtIdentite.setFillColor(UI::Silver);
         txtIdentite.setPosition(screenW * 0.16f, startY + 55.0f);
         window.draw(txtIdentite);
@@ -959,11 +981,11 @@ inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joue
         float barW = cardHerosW - screenW * 0.04f;
         float curY = startY + 130.0f;
 
-        UI::drawProgressBar(window, barX, curY, barW, 18.0f, joueur.vie, joueur.vieMax, UI::GreenHP, sf::Color(55, 20, 20), "PV : " + std::to_string(joueur.vie) + " / " + std::to_string(joueur.vieMax), font, 13);
+        UI::drawProgressBar(window, barX, curY, barW, 18.0f, joueur.vie, joueur.vieMax, UI::GreenHP, sf::Color(55, 20, 20), "PV : " + std::to_string(joueur.vie) + " / " + std::to_string(joueur.vieMax), font, 15);
         curY += 26.0f;
-        UI::drawProgressBar(window, barX, curY, barW, 14.0f, joueur.mana, joueur.manaMax, UI::BlueMana, sf::Color(20, 30, 55), "Mana : " + std::to_string(joueur.mana) + " / " + std::to_string(joueur.manaMax), font, 12);
+        UI::drawProgressBar(window, barX, curY, barW, 14.0f, joueur.mana, joueur.manaMax, UI::BlueMana, sf::Color(20, 30, 55), "Mana : " + std::to_string(joueur.mana) + " / " + std::to_string(joueur.manaMax), font, 14);
         curY += 24.0f;
-        UI::drawProgressBar(window, barX, curY, barW, 14.0f, joueur.xp, joueur.xpSeuil, UI::Azure, sf::Color(30, 45, 65), "XP : " + std::to_string(joueur.xp) + " / " + std::to_string(joueur.xpSeuil), font, 11);
+        UI::drawProgressBar(window, barX, curY, barW, 14.0f, joueur.xp, joueur.xpSeuil, UI::Azure, sf::Color(30, 45, 65), "XP : " + std::to_string(joueur.xp) + " / " + std::to_string(joueur.xpSeuil), font, 13);
         curY += 30.0f;
 
         std::string statsTexte = "Attaque : " + std::to_string(joueur.attaque) + "       Defense : " + std::to_string(joueur.defense) + "\n\n"
@@ -976,7 +998,7 @@ inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joue
             + "Boucliers protecteurs     : " + std::to_string(joueur.inventaire.nombreBouclier) + "\n"
             + "Capacite du Sac           : " + std::to_string(joueur.inventaire.capaciteSac) + " emplacements";
 
-        sf::Text txtStats(statsTexte, font, static_cast<unsigned int>(screenH * 0.020f));
+        sf::Text txtStats(statsTexte, font, static_cast<unsigned int>(screenH * 0.024f));
         txtStats.setFillColor(UI::TextWhite);
         txtStats.setPosition(barX, curY);
         window.draw(txtStats);
@@ -990,7 +1012,7 @@ inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joue
 
         if (modalBossOuvert)
         {
-            UI::drawPanel(window, modalX, modalY, modalW, modalH, "ORDRE DE BATAILLE : BOSS DE ZONE", &font, 22);
+            UI::drawPanel(window, modalX, modalY, modalW, modalH, "ORDRE DE BATAILLE : BOSS DE ZONE", &font, 24);
 
             std::string bossInfo = "Cible Majeure : " + bossZone.nom + "\n\n"
                 + "Points de Vie du Boss : " + std::to_string(bossZone.vieMax) + " PV\n"
@@ -999,7 +1021,7 @@ inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joue
                 + "Recompense de Victoire : +" + std::to_string(bossZone.orRecompense) + " PO | +" + std::to_string(bossZone.xpRecompense) + " XP\n"
                 + "Attention : La fuite sera impossible une fois engage !";
 
-            sf::Text txtBInfo(bossInfo, font, static_cast<unsigned int>(screenH * 0.021f));
+            sf::Text txtBInfo(bossInfo, font, static_cast<unsigned int>(screenH * 0.025f));
             txtBInfo.setFillColor(UI::TextWhite);
             txtBInfo.setPosition(modalX + 25.0f, modalY + 55.0f);
             window.draw(txtBInfo);

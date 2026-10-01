@@ -119,12 +119,12 @@ inline bool creerPersonnageSFML(sf::RenderWindow &window, sf::Font &font, Joueur
         std::string stats;
         float x, y;
     } infos[6] = {
-        {"Guerrier", "PV: 130 | ATQ: 14 | DEF: 25\nSort: Coup Puissant", col1, row1Y},
-        {"Mage", "PV: 90 | ATQ: 25 | DEF: 10\nSort: Boule de Feu", col2, row1Y},
-        {"Archer", "PV: 105 | ATQ: 18 | DEF: 15\nSort: Tir de Precision", col3, row1Y},
-        {"Paladin", "PV: 150 | ATQ: 12 | DEF: 35\nSort: Soin Divin", col1, row2Y},
-        {"Necromancien", "PV: 85 | ATQ: 22 | DEF: 12\nSort: Malediction", col2, row2Y},
-        {"Assassin", "PV: 95 | ATQ: 21 | DEF: 14\nSort: Attaque Sournoise", col3, row2Y}
+        {"Guerrier", "PV: 110 | ATQ: 12 | DEF: 10\nSort: Coup Puissant", col1, row1Y},
+        {"Mage", "PV: 80 | ATQ: 16 | DEF: 5\nSort: Boule de Feu", col2, row1Y},
+        {"Archer", "PV: 95 | ATQ: 14 | DEF: 6\nSort: Tir de Precision", col3, row1Y},
+        {"Paladin", "PV: 120 | ATQ: 10 | DEF: 12\nSort: Soin Divin", col1, row2Y},
+        {"Necromancien", "PV: 80 | ATQ: 15 | DEF: 5\nSort: Malediction", col2, row2Y},
+        {"Assassin", "PV: 85 | ATQ: 15 | DEF: 6\nSort: Attaque Sournoise", col3, row2Y}
     };
 
     for (int i = 0; i < 6; ++i)
@@ -199,7 +199,7 @@ inline bool creerPersonnageSFML(sf::RenderWindow &window, sf::Font &font, Joueur
                 {
                     if (nomSaisi.empty())
                     {
-                        nomSaisi = "Légendaire";
+                        nomSaisi = "Legendaire";
                     }
                     creationTerminee = true;
                 }
@@ -279,7 +279,7 @@ inline bool creerPersonnageSFML(sf::RenderWindow &window, sf::Font &font, Joueur
         window.display();
     }
 
-    if (nomSaisi.empty()) nomSaisi = "Héros";
+    if (nomSaisi.empty()) nomSaisi = "Heros";
 
     joueur.nom = nomSaisi;
     joueur.niveau = 1;
@@ -289,44 +289,44 @@ inline bool creerPersonnageSFML(sf::RenderWindow &window, sf::Font &font, Joueur
     joueur.orJoueur = 50;
     joueur.monstresVaincus = 0;
 
-    joueur.inventaire.potionsNormales = 3;
+    joueur.inventaire.potionsNormales = 2;
     joueur.inventaire.grandesPotions = 1;
-    joueur.inventaire.nombreBouclier = 2;
+    joueur.inventaire.nombreBouclier = 1;
     joueur.inventaire.potionsMana = 2;
     joueur.inventaire.capaciteSac = 5;
 
     if (classeChoisie == 1)
     {
         joueur.classeNom = "Guerrier";
-        joueur.vie = 130; joueur.vieMax = 130;
-        joueur.attaque = 14; joueur.defense = 25;
+        joueur.vie = 110; joueur.vieMax = 110;
+        joueur.attaque = 12; joueur.defense = 10;
         joueur.mana = 20; joueur.manaMax = 20;
-        joueur.chanceCrit = 15;
+        joueur.chanceCrit = 12;
         joueur.competenceSpeciale = "Coup Puissant";
     }
     else if (classeChoisie == 2)
     {
         joueur.classeNom = "Mage";
-        joueur.vie = 90; joueur.vieMax = 90;
-        joueur.attaque = 25; joueur.defense = 10;
-        joueur.mana = 70; joueur.manaMax = 70;
+        joueur.vie = 80; joueur.vieMax = 80;
+        joueur.attaque = 16; joueur.defense = 5;
+        joueur.mana = 60; joueur.manaMax = 60;
         joueur.chanceCrit = 10;
         joueur.competenceSpeciale = "Boule de Feu";
     }
     else if (classeChoisie == 3)
     {
         joueur.classeNom = "Archer";
-        joueur.vie = 105; joueur.vieMax = 105;
-        joueur.attaque = 18; joueur.defense = 15;
+        joueur.vie = 95; joueur.vieMax = 95;
+        joueur.attaque = 14; joueur.defense = 6;
         joueur.mana = 30; joueur.manaMax = 30;
-        joueur.chanceCrit = 30;
+        joueur.chanceCrit = 25;
         joueur.competenceSpeciale = "Tir de Precision";
     }
     else if (classeChoisie == 4)
     {
         joueur.classeNom = "Paladin";
-        joueur.vie = 150; joueur.vieMax = 150;
-        joueur.attaque = 12; joueur.defense = 35;
+        joueur.vie = 120; joueur.vieMax = 120;
+        joueur.attaque = 10; joueur.defense = 12;
         joueur.mana = 40; joueur.manaMax = 40;
         joueur.chanceCrit = 10;
         joueur.competenceSpeciale = "Soin Divin";
@@ -334,19 +334,19 @@ inline bool creerPersonnageSFML(sf::RenderWindow &window, sf::Font &font, Joueur
     else if (classeChoisie == 5)
     {
         joueur.classeNom = "Necromancien";
-        joueur.vie = 85; joueur.vieMax = 85;
-        joueur.attaque = 22; joueur.defense = 12;
-        joueur.mana = 75; joueur.manaMax = 75;
+        joueur.vie = 80; joueur.vieMax = 80;
+        joueur.attaque = 15; joueur.defense = 5;
+        joueur.mana = 60; joueur.manaMax = 60;
         joueur.chanceCrit = 15;
         joueur.competenceSpeciale = "Malediction";
     }
     else if (classeChoisie == 6)
     {
         joueur.classeNom = "Assassin";
-        joueur.vie = 95; joueur.vieMax = 95;
-        joueur.attaque = 21; joueur.defense = 14;
+        joueur.vie = 85; joueur.vieMax = 85;
+        joueur.attaque = 15; joueur.defense = 6;
         joueur.mana = 30; joueur.manaMax = 30;
-        joueur.chanceCrit = 35;
+        joueur.chanceCrit = 30;
         joueur.competenceSpeciale = "Attaque Sournoise";
     }
 

@@ -192,7 +192,7 @@ int main()
 
             if (sauvegardeExiste)
             {
-                sf::Text txtSaveInfo("Une sauvegarde d'aventure a ete detectee dans les parchemins.", font, 16);
+                sf::Text txtSaveInfo("Une sauvegarde d'aventure a ete detectee dans les parchemins.", font, 20);
                 txtSaveInfo.setFillColor(UI::Azure);
                 sf::FloatRect bSI = txtSaveInfo.getLocalBounds();
                 txtSaveInfo.setOrigin(bSI.left + bSI.width / 2.0f, bSI.top + bSI.height / 2.0f);

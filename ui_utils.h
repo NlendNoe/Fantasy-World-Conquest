@@ -109,6 +109,42 @@ namespace UI
         }
     }
 
+    inline std::string wrapText(const std::string &texte, const sf::Font &font, unsigned int taille, float largeurMax)
+    {
+        std::string resultat;
+        std::string ligne;
+
+        size_t i = 0;
+        while (i < texte.size())
+        {
+            size_t j = i;
+            while (j < texte.size() && texte[j] != ' ' && texte[j] != '\n') ++j;
+            std::string mot = texte.substr(i, j - i);
+
+            std::string essai = ligne.empty() ? mot : ligne + " " + mot;
+            float largeur = sf::Text(essai, font, taille).getLocalBounds().width;
+
+            if (largeur > largeurMax && !ligne.empty())
+            {
+                resultat += ligne + "\n";
+                ligne = mot;
+            }
+            else
+            {
+                ligne = essai;
+            }
+
+            if (j < texte.size() && texte[j] == '\n')
+            {
+                resultat += ligne + "\n";
+                ligne.clear();
+            }
+            i = j + 1;
+        }
+        resultat += ligne;
+        return resultat;
+    }
+
     struct FloatingText
     {
         std::string text;
@@ -116,6 +152,7 @@ namespace UI
         sf::Color color;
         float timer = 1.0f;
         float maxTimer = 1.0f;
+        unsigned int taille = 30; // taille du texte flottant
     };
 
     inline void updateAndDrawFloatingTexts(sf::RenderWindow &window, sf::Font &font,
@@ -135,7 +172,7 @@ namespace UI
                 sf::Color c = it->color;
                 c.a = static_cast<sf::Uint8>(std::clamp(alpha, 0.0f, 255.0f));
 
-                sf::Text txt(it->text, font, 24);
+                sf::Text txt(it->text, font, it->taille);
                 txt.setFillColor(c);
                 txt.setOutlineThickness(2.0f);
                 txt.setOutlineColor(sf::Color(0, 0, 0, static_cast<sf::Uint8>(alpha)));

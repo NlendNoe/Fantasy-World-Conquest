@@ -16,18 +16,18 @@ struct Inventaire
 
 struct Joueur
 {
-    std::string nom = "Héros";
+    std::string nom = "Heros";
     std::string classeNom = "Guerrier";
     int classeIndex = 0;
     std::string competenceSpeciale = "Coup puissant";
     Inventaire inventaire;
-    int vie = 120;
-    int vieMax = 120;
-    int mana = 20;
-    int manaMax = 20;
-    int attaque = 15;
-    int defense = 15;
-    int chanceCrit = 15;
+    int vie = 110;
+    int vieMax = 110;
+    int mana = 30;
+    int manaMax = 30;
+    int attaque = 12;
+    int defense = 8;
+    int chanceCrit = 10;
     int niveau = 1;
     int orJoueur = 50;
     int xp = 0;

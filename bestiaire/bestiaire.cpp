@@ -9,12 +9,12 @@ inline std::string getNomZone(int zone)
 {
     switch (zone)
     {
-    case 1: return "La Forêt des Anciens";
+    case 1: return "La Foret des Anciens";
     case 2: return "Les Montagnes du Destin";
-    case 3: return "Le Désert Maudit";
+    case 3: return "Le Desert Maudit";
     case 4: return "Le Royaume des Ombres";
     case 5: return "Le Domaine Vampirique";
-    case 6: return "La Forêt Maudite & Sanctuaire Final";
+    case 6: return "La Foret Maudite & Sanctuaire Final";
     default: return "Les Terres Sauvages";
     }
 }
