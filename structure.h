@@ -47,6 +47,7 @@ struct Monstre
     bool isBoss = false;
     std::string capaciteSpeciale = "Coup Sournois";
     int spriteType = 0;
+    std::string sprite = ""; // chemin de l'image dediee (vide = sprite generique)
 };
 
 #endif

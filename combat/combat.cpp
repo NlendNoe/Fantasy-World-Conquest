@@ -63,12 +63,29 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
     sf::Vector2f heroBasePos(screenW * 0.25f, screenH * 0.45f);
     spriteHero.setPosition(heroBasePos);
 
-    sf::Texture* texMonstre = texturesHero[monstre.spriteType % 6];
-    sf::Sprite spriteMonstre(*texMonstre);
-    spriteMonstre.setTextureRect(sf::IntRect(0, 64, 64, 64));
-    spriteMonstre.setOrigin(32.0f, 32.0f);
-    float monstreScale = (isBossRaid ? screenH * 0.0070f : screenH * 0.0055f);
-    spriteMonstre.setScale(monstreScale, monstreScale);
+    // Image dediee du monstre si disponible, sinon sprite generique de secours
+    sf::Texture texMonstreDediee;
+    bool monstreDedieeChargee = false;
+    if (!monstre.sprite.empty())
+        monstreDedieeChargee = texMonstreDediee.loadFromFile(monstre.sprite);
+
+    sf::Sprite spriteMonstre;
+    if (monstreDedieeChargee)
+    {
+        spriteMonstre.setTexture(texMonstreDediee);
+        sf::Vector2u szM = texMonstreDediee.getSize();
+        spriteMonstre.setOrigin(szM.x / 2.0f, szM.y / 2.0f);
+        float tailleVisee = (isBossRaid ? screenH * 0.28f : screenH * 0.18f);
+        spriteMonstre.setScale(tailleVisee / szM.x, tailleVisee / szM.x);
+    }
+    else
+    {
+        spriteMonstre.setTexture(*texturesHero[monstre.spriteType % 6]);
+        spriteMonstre.setTextureRect(sf::IntRect(0, 64, 64, 64));
+        spriteMonstre.setOrigin(32.0f, 32.0f);
+        float monstreScale = (isBossRaid ? screenH * 0.0070f : screenH * 0.0055f);
+        spriteMonstre.setScale(monstreScale, monstreScale);
+    }
     sf::Vector2f monstreBasePos(screenW * 0.75f, screenH * 0.45f);
     spriteMonstre.setPosition(monstreBasePos);
 
