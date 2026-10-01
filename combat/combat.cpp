@@ -69,14 +69,15 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
     if (!monstre.sprite.empty())
         monstreDedieeChargee = texMonstreDediee.loadFromFile(monstre.sprite);
 
+    float tailleSpriteMonstre = (isBossRaid ? screenH * 0.28f : screenH * 0.18f);
+
     sf::Sprite spriteMonstre;
     if (monstreDedieeChargee)
     {
         spriteMonstre.setTexture(texMonstreDediee);
         sf::Vector2u szM = texMonstreDediee.getSize();
         spriteMonstre.setOrigin(szM.x / 2.0f, szM.y / 2.0f);
-        float tailleVisee = (isBossRaid ? screenH * 0.28f : screenH * 0.18f);
-        spriteMonstre.setScale(tailleVisee / szM.x, tailleVisee / szM.x);
+        spriteMonstre.setScale(tailleSpriteMonstre / szM.x, tailleSpriteMonstre / szM.x);
     }
     else
     {
@@ -88,6 +89,18 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
     }
     sf::Vector2f monstreBasePos(screenW * 0.75f, screenH * 0.45f);
     spriteMonstre.setPosition(monstreBasePos);
+
+    // Aura pulsante derriere les boss : signal visuel de danger
+    float rayonAura = tailleSpriteMonstre * 0.62f;
+    sf::CircleShape auraBoss(rayonAura);
+    auraBoss.setOrigin(rayonAura, rayonAura);
+    auraBoss.setPosition(monstreBasePos);
+    auraBoss.setFillColor(sf::Color(215, 50, 50, 80));
+    auraBoss.setOutlineThickness(3.0f);
+    auraBoss.setOutlineColor(sf::Color(255, 90, 90, 160));
+
+    // Intro dramatique des boss : flash rouge + secousse de l'ecran
+    float introBoss = isBossRaid ? 1.2f : 0.0f;
 
     std::vector<std::string> journalCombat;
     journalCombat.push_back("Un redoutable " + monstre.nom + " surgit !");
@@ -538,11 +551,34 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
         spriteMonstre.setPosition(curMonstrePos);
 
         window.clear(sf::Color(10, 12, 18));
+
+        // Secousse de l'ecran amortie pendant l'intro du boss
+        if (introBoss > 0.0f)
+        {
+            introBoss -= dt;
+            float intensite = std::max(0.0f, introBoss) / 1.2f;
+            sf::View vueEcran = window.getDefaultView();
+            vueEcran.move((rand() % 13 - 6) * intensite, (rand() % 13 - 6) * intensite);
+            window.setView(vueEcran);
+        }
+        else
+        {
+            window.setView(window.getDefaultView());
+        }
+
         if (fondCharge) window.draw(spriteFond);
 
         sf::RectangleShape voile(sf::Vector2f(screenW, screenH));
         voile.setFillColor(sf::Color(12, 16, 24, 180));
         window.draw(voile);
+
+        // Flash rouge decroissant pendant l'intro du boss
+        if (introBoss > 0.0f)
+        {
+            sf::RectangleShape flashRouge(sf::Vector2f(screenW, screenH));
+            flashRouge.setFillColor(sf::Color(160, 20, 20, static_cast<sf::Uint8>(130 * (introBoss / 1.2f))));
+            window.draw(flashRouge);
+        }
 
         UI::drawPanel(window, screenW * 0.05f, screenH * 0.03f, screenW * 0.90f, screenH * 0.08f);
         sf::Text txtTitreCombat(isBossRaid ? "COMBAT DE BOSS DE ZONE : " + monstre.nom : "ENGAGEMENT : " + monstre.nom, font, static_cast<unsigned int>(screenH * 0.035f));
@@ -567,6 +603,18 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
         window.draw(txtStatsM);
 
         window.draw(spriteHero);
+
+        // Aura pulsante dessinee derriere le boss
+        if (isBossRaid)
+        {
+            sf::Color cAura(215, 50, 50);
+            cAura.a = static_cast<sf::Uint8>(90 + 45 * std::sin(totalTime * 2.5f));
+            auraBoss.setFillColor(cAura);
+            float pulsation = 1.0f + 0.06f * std::sin(totalTime * 2.5f);
+            auraBoss.setScale(pulsation, pulsation);
+            window.draw(auraBoss);
+        }
+
         window.draw(spriteMonstre);
 
         float logW = screenW * 0.44f;

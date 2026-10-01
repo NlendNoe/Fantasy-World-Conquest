@@ -1014,6 +1014,27 @@ inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joue
         {
             UI::drawPanel(window, modalX, modalY, modalW, modalH, "ORDRE DE BATAILLE : BOSS DE ZONE", &font, 24);
 
+            // Portrait du boss a gauche (image dediee si disponible)
+            static sf::Texture texBossModal;
+            static std::string cheminBossCharge;
+            if (cheminBossCharge != bossZone.sprite)
+            {
+                if (!bossZone.sprite.empty() && texBossModal.loadFromFile(bossZone.sprite))
+                    cheminBossCharge = bossZone.sprite;
+                else
+                    cheminBossCharge.clear();
+            }
+            if (!cheminBossCharge.empty())
+            {
+                sf::Sprite spriteBossModal(texBossModal);
+                sf::Vector2u szB = texBossModal.getSize();
+                spriteBossModal.setOrigin(szB.x / 2.0f, szB.y / 2.0f);
+                float taillePortrait = modalH * 0.55f;
+                spriteBossModal.setScale(taillePortrait / szB.x, taillePortrait / szB.x);
+                spriteBossModal.setPosition(modalX + modalW * 0.16f, modalY + modalH * 0.48f);
+                window.draw(spriteBossModal);
+            }
+
             std::string bossInfo = "Cible Majeure : " + bossZone.nom + "\n\n"
                 + "Points de Vie du Boss : " + std::to_string(bossZone.vieMax) + " PV\n"
                 + "Puissance d'Attaque : " + std::to_string(bossZone.attaque) + " ATQ | Armure : " + std::to_string(bossZone.defense) + " DEF\n"
@@ -1023,7 +1044,7 @@ inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joue
 
             sf::Text txtBInfo(bossInfo, font, static_cast<unsigned int>(screenH * 0.025f));
             txtBInfo.setFillColor(UI::TextWhite);
-            txtBInfo.setPosition(modalX + 25.0f, modalY + 55.0f);
+            txtBInfo.setPosition(modalX + modalW * 0.34f, modalY + 55.0f);
             window.draw(txtBInfo);
 
             UI::drawButton(window, btnAssaut, txtAssaut, btnAssaut.getGlobalBounds().contains(mPos.x, mPos.y), sf::Color(140, 35, 35), sf::Color(180, 45, 45), UI::TextWhite, UI::TextWhite);
