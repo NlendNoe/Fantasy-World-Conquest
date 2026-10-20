@@ -23,7 +23,7 @@ inline bool afficherBoutiqueSFML(sf::RenderWindow &window, sf::Font &font, Joueu
     float centerX = screenW / 2.0f;
 
     sf::Texture texFond;
-    bool fondCharge = texFond.loadFromFile("assets/backgrounds/fond-principale.jpg");
+    bool fondCharge = texFond.loadFromFile("assets/backgrounds/fond_boutique.png");
     sf::Sprite spriteFond;
     if (fondCharge)
     {
@@ -379,7 +379,8 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
     AudioJeu::jouer("assets/Music/Woodland Fantasy _ OpenGameArt.org.ogg", 30.0f, true);
 
     sf::Texture texFond;
-    bool fondCharge = texFond.loadFromFile("assets/backgrounds/font2.jpg");
+    bool fondCharge = texFond.loadFromFile("assets/backgrounds/fond_zone" + std::to_string(std::clamp(zoneActuelle, 1, 6)) + ".png");
+    if (!fondCharge) fondCharge = texFond.loadFromFile("assets/backgrounds/font2.jpg");
     sf::Sprite spriteFond;
     if (fondCharge)
     {
@@ -482,6 +483,7 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
 
                 if (btnVille.getGlobalBounds().contains(mPos.x, mPos.y))
                 {
+                    AudioJeu::jouerEffet("clic");
                     AudioJeu::jouer("assets/Music/Town Theme RPG _ OpenGameArt.org.ogg", 30.0f, true);
                     return true;
                 }
@@ -490,6 +492,7 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
                     if (joueur.inventaire.potionsNormales > 0 && joueur.vie < joueur.vieMax)
                     {
                         joueur.inventaire.potionsNormales--;
+                        AudioJeu::jouerEffet("potion");
                         int soin = 35;
                         joueur.vie = std::min(joueur.vie + soin, joueur.vieMax);
                         floatingTexts.push_back({"+" + std::to_string(soin) + " PV", {centerX, screenH * 0.40f}, UI::GreenHP, 1.2f, 1.2f});
@@ -498,6 +501,7 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
                     else if (joueur.inventaire.grandesPotions > 0 && joueur.vie < joueur.vieMax)
                     {
                         joueur.inventaire.grandesPotions--;
+                        AudioJeu::jouerEffet("potion");
                         joueur.vie = joueur.vieMax;
                         floatingTexts.push_back({"VIE 100% !", {centerX, screenH * 0.40f}, UI::GreenHP, 1.2f, 1.2f});
                         narrer("Grande Potion consommee ! Vos PV sont entierement restaures !");
@@ -526,6 +530,8 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
 
                         if (gagne)
                         {
+                            // Auto-sauvegarde apres chaque victoire en exploration
+                            sauvegarderPartie(joueur, zoneActuelle, territoiresConquis);
                             narrer("Apres une rude empoignade, vous fouillez le cadavre du " + monstre.nom + " et continuez votre chemin !");
                         }
                         else
@@ -540,24 +546,28 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
                         {
                             int orTrouve = (rand() % 25) + 15 + (zoneActuelle * 10);
                             joueur.orJoueur += orTrouve;
+                            AudioJeu::jouerEffet("piece");
                             floatingTexts.push_back({"+" + std::to_string(orTrouve) + " PO", {centerX, screenH * 0.40f}, UI::AmberGold, 1.3f, 1.3f});
                             narrer("DECOUVERTE ! Vous denichez un coffre en bois mousseux contenant " + std::to_string(orTrouve) + " pieces d'or !");
                         }
                         else if (typeTresor == 1)
                         {
                             joueur.inventaire.potionsNormales++;
+                            AudioJeu::jouerEffet("potion");
                             floatingTexts.push_back({"+1 POTION", {centerX, screenH * 0.40f}, UI::GreenHP, 1.3f, 1.3f});
                             narrer("TRESOR ! Une Potion de Soin etait cachee sous une dalle de pierre antique !");
                         }
                         else if (typeTresor == 2)
                         {
                             joueur.inventaire.potionsMana++;
+                            AudioJeu::jouerEffet("potion");
                             floatingTexts.push_back({"+1 POTION MANA", {centerX, screenH * 0.40f}, UI::BlueMana, 1.3f, 1.3f});
                             narrer("MAGIE ! Vous trouvez une fiole d'Elixir de Mana etincelante !");
                         }
                         else
                         {
                             joueur.inventaire.nombreBouclier++;
+                            AudioJeu::jouerEffet("bouclier");
                             floatingTexts.push_back({"+1 BOUCLIER", {centerX, screenH * 0.40f}, UI::Silver, 1.3f, 1.3f});
                             narrer("EQUIPEMENT ! Un bouclier renforce etait abandonne contre un tertre !");
                         }
@@ -566,6 +576,7 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
                     {
                         int degatsPiege = (rand() % 12) + (zoneActuelle * 6);
                         joueur.vie = std::max(1, joueur.vie - degatsPiege);
+                        AudioJeu::jouerEffet("coup");
                         floatingTexts.push_back({"PIEGE ! -" + std::to_string(degatsPiege) + " PV", {centerX, screenH * 0.40f}, UI::Crimson, 1.3f, 1.3f});
                         narrer("PIEGE ! Un piege dissimule se declenche ! Vous subissez " + std::to_string(degatsPiege) + " degats !");
                     }
@@ -573,6 +584,7 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
                     {
                         int bonusAtq = (rand() % 4) + 2;
                         joueur.attaque += bonusAtq;
+                        AudioJeu::jouerEffet("critique");
                         floatingTexts.push_back({"+" + std::to_string(bonusAtq) + " ATQ PERMANENTE !", {centerX, screenH * 0.40f}, UI::Azure, 1.4f, 1.4f});
                         narrer("ARTEFACT ! Vous affutez votre arme sur une Pierre Sacree. Attaque permanente +" + std::to_string(bonusAtq) + " !");
                     }
@@ -582,6 +594,7 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
                         int mana = 30;
                         joueur.vie = std::min(joueur.vie + soin, joueur.vieMax);
                         joueur.mana = std::min(joueur.mana + mana, joueur.manaMax);
+                        AudioJeu::jouerEffet("sort");
                         floatingTexts.push_back({"+40 PV  +30 MP", {centerX, screenH * 0.40f}, UI::BlueMana, 1.4f, 1.4f});
                         narrer("SANCTUAIRE ! Une source feerique restaure 40 PV et 30 Mana a votre heros !");
                     }
@@ -656,9 +669,11 @@ inline void afficherVictoireAbsolueSFML(sf::RenderWindow &window, sf::Font &font
     float centerX = screenW / 2.0f;
 
     AudioJeu::jouer("assets/Music/Orchestral Epic Fantasy Music _ OpenGameArt.org.OGG", 40.0f, true);
+    AudioJeu::jouerEffet("victoire", 75.0f);
 
     sf::Texture texFond;
-    bool fondCharge = texFond.loadFromFile("assets/backgrounds/chargement.jpg");
+    bool fondCharge = texFond.loadFromFile("assets/backgrounds/fond_victoire.png");
+    if (!fondCharge) fondCharge = texFond.loadFromFile("assets/backgrounds/chargement.jpg");
     sf::Sprite spriteFond;
     if (fondCharge)
     {
@@ -751,7 +766,7 @@ inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joue
     AudioJeu::jouer("assets/Music/Town Theme RPG _ OpenGameArt.org.ogg", 30.0f, true);
 
     sf::Texture texFond;
-    bool fondCharge = texFond.loadFromFile("assets/backgrounds/fond-principale.jpg");
+    bool fondCharge = texFond.loadFromFile("assets/backgrounds/fond_cite.png");
     sf::Sprite spriteFond;
     if (fondCharge)
     {
@@ -900,6 +915,7 @@ inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joue
                             joueur.orJoueur -= 20;
                             joueur.vie = joueur.vieMax;
                             joueur.mana = joueur.manaMax;
+                            AudioJeu::jouerEffet("niveau");
                             notifVille = "Vous passez une nuit paisible a l'auberge. PV et Mana entierement restaures (-20 PO) !";
                             couleurNotif = UI::GreenHP;
                         }
@@ -918,6 +934,7 @@ inline bool afficherMenuVilleSFML(sf::RenderWindow &window, sf::Font &font, Joue
                     {
                         if (sauvegarderPartie(joueur, zoneActuelle, territoiresConquis))
                         {
+                            AudioJeu::jouerEffet("clic");
                             notifVille = "Partie sauvegardee avec succes dans les archives du Bastion !";
                             couleurNotif = UI::GreenHP;
                         }

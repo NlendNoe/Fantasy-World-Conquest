@@ -35,7 +35,7 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
         AudioJeu::jouer("assets/Music/RPG Battle Theme - The Last Encounter _ OpenGameArt.org.ogg", 30.0f, true);
 
     sf::Texture texFond;
-    bool fondCharge = texFond.loadFromFile("assets/backgrounds/introBg.jpg");
+    bool fondCharge = texFond.loadFromFile("assets/backgrounds/fond_combat.png");
     sf::Sprite spriteFond;
     if (fondCharge)
     {
@@ -99,8 +99,12 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
     auraBoss.setOutlineThickness(3.0f);
     auraBoss.setOutlineColor(sf::Color(255, 90, 90, 160));
 
-    // Intro dramatique des boss : flash rouge + secousse de l'ecran
+    // Intro dramatique des boss : flash rouge + secousse de l'ecran + rugissement
     float introBoss = isBossRaid ? 1.2f : 0.0f;
+    if (isBossRaid) AudioJeu::jouerEffet("rugissement", 80.0f);
+
+    // Phase 2 du boss : fureur declenchee sous 50% de vie
+    bool phaseBoss2 = false;
 
     std::vector<std::string> journalCombat;
     journalCombat.push_back("Un redoutable " + monstre.nom + " surgit !");
@@ -250,6 +254,7 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
                             if (joueur.inventaire.potionsNormales > 0)
                             {
                                 joueur.inventaire.potionsNormales--;
+                                AudioJeu::jouerEffet("potion");
                                 int soin = 35;
                                 joueur.vie = std::min(joueur.vie + soin, joueur.vieMax);
                                 floatingTexts.push_back({"+" + std::to_string(soin) + " PV", heroBasePos, UI::GreenHP, 1.2f, 1.2f});
@@ -264,6 +269,7 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
                             if (joueur.inventaire.grandesPotions > 0)
                             {
                                 joueur.inventaire.grandesPotions--;
+                                AudioJeu::jouerEffet("potion");
                                 joueur.vie = joueur.vieMax;
                                 floatingTexts.push_back({"VIE 100% !", heroBasePos, UI::GreenHP, 1.2f, 1.2f});
                                 journalCombat.push_back(joueur.nom + " consomme une Grande Potion (Soins 100%).");
@@ -277,6 +283,7 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
                             if (joueur.inventaire.potionsMana > 0)
                             {
                                 joueur.inventaire.potionsMana--;
+                                AudioJeu::jouerEffet("potion");
                                 int manaRendu = 35;
                                 joueur.mana = std::min(joueur.mana + manaRendu, joueur.manaMax);
                                 floatingTexts.push_back({"+" + std::to_string(manaRendu) + " MP", heroBasePos, UI::BlueMana, 1.2f, 1.2f});
@@ -291,6 +298,7 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
                             if (joueur.inventaire.nombreBouclier > 0)
                             {
                                 joueur.inventaire.nombreBouclier--;
+                                AudioJeu::jouerEffet("bouclier");
                                 postureDefensive = true;
                                 floatingTexts.push_back({"BOUCLIER ACTIF !", heroBasePos, UI::Silver, 1.2f, 1.2f});
                                 journalCombat.push_back(joueur.nom + " leve son Bouclier (Degats /2 au prochain coup) !");
@@ -323,6 +331,7 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
                             floatingTexts.push_back({txtDmg, monstreBasePos, isCrit ? UI::Azure : UI::Crimson, 1.2f, 1.2f});
 
                             journalCombat.push_back(joueur.nom + " frappe " + monstre.nom + " pour " + std::to_string(degatsFinaux) + " degats !" + (isCrit ? " (Coup Critique !)" : ""));
+                            AudioJeu::jouerEffet(isCrit ? "critique" : "coup");
 
                             etat = CombatState::ACTION_RESOLVING;
                             horlogeTour.restart();
@@ -341,6 +350,7 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
                             {
                                 joueur.mana -= coutMana;
                                 heroLunge = 0.35f;
+                                AudioJeu::jouerEffet("sort");
 
                                 // Degats de sort = multiplicateur x ATQ, avec une part d'aléatoire
                                 // (+0 a +5) comme l'attaque normale, pour eviter les valeurs figees.
@@ -418,12 +428,14 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
                                 if ((rand() % 100) < 75)
                                 {
                                     journalCombat.push_back(joueur.nom + " profite d'une ouverture et s'enfuit avec succes !");
+                                    AudioJeu::jouerEffet("fuite");
                                     combatTermine = true;
                                     victoireJoueur = false;
                                 }
                                 else
                                 {
                                     journalCombat.push_back("Votre tentative de fuite echoue ! Le monstre bloque le passage.");
+                                    AudioJeu::jouerEffet("coup");
                                     floatingTexts.push_back({"FUITE ECHOUEE !", heroBasePos, UI::Crimson, 1.2f, 1.2f});
                                     etat = CombatState::ACTION_RESOLVING;
                                     horlogeTour.restart();
@@ -456,6 +468,8 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
 
                     journalCombat.push_back("VICTOIRE ! " + monstre.nom + " s'effondre dans la poussiere !");
                     journalCombat.push_back("Vous ramassez " + std::to_string(monstre.orRecompense) + " PO et gagnez " + std::to_string(monstre.xpRecompense) + " XP !");
+                    AudioJeu::jouerEffet("victoire");
+                    AudioJeu::jouerEffet("piece");
 
                     // Boucle while : gere le franchissement de plusieurs niveaux d'un coup
                     while (joueur.xp >= joueur.xpSeuil)
@@ -468,6 +482,7 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
                         joueur.attaque += 4;
                         joueur.defense += 2;
                         journalCombat.push_back("★ LEVEL UP ! Vous atteignez le Niveau " + std::to_string(joueur.niveau) + " ! Stats augmentees !");
+                        AudioJeu::jouerEffet("niveau");
                     }
                     if (joueur.niveau > niveauAvantCombat)
                     {
@@ -502,12 +517,14 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
                 shakeHero = 0.25f;
                 floatingTexts.push_back({"-" + std::to_string(degatsEnnemi), heroBasePos, UI::Crimson, 1.2f, 1.2f});
                 journalCombat.push_back(monstre.nom + " utilise [" + monstre.capaciteSpeciale + "] et vous inflige " + std::to_string(degatsEnnemi) + " degats !");
+                AudioJeu::jouerEffet("coup");
 
                 if (joueur.vie <= 0)
                 {
                     etat = CombatState::DEFEAT_SCREEN;
                     victoireJoueur = false;
                     journalCombat.push_back("Vous tombez a terre... Vos forces vous abandonnent.");
+                    AudioJeu::jouerEffet("defaite");
                 }
                 else
                 {
@@ -604,10 +621,18 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
 
         window.draw(spriteHero);
 
-        // Aura pulsante dessinee derriere le boss
+        // Aura pulsante dessinee derriere le boss (passe a l'orange en phase 2)
         if (isBossRaid)
         {
-            sf::Color cAura(215, 50, 50);
+            if (!phaseBoss2 && monstre.vie > 0 && monstre.vie <= monstre.vieMax / 2)
+            {
+                phaseBoss2 = true;
+                monstre.attaque += monstre.attaque / 10; // +10% ATQ en fureur
+                AudioJeu::jouerEffet("rugissement", 70.0f);
+                journalCombat.push_back(monstre.nom + " entre dans une FUREUR destructrice ! (+10% ATQ)");
+                floatingTexts.push_back({"FUREUR !", monstreBasePos, sf::Color(255, 140, 30), 1.4f, 1.4f});
+            }
+            sf::Color cAura = phaseBoss2 ? sf::Color(255, 130, 25) : sf::Color(215, 50, 50);
             cAura.a = static_cast<sf::Uint8>(90 + 45 * std::sin(totalTime * 2.5f));
             auraBoss.setFillColor(cAura);
             float pulsation = 1.0f + 0.06f * std::sin(totalTime * 2.5f);

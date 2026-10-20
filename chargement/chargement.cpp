@@ -15,7 +15,8 @@ void ecranChargementSFML(sf::RenderWindow &window, sf::Font &font)
     float centerX = screenW / 2.0f;
 
     sf::Texture textureFond;
-    bool fondCharge = textureFond.loadFromFile("assets/backgrounds/chargement.jpg");
+    bool fondCharge = textureFond.loadFromFile("assets/backgrounds/chargement.png");
+    if (!fondCharge) fondCharge = textureFond.loadFromFile("assets/backgrounds/chargement.jpg");
     sf::Sprite spriteFond;
     if (fondCharge)
     {
