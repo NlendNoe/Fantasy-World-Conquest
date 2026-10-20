@@ -380,7 +380,7 @@ inline bool explorerMondeSFML(sf::RenderWindow &window, sf::Font &font, Joueur &
 
     sf::Texture texFond;
     bool fondCharge = texFond.loadFromFile("assets/backgrounds/fond_zone" + std::to_string(std::clamp(zoneActuelle, 1, 6)) + ".png");
-    if (!fondCharge) fondCharge = texFond.loadFromFile("assets/backgrounds/font2.jpg");
+    if (!fondCharge) fondCharge = texFond.loadFromFile("assets/backgrounds/fond_zone1.png");
     sf::Sprite spriteFond;
     if (fondCharge)
     {
@@ -673,7 +673,7 @@ inline void afficherVictoireAbsolueSFML(sf::RenderWindow &window, sf::Font &font
 
     sf::Texture texFond;
     bool fondCharge = texFond.loadFromFile("assets/backgrounds/fond_victoire.png");
-    if (!fondCharge) fondCharge = texFond.loadFromFile("assets/backgrounds/chargement.jpg");
+    if (!fondCharge) fondCharge = texFond.loadFromFile("assets/backgrounds/fond_cite.png");
     sf::Sprite spriteFond;
     if (fondCharge)
     {
@@ -730,7 +730,7 @@ inline void afficherVictoireAbsolueSFML(sf::RenderWindow &window, sf::Font &font
 
         UI::drawPanel(window, screenW * 0.15f, screenH * 0.10f, screenW * 0.70f, screenH * 0.68f, "VICTOIRE ABSOLUE DU ROYAUME", &font, 26);
 
-        sf::Text txtVictoire("★ FANTASY WORLD CONQUEST EST ACCOMPLI ! ★", font, static_cast<unsigned int>(screenH * 0.050f));
+        sf::Text txtVictoire("*** FANTASY WORLD CONQUEST EST ACCOMPLI ! ***", font, static_cast<unsigned int>(screenH * 0.050f));
         txtVictoire.setFillColor(UI::Silver);
         sf::FloatRect bV = txtVictoire.getLocalBounds();
         txtVictoire.setOrigin(bV.left + bV.width / 2.0f, bV.top + bV.height / 2.0f);

@@ -481,7 +481,7 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
                         joueur.manaMax += 5;
                         joueur.attaque += 4;
                         joueur.defense += 2;
-                        journalCombat.push_back("★ LEVEL UP ! Vous atteignez le Niveau " + std::to_string(joueur.niveau) + " ! Stats augmentees !");
+                        journalCombat.push_back("*** LEVEL UP ! Vous atteignez le Niveau " + std::to_string(joueur.niveau) + " ! Stats augmentees !");
                         AudioJeu::jouerEffet("niveau");
                     }
                     if (joueur.niveau > niveauAvantCombat)
@@ -697,7 +697,7 @@ inline bool lancerCombatSFML(sf::RenderWindow &window, sf::Font &font, Joueur &j
             popFin.setOutlineColor(etat == CombatState::VICTORY_SCREEN ? UI::Azure : UI::Crimson);
             window.draw(popFin);
 
-            sf::Text txtTitreFin(etat == CombatState::VICTORY_SCREEN ? "★ VICTOIRE TRIOMPHALE ★" : "VOUS AVEZ PERI", font, static_cast<unsigned int>(screenH * 0.045f));
+            sf::Text txtTitreFin(etat == CombatState::VICTORY_SCREEN ? "*** VICTOIRE TRIOMPHALE ***" : "VOUS AVEZ PERI", font, static_cast<unsigned int>(screenH * 0.045f));
             txtTitreFin.setFillColor(etat == CombatState::VICTORY_SCREEN ? UI::Silver : UI::Crimson);
             sf::FloatRect bTF = txtTitreFin.getLocalBounds();
             txtTitreFin.setOrigin(bTF.left + bTF.width / 2.0f, bTF.top + bTF.height / 2.0f);

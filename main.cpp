@@ -2,6 +2,7 @@
 #include <string>
 #include <cstdlib>
 #include <ctime>
+#include <windows.h>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
@@ -20,6 +21,11 @@ using namespace std;
 
 int main()
 {
+    // Le binaire enregistre les chaines en CP1252 (voir flags -fexec-charset de run.bat) :
+    // on met la console dans la meme page de codes pour que les accents s'affichent correctement.
+    SetConsoleOutputCP(1252);
+    SetConsoleCP(1252);
+
     srand(static_cast<unsigned int>(time(0)));
 
     Joueur joueur;
@@ -41,7 +47,7 @@ int main()
 
     sf::Texture textureFond;
     bool fondCharge = textureFond.loadFromFile("assets/backgrounds/fond_menu.png");
-    if (!fondCharge) fondCharge = textureFond.loadFromFile("assets/backgrounds/fondPince-2.jpg");
+    if (!fondCharge) fondCharge = textureFond.loadFromFile("assets/backgrounds/fond_cite.png");
     sf::Sprite spriteFond;
     if (fondCharge)
     {
